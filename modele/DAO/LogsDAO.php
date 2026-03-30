@@ -1,4 +1,5 @@
+<?php
 /**
-* LogsDAO:
-* Alimente le flux d'actualité en page d'introduction.
+*   LogsDAO:
+*   Alimente le flux d'actualité en page d'introduction.
 */
