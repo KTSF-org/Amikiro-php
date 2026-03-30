@@ -24,8 +24,8 @@ class UserDAO extends Database {
 
 	public function __construct() {
 		//-------------------------------------------
-		$tableName = 'clients';
-		$primaryKey = 'id_client';
+		$tableName = 'User';
+		$primaryKey = 'idUser';
 		//-------------------------------------------
 		parent::__construct($tableName, $primaryKey);
 	}
