@@ -12,14 +12,20 @@ class Bat
     private int $idBat = 1;
     protected $param = []; //La liste des paramètres (ou attributs)
 
+    private string $name;
+    private string $birthDate;
+    private int $sex;
+    private int $weight;
+    private string $note;
+
     // Constructeur : Bat
-    public function __construct(
-        private string $name = "",
-        private string $birthDate = "",
-        private int $sex = -1,
-        private int $weight = -1,
-        private string $note = ""
-    ) {
+    public function __construct() {
+        $name = "";
+        $birthDate = "";
+        $sex = -1;
+        $weight = -1;
+        $note = "";
+    
         // Gestionnaire d'erreur (pour les requêtes) :
         try {
             $this->param = $this->getKey(get_object_vars($this));
