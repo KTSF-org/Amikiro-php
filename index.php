@@ -1,6 +1,7 @@
 <?php
 
 /**
+ * CONTROLEUR PRINCIPAL
  */
 
 session_start();
