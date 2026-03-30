@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : db
--- Généré le : lun. 30 mars 2026 à 09:39
+-- Généré le : lun. 30 mars 2026 à 09:46
 -- Version du serveur : 8.4.7
 -- Version de PHP : 8.3.26
 
@@ -31,10 +31,17 @@ CREATE TABLE `Bat` (
   `IdBat` int NOT NULL,
   `Name` varchar(256) NOT NULL,
   `BirthDate` datetime NOT NULL,
-  `Sex` varchar(10) NOT NULL,
+  `Sex` int NOT NULL,
   `Weight` int NOT NULL,
   `Note` varchar(256) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Déchargement des données de la table `Bat`
+--
+
+INSERT INTO `Bat` (`IdBat`, `Name`, `BirthDate`, `Sex`, `Weight`, `Note`) VALUES
+(1, 'Batman', '2026-03-19 11:42:29', 1, 250, 'Note oui oui baguette');
 
 -- --------------------------------------------------------
 
@@ -47,6 +54,13 @@ CREATE TABLE `Category` (
   `Name` varchar(256) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+--
+-- Déchargement des données de la table `Category`
+--
+
+INSERT INTO `Category` (`IdCatergory`, `Name`) VALUES
+(1, 'Départ chasse');
+
 -- --------------------------------------------------------
 
 --
@@ -58,6 +72,13 @@ CREATE TABLE `ColonySection` (
   `IdCategory` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+--
+-- Déchargement des données de la table `ColonySection`
+--
+
+INSERT INTO `ColonySection` (`IdSection`, `IdCategory`) VALUES
+(1, 1);
+
 -- --------------------------------------------------------
 
 --
@@ -67,6 +88,13 @@ CREATE TABLE `ColonySection` (
 CREATE TABLE `Logs` (
   `IdLogs` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Déchargement des données de la table `Logs`
+--
+
+INSERT INTO `Logs` (`IdLogs`) VALUES
+(1);
 
 -- --------------------------------------------------------
 
@@ -83,6 +111,13 @@ CREATE TABLE `Section` (
   `IdLogs` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+--
+-- Déchargement des données de la table `Section`
+--
+
+INSERT INTO `Section` (`IdSection`, `Title`, `Content`, `CreationDate`, `IdUser`, `IdLogs`) VALUES
+(1, 'rUBRIQUE TEST', 'ghyuodyt', '2026-03-30 09:45:07', 1, 1);
+
 -- --------------------------------------------------------
 
 --
@@ -93,6 +128,13 @@ CREATE TABLE `SpecimenSection` (
   `IdSection` int NOT NULL,
   `IdBat` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Déchargement des données de la table `SpecimenSection`
+--
+
+INSERT INTO `SpecimenSection` (`IdSection`, `IdBat`) VALUES
+(1, 1);
 
 -- --------------------------------------------------------
 
@@ -112,6 +154,13 @@ CREATE TABLE `User` (
   `MemberId` int DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+--
+-- Déchargement des données de la table `User`
+--
+
+INSERT INTO `User` (`IdUser`, `IdRole`, `Mail`, `Uptime`, `Pasword`, `Name`, `Surname`, `CountConnect`, `MemberId`) VALUES
+(1, 1, 'test@mail.fr', 0, 'oui', 'Jean', 'Test', 0, NULL);
+
 -- --------------------------------------------------------
 
 --
@@ -125,6 +174,13 @@ CREATE TABLE `Video` (
   `CloseDate` datetime NOT NULL,
   `URL` varchar(256) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Déchargement des données de la table `Video`
+--
+
+INSERT INTO `Video` (`IdVideo`, `Title`, `OpenDate`, `CloseDate`, `URL`) VALUES
+(1, 'Titre', '2026-03-24 11:46:00', '2026-04-30 11:46:00', 'hjugegauiogfyo');
 
 --
 -- Index pour les tables déchargées
@@ -190,37 +246,37 @@ ALTER TABLE `Video`
 -- AUTO_INCREMENT pour la table `Bat`
 --
 ALTER TABLE `Bat`
-  MODIFY `IdBat` int NOT NULL AUTO_INCREMENT;
+  MODIFY `IdBat` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT pour la table `Category`
 --
 ALTER TABLE `Category`
-  MODIFY `IdCatergory` int NOT NULL AUTO_INCREMENT;
+  MODIFY `IdCatergory` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT pour la table `Logs`
 --
 ALTER TABLE `Logs`
-  MODIFY `IdLogs` int NOT NULL AUTO_INCREMENT;
+  MODIFY `IdLogs` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT pour la table `Section`
 --
 ALTER TABLE `Section`
-  MODIFY `IdSection` int NOT NULL AUTO_INCREMENT;
+  MODIFY `IdSection` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT pour la table `User`
 --
 ALTER TABLE `User`
-  MODIFY `IdUser` int NOT NULL AUTO_INCREMENT;
+  MODIFY `IdUser` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT pour la table `Video`
 --
 ALTER TABLE `Video`
-  MODIFY `IdVideo` int NOT NULL AUTO_INCREMENT;
+  MODIFY `IdVideo` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- Contraintes pour les tables déchargées
