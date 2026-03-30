@@ -1,0 +1,4 @@
+/*** 
+-> Voir le controleur : controleur/util/Captcha.php 
+-> Ajouter une route '/captcha' dans : app/route/routing.php
+***/

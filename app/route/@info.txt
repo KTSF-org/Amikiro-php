@@ -1,0 +1,16 @@
+/***
+
+Routes de l'application 
+
+Routes actives actuelles et contrôleur associé :
+-> http://localhost/apptest/ et http://localhost/apptest/accueil ==> Accueil.php
+-> http://localhost/apptest/about ==> About.php
+-> http://localhost/apptest/img ==> util/Image.php
+-> http://localhost/apptest/ajax ==> MainAjax.php
+-> http://localhost/apptest/admin/test ==> admin/Test.php
+-> http://localhost/apptest/info ==> aucun contrôleur, une fonction directe
+-> http://localhost/apptest/asset/js/[nombre-aléatoire].js ==> util/CustomJS.php
+404 :
+-> http://localhost/apptest/??? ==> NotFound.php
+
+***/

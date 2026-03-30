@@ -1,0 +1,40 @@
+/*** Main CSS ***/
+
+html, body {
+	height: 100%;
+	margin: 0;
+}
+
+.container {
+	min-height: 100vh;
+	/* taille du footer + 20px */
+	padding-bottom: 80px;
+}
+
+.spacer {
+    height: 20px;
+}
+
+.footer {
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	height: 60px;
+	background-color: #f0f0f0;
+	text-align: center;
+}
+
+.app-logo {
+	/* En CSS l'image est chargée à un niveau supérieur */
+    background-image: url('../img/app.png');
+    background-size: 30px 30px;
+    background-repeat: no-repeat;
+    background-position: left center;
+    height: 30px;
+    padding-left: 40px;
+}
+
+.left {
+  text-align: left;
+}

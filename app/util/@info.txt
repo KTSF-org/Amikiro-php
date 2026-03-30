@@ -1,0 +1,1 @@
+/*** Ici tout type d'utilitaires afin de faciliter et optimiser l'accès aux ressources de l'application ***/

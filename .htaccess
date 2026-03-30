@@ -1,0 +1,31 @@
+#PHP VERSION :
+SetEnv PHP_VERSION 8.1
+
+Options -Indexes
+RewriteEngine On
+
+#OPTION : cible de l'application
+#RewriteBase /apptest/
+
+#redirection de l'erreur 404 :
+ErrorDocument 404 /index.php?uri=404
+
+#masquer par une erreur 404 l'accès aux dossiers protégés et leurs contenus :
+RewriteRule ^(app|controleur|modele|vendor|vue)(.*)$ - [R=404,L]
+
+#dans le cas où l'on souhaite afficher les types de fichiers en plus pour Composer :
+#RewriteRule ^(vendor)/(?!(.*\.(php|html|json|css|js|png|jpg|jpeg))$)(.*)$ - [R=404,L]
+
+#retire toutes les extensions (dont .php) :
+RewriteCond %{REQUEST_URI} /(.*)/$
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^ /%1 [L,R]
+
+#retire le dernier slash :
+RewriteCond %{REQUEST_FILENAME}.php -f
+RewriteRule !.*\.php$ %{REQUEST_FILENAME}.php [QSA,L]
+
+#redirige TOUTES les requetes vers $_GET['uri'] :
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.+)$ index.php?uri=$1 [QSA,L]

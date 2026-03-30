@@ -1,0 +1,35 @@
+/*** Accueil CSS ***/
+
+.avatar {
+  padding: 4px;
+  margin: auto;
+  position: relative;
+}
+
+.avatar img {
+  height: 100px;
+  width: 100px;
+  object-fit: cover;
+  background: #F4F4F7;
+  border-radius: 100% !important;
+  border: 2px solid #a8b9de;
+}
+
+.avatar-title {
+  padding:2px 6px 2px 6px;
+  color:#07143F;
+  background:#FFF8DF;
+  border-radius: 5px;
+  border: 1px solid #94A9F3;
+}
+
+.load-bloc {
+  position: absolute;
+  margin-top: 30px;
+  margin-left: 35px
+}
+
+.txt-bloc {
+  margin: auto;
+  display: inline-block;
+}

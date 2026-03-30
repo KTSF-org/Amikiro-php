@@ -1,0 +1,36 @@
+/*** 
+
+=== Application MVC ===
+
+autoload.php : autoloader de Classes
+
+const.php : constantes de l'application (DEFINE)
+-> SLASH : "/" sur Unix ou "\" sur Windows
+-> ROOT : chemin absolu de l'application
+-> VUE_DIR : chemin absolu vers le répertoire (...)/vue/
+-> AJAX_DIR : chemin absolu vers le répertoire (...)/vue/ajax/
+-> MAIN_TEMPLATE_DIR : chemin absolu vers le répertoire (...)/vue/common/
+-> APP_DIR : chemin absolu vers le répertoire (...)/app/
+-> FILE_DIR : chemin absolu vers le répertoire (...)/app/file/
+-> ASSET_DIR : chemin absolu vers le répertoire (...)/asset/
+
+DB.php : Configuration de connexion au SGBDR.
+
+functions.php : Fonctions au premier niveau de l'application (globales).
+Aucune classe dans ce fichier - uniquement des fonctions.
+
+param.php : Paramètres de l'application (CONST)
+-> APP_NAME : Nom par défaut
+-> APP_VERSION : version de l'application
+-> MAIN_TITLE : titre de l'application
+-> DEBUG_DUMP : Sort var_dump() sur la fonction debug()
+-> AJAX_DEBUG : Affiche un popup qui énumère les requêtes AJAX 
+(exemple AJAX dans : vue/ajax/ajaxRechercher.php)
+-> ASSET : nom du répertoire des fichiers statiques, en cas de changement de nom du répertoire.
+
+Setup.php : 
+Méthode qui va implémenter toutes les dépendances 
+liées au chargement de l'application, hors index.php 
+(contrôleur principal).
+
+***/

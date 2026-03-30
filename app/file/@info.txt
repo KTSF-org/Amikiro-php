@@ -1,0 +1,1 @@
+/*** Ici tout type de dossier->fichier à stocker en interne pour l'application ***/
