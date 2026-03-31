@@ -163,5 +163,7 @@ class UserDAO extends Database {
 		);
 	}
 
-	
+	public function getUserById($idUser):mixed {
+		return $this->sendSQL("SELECT * from `" . $this->tableName . "` WHERE IdUser = ?", [$idUser]);
+	}
 }
