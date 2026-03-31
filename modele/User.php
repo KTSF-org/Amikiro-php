@@ -16,7 +16,7 @@ use modele\DAO\UserDAO;
 class User
 {
 
-	private int $idUser = 0; //La clé primaire est identifiée par $id
+	private int $id = 0; //La clé primaire est identifiée par $id
 
 	protected $param = []; //La liste des paramètres (ou attributs)
 
@@ -28,13 +28,13 @@ class User
 	// Ne doit pas être ajouté : la clé primaire, car auto-incrémentée !
 	public function __construct(
 		private int $codeRole = -1,
-		private string $Mail = '',
-		private int $Uptime = -1,
-		private string $Password = '',
-		private string $Name = '',
-		private string $Surname = '',
-		private int $CountConnect = -1,
-		private int $MemberId = -1
+		private string $mail = '',
+		private int $uptime = -1,
+		private string $password = '',
+		private string $name = '',
+		private string $surname = '',
+		private int $countConnect = -1,
+		private int $memberNum = -1
 	) {
 
 		// Gestionnaire d'erreur (pour les requêtes) :
@@ -95,7 +95,7 @@ class User
 	// Vérification de l'email
 	public function isValidEmail(): bool
 	{
-		return filter_var($this->Mail, FILTER_VALIDATE_EMAIL);
+		return filter_var($this->mail, FILTER_VALIDATE_EMAIL);
 	}
 
 
@@ -124,9 +124,9 @@ class User
 	 * GETTERS (accesseurs)
 	 */
 
-	public function getIdUser(): int
+	public function getId(): int
 	{
-		return $this->idUser;
+		return $this->id;
 	}
 
 	/**
@@ -142,7 +142,7 @@ class User
 	 */
 	public function getMail()
 	{
-		return $this->Mail;
+		return $this->mail;
 	}
 
 	/**
@@ -150,7 +150,7 @@ class User
 	 */
 	public function getUptime()
 	{
-		return $this->Uptime;
+		return $this->uptime;
 	}
 
 	/**
@@ -158,7 +158,7 @@ class User
 	 */
 	public function getPassword()
 	{
-		return $this->Password;
+		return $this->password;
 	}
 
 	/**
@@ -166,7 +166,7 @@ class User
 	 */
 	public function getName()
 	{
-		return $this->Name;
+		return $this->name;
 	}
 
 	/**
@@ -174,7 +174,7 @@ class User
 	 */
 	public function getSurname()
 	{
-		return $this->Surname;
+		return $this->surname;
 	}
 
 	/**
@@ -182,15 +182,15 @@ class User
 	 */
 	public function getCountConnect()
 	{
-		return $this->CountConnect;
+		return $this->countConnect;
 	}
 
 	/**
 	 * Get the value of MemberId
 	 */
-	public function getMemberId()
+	public function getMemberNum()
 	{
-		return $this->MemberId;
+		return $this->memberNum;
 	}
 
 
@@ -198,9 +198,9 @@ class User
 	 * SETTERS (mutateurs)
 	 */
 
-	public function setId($idUser): void
+	public function setId($id): void
 	{
-		$this->idUser = $idUser;
+		$this->id = $id;
 	}
 
 
@@ -212,57 +212,57 @@ class User
 	}
 
 	
-	public function setMail($Mail)
+	public function setMail($mail)
 	{
-		$this->Mail = $Mail;
+		$this->mail = $mail;
 
 		return $this;
 	}
 
 	
-	public function setUptime($Uptime)
+	public function setUptime($uptime)
 	{
-		$this->Uptime = $Uptime;
+		$this->uptime = $uptime;
 
 		return $this;
 	}
 
 	
-	public function setPassword($Password)
+	public function setPassword($password)
 	{
-		$this->Password = password_hash($Password, PASSWORD_DEFAULT);
+		$this->password = password_hash($password, PASSWORD_DEFAULT);
 
 		return $this;
 	}
 
 	
-	public function setName($Name)
+	public function setName($name)
 	{
-		$this->Name = $Name;
+		$this->name = $name;
 
 		return $this;
 	}
 
 	
-	public function setSurname($Surname)
+	public function setSurname($surname)
 	{
-		$this->Surname = $Surname;
+		$this->surname = $surname;
 
 		return $this;
 	}
 
 	
-	public function setCountConnect($CountConnect)
+	public function setCountConnect($countConnect)
 	{
-		$this->CountConnect = $CountConnect;
+		$this->countConnect = $countConnect;
 
 		return $this;
 	}
 
 	
-	public function setMemberId($MemberId)
+	public function setMemberNum($memberNum)
 	{
-		$this->MemberId = $MemberId;
+		$this->memberNum = $memberNum;
 
 		return $this;
 	}
