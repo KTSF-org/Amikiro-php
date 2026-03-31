@@ -37,6 +37,8 @@ class Routing {
 		$route->add('asset/js/' . $_SESSION['CUSTOM_JS'], 'controleur\util\CustomJS');
 
         $route->add('/live', 'controleur\Live');
+
+		$route->add('/journal', 'controleur\Journal');
 		
 		
 
