@@ -21,3 +21,9 @@ const AJAX_DEBUG = false; //true -> le navigateur à recharger
 
 //Nom du répertoire des fichiers statiques (images, js, css) :
 const ASSET = 'asset';
+
+// Rôles utilisateur
+const ROLE_INVITE     = 0;
+const ROLE_ADHERENT   = 1;
+const ROLE_NATURALISTE = 2;
+const ROLE_ADMIN      = 3;
