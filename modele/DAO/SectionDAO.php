@@ -6,17 +6,18 @@ use modele\DAO\base\Database;
 use PDO;
 
 /**
- * LogsDAO — Accès aux données de suivi des modifications
+ * SectionDAO — Accès aux données de suivi des modifications
  *
  * Gère les événements utilisateurs (Modifications, Création, etc.).
  */
-class LogsDAO extends Database {
+class SectionDAO extends Database {
 
     public function __construct() {
-        $tableName = 'Logs';
-		$primaryKey = 'IdLogs';
+        $tableName = 'Section';
+		$primaryKey = 'IdSection';
         parent::__construct($tableName, $primaryKey);
     }
+
 	/** 
 	*	Besoins en données issues du métier User (modele/User.php)
 	*	@param object:metier Instance de l'objet métier
@@ -37,6 +38,7 @@ class LogsDAO extends Database {
 
 		return $data;
 	}
+
     /** 
 	*	CRUD : create
 	*	@param object:metier Instance de l'objet métier
@@ -60,11 +62,11 @@ class LogsDAO extends Database {
 		if($id>0)$row = $this->getOne($id); //on récupère la ligne/tuple concernée
 		//gestion de l'index en cas d'erreur :
 		if(!$row) {
-			Error::setException( "l'indentifiant fourni (<b>$id</b>) est invalide !" );
+			Error::setException( "l'identifiant fourni (<b>$id</b>) est invalide !" );
 		}
 		$rowData = (array)$row; //conversion objet --> array
 		unset($rowData[$this->primaryKey], $row); //retire la clé primaire du tableau et $row qui ne sert plus
-		$metier = new Logs(...$rowData); //crée l'objet Logs(->Logs.php) avec toutes les clés du tableau $rowData
+		$metier = new Section(...$rowData); //crée l'objet Section(->Section.php) avec toutes les clés du tableau $rowData
 		$metier->setId($id); //ajoute $id dans l'objet métier (User)
 		return $metier; //retourne l'objet crée
 	}
@@ -96,13 +98,14 @@ class LogsDAO extends Database {
     public function findAll(): array {
         try {
             $stmt = $this->getPdo()->prepare(
-                "SELECT Action, LogDate FROM `Logs` ORDER BY LogDate ASC"
+                "SELECT IdSection, Title FROM `Section` ORDER BY CreationDate ASC"
             );
             $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_OBJ) ?: [];
         } catch (\PDOException $e) {
-            error_log('[LogsDAO::findAll] ' . $e->getMessage());
+            error_log('[SectionDAO::findAll] ' . $e->getMessage());
             return [];
         }
     }
+
 }
