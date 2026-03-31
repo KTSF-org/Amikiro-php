@@ -21,7 +21,7 @@ class VideoDAO extends Database
     public function __construct()
     {
         $tableName = "Video";
-        $primaryKey = "IdVideo";
+        $primaryKey = "idVideo";
 
         parent::__construct($tableName, $primaryKey);
     }
@@ -62,7 +62,7 @@ class VideoDAO extends Database
      *	@return mixed object|string|bool
      */
 
-    public function read(int $IdVideo=1): mixed {
+    public function read(int $idVideo=1): mixed {
         $row = false;
         if($id>0)$row = $this->getOne($id); //on récupère la ligne/tuple concernée
         //gestion de l'index en cas d'erreur :
@@ -98,11 +98,11 @@ class VideoDAO extends Database
     }
 
 
-    public function getURLbyId(int $IdVideo): mixed {
-        $stmt= $this->getPdo()->prepare("SELECT URL FROM Video WHERE IdVideo = :IdVideo");
-        $stmt->execute(["IdVideo"=>$IdVideo]);
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+
+        public function getURLbyId(int $idVideo): mixed {
+        return $this->sendSQLAssoc("SELECT * from `" . $this->tableName . "` WHERE IdVideo = ?", [$idVideo]);
     }
+
 
 
 }

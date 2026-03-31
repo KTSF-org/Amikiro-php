@@ -68,6 +68,13 @@ class Database implements IDatabase {
         return $stmt->fetch(PDO::FETCH_OBJ); //FETCH_ASSOC : array
     }
 
+        public function sendSQLAssoc(string $cmd, array $filter): array |null|bool {
+        $stmt = $this->getPdo()->prepare($cmd);
+        $stmt->execute($filter);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+        }
+
+
     /**
      * Retourne l'ensemble des enregistrements présent en base de données (pour la table $tableName)
      * @return \stdClass|null

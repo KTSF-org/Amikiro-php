@@ -4,7 +4,7 @@ namespace modele;
 
 class Video
 {
-    private int $IdVideo=0;
+    private int $id=0;
     protected $param =[];
 
 
@@ -12,10 +12,10 @@ class Video
 
 
     public function __construct(
-        private string $Title="",
-        private string $OpenDate="",
-        private string $CloseDate="",
-        private string $URL="")
+        private string $title="",
+        private string $openDate="",
+        private string $closeDate="",
+        private string $url="")
     {
 
 
@@ -80,7 +80,7 @@ class Video
 
     public function getURL(): string
     {
-        return $this->URL;
+        return $this->url;
     }
 
 
@@ -88,29 +88,29 @@ class Video
      * SETTERS
      */
 
-    public function setIdVideo(int $IdVideo): void
+    public function setIdVideo(int $idVideo): void
     {
-        $this->IdVideo = $IdVideo;
+        $this->idVideo = $idVideo;
     }
 
-    public function setTitle(string $Title): void
+    public function setTitle(string $title): void
     {
-        $this->Title = $Title;
+        $this->title = $title;
     }
 
-    public function setOpenDate(string $OpenDate): void
+    public function setOpenDate(string $openDate): void
     {
-        $this->OpenDate = $OpenDate;
+        $this->openDate = $openDate;
     }
 
-    public function setCloseDate(string $CloseDate): void
+    public function setCloseDate(string $closeDate): void
     {
-        $this->CloseDate = $CloseDate;
+        $this->closeDate = $closeDate;
     }
 
-    public function setURL(string $URL): void
+    public function setURL(string $url): void
     {
-        $this->URL = $URL;
+        $this->url = $url;
     }
 
 
