@@ -50,7 +50,7 @@ INSERT INTO `Bat` (`IdBat`, `Name`, `BirthDate`, `Sex`, `Weight`, `Note`) VALUES
 --
 
 CREATE TABLE `Category` (
-  `IdCatergory` int NOT NULL,
+  `IdCategory` int NOT NULL,
   `Name` varchar(256) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
@@ -58,7 +58,7 @@ CREATE TABLE `Category` (
 -- Déchargement des données de la table `Category`
 --
 
-INSERT INTO `Category` (`IdCatergory`, `Name`) VALUES
+INSERT INTO `Category` (`IdCategory`, `Name`) VALUES
 (1, 'Départ chasse');
 
 -- --------------------------------------------------------
@@ -147,7 +147,7 @@ CREATE TABLE `User` (
   `IdRole` int NOT NULL,
   `Mail` varchar(50) NOT NULL,
   `Uptime` int NOT NULL,
-  `Pasword` varchar(256) NOT NULL,
+  `Password` varchar(256) NOT NULL,
   `Name` varchar(100) NOT NULL,
   `Surname` varchar(100) NOT NULL,
   `CountConnect` int NOT NULL,
@@ -158,7 +158,7 @@ CREATE TABLE `User` (
 -- Déchargement des données de la table `User`
 --
 
-INSERT INTO `User` (`IdUser`, `IdRole`, `Mail`, `Uptime`, `Pasword`, `Name`, `Surname`, `CountConnect`, `MemberId`) VALUES
+INSERT INTO `User` (`IdUser`, `IdRole`, `Mail`, `Uptime`, `Password`, `Name`, `Surname`, `CountConnect`, `MemberId`) VALUES
 (1, 1, 'test@mail.fr', 0, 'oui', 'Jean', 'Test', 0, NULL);
 
 -- --------------------------------------------------------
@@ -196,7 +196,7 @@ ALTER TABLE `Bat`
 -- Index pour la table `Category`
 --
 ALTER TABLE `Category`
-  ADD PRIMARY KEY (`IdCatergory`);
+  ADD PRIMARY KEY (`IdCategory`);
 
 --
 -- Index pour la table `ColonySection`
@@ -252,7 +252,7 @@ ALTER TABLE `Bat`
 -- AUTO_INCREMENT pour la table `Category`
 --
 ALTER TABLE `Category`
-  MODIFY `IdCatergory` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `IdCategory` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT pour la table `Logs`
@@ -286,7 +286,7 @@ ALTER TABLE `Video`
 -- Contraintes pour la table `ColonySection`
 --
 ALTER TABLE `ColonySection`
-  ADD CONSTRAINT `CategoryConstraint` FOREIGN KEY (`IdCategory`) REFERENCES `Category` (`IdCatergory`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `CategoryConstraint` FOREIGN KEY (`IdCategory`) REFERENCES `Category` (`IdCategory`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `SectionConstraintColony` FOREIGN KEY (`IdSection`) REFERENCES `Section` (`IdSection`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
