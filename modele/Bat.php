@@ -9,7 +9,7 @@ use mysqli_sql_exception;
 class Bat
 {
 
-    private int $idBat = 1;
+    private int $idBat = -1;
     protected $param = []; //La liste des paramètres (ou attributs)
 
     private string $name;
@@ -25,7 +25,6 @@ class Bat
         $sex = -1;
         $weight = -1;
         $note = "";
-    
         // Gestionnaire d'erreur (pour les requêtes) :
         try {
             $this->param = $this->getKey(get_object_vars($this));
@@ -47,6 +46,17 @@ class Bat
         }
         return $param;
     }
+
+    // Initialise la chauve-souris
+    public function initBat(string $name, string $birthDate, int $sex, int $weight, string $note) {
+        $this->name = $name;
+        $this->birthDate = $birthDate; 
+        $this->sex = $sex; 
+        $this->weight = $weight;
+        $this->note = $note;
+    }
+
+    
 
     public function getBat() : void {
         $batDAO = new BatDAO();
