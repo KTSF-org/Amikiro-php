@@ -1,17 +1,24 @@
 <?php
 
 /**
- * VUE : Accueil.php
+ * VUE : Live.php
  */
 
 ?>
 <div class="container-fluid">
     <H2 style="text-align: center">Live</H2>
-    <video id="video" controls height="500" src="asset\media\VID-20250530-WA0000.mp4" autoplay width="80%"></video>
+
+    <img id="image0" src=<?= $url2["URL"] ?> class="img-responsive" alt=""
+    title="Click here to enter the camera located in Mexico, region Jalisco">
+<!--    si url de ce type il faut faire un proxy pour cacher l'url-->
+
+    <video id="video" controls height="500" src="" autoplay width="80%" style="padding-bottom: 60px"></video>
+
 </div>
 
 <script>
-    const streamUrl = 'https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8';
+    const streamUrl = '<?= $url1["URL"] ?>';
+    /** 'https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8'; */
 
     const video = document.getElementById('video');
 
