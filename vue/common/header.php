@@ -23,14 +23,17 @@
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
         <div class="container-fluid">
             <a class="navbar-brand" href="<?= $actual_link ?>">
                 <div class="app-logo"><?= MAIN_TITLE ?></div>
             </a>
             <ul class="nav nav-pills">
-                <li class="nav-item"><a href="admin/test" class="nav-link">Mon compte</a></li>';
-                <li class="nav-item"><a href="about?app=10" class="nav-link">À propos</a></li>
+                <li class="nav-item"><a href="<?= $actual_link ?>live" class="nav-link">Live</a></li>
+                <?php if (\app\util\SessionLogin::getRole() > ROLE_INVITE): ?>
+                <li class="nav-item"><a href="<?= $actual_link ?>journal" class="nav-link">Journal</a></li>
+                <?php endif; ?>
+                <li class="nav-item"><a href="<?= $actual_link ?>parametres" class="nav-link">Paramètres</a></li>
             </ul>
         </div>
     </nav>
