@@ -5,65 +5,44 @@
  */
 
 ?>
-<div class="container">
+<div class="accueil-hero">
+	<div class="container">
 
-	<div class="spacer"></div>
-
-	<div class="text-center">
-
-		<h1>Bienvenue <span id="userid"><?= $data['prenom'] ?> <?= $data['nom'] ?></span> !</h1>
-
-		<div class="avatar">
-			<div class="load-bloc spinner-border spinner-border" style="display:none" role="status"></div>
-			<img id="avatar" class="img-thumbnail" src="<?= $actual_link ?>img?f=<?= $data['avatar'] ?>" />
+		<div class="accueil-logo">
+			<img src="<?= ASSET ?>/img/app.png" alt="Logo Amikiro" />
 		</div>
 
-		<p><mark class="avatar-title"><?= $test ?></mark></p>
-			
-			<div style="margin:auto; width:50%">
-			
-			  <p>
-				<form method="POST">
-				  <div class="d-flex justify-content-center">
-					<input type="text" name="helloPost" class="form-control form-control" placeholder="Tester POST sur ce contrôleur">
-					<button class="btn btn-primary">Tester</button>
-				  </div>
-				</form>
-			  </p>
-			  
-			  <p>
-				<form method="POST" action="<?= $actual_link ?>about?app=post_test">
-				  <div class="d-flex justify-content-center">
-					<input type="text" name="aboutPost" class="form-control" placeholder="Tester POST sur le contrôleur About">
-					<button class="btn btn-primary">Tester</button>
-				  </div>
-				</form>
-			  </p>
-			  
-			</div>
+		<h1 class="accueil-titre">AMIKIRO LIVE</h1>
+		<p class="accueil-sous-titre">Maison des Chauves-Souris</p>
 
-		<p><?php include(AJAX_DIR . 'ajaxRechercher.php'); ?></p>
+		<?php if ($user): ?>
+		<p class="accueil-connecte">Bienvenue, <?= htmlspecialchars($user['name']) ?> <?= htmlspecialchars($user['surname']) ?></p>
+	<?php endif; ?>
 
-		<div style="margin:auto; display:inline-block;">
-			<div style="text-align:left">
-				<p>Liste des utilisteurs (table <b><?= $table ?></b>) :</p>
-				<?php
-				foreach ($allData as $k => $v) {
-					echo '<li><small>[id n°' . $v->id_client . ']</small> ' . $v->prenom . ' ' . $v->nom . '</li>';
-				}
-				?>
+	<hr class="accueil-sep" />
+
+		<div class="row justify-content-center">
+			<div class="col-md-7">
+				<section class="accueil-bloc">
+					<h2>La Maison des Chauves-Souris</h2>
+					<p>
+						La Maison des Chauves-Souris est un centre dédié à l'étude, la protection et la sensibilisation
+						autour des chiroptères. Nous accueillons colonies et spécimens dans un environnement contrôlé,
+						et travaillons avec chercheurs et bénévoles pour mieux comprendre ces animaux essentiels à
+						nos écosystèmes.
+					</p>
+				</section>
+
+				<section class="accueil-bloc">
+					<h2>L'application Amikiro</h2>
+					<p>
+						Amikiro centralise le suivi des spécimens, la gestion des sections de colonie et la diffusion
+						de contenus vidéo en direct. Elle est réservée aux membres et collaborateurs de la Maison
+						des Chauves-Souris.
+					</p>
+				</section>
 			</div>
 		</div>
-
-		<div class="spacer"></div>
-
-		<p>Le tableau param affiche :</p>
-		<?php
-		foreach ($param as $k => $v) {
-			echo $k . ' = ' . $v . '<br />';
-		}
-		?>
 
 	</div>
-
 </div>
