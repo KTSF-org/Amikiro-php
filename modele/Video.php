@@ -58,24 +58,24 @@ class Video
     /**
      * GETTERS
      */
-    public function getIdVideo(): int
+    public function getId(): int
     {
-        return $this->IdVideo;
+        return $this->id;
     }
 
     public function getCloseDate(): string
     {
-        return $this->CloseDate;
+        return $this->closeDate;
     }
 
     public function getOpenDate(): string
     {
-        return $this->OpenDate;
+        return $this->openDate;
     }
 
     public function getTitle(): string
     {
-        return $this->Title;
+        return $this->title;
     }
 
     public function getURL(): string
@@ -88,9 +88,9 @@ class Video
      * SETTERS
      */
 
-    public function setIdVideo(int $idVideo): void
+    public function setIdVideo(int $id): void
     {
-        $this->idVideo = $idVideo;
+        $this->id = $id;
     }
 
     public function setTitle(string $title): void
