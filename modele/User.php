@@ -16,7 +16,7 @@ use modele\DAO\UserDAO;
 class User
 {
 
-	private int $id = 0; //La clé primaire est identifiée par $id
+	private int $idUser = 0; //La clé primaire est identifiée par $id
 
 	protected $param = []; //La liste des paramètres (ou attributs)
 
@@ -76,18 +76,34 @@ class User
 		return $userDAO->create($this);
 	}
 
+	
+	// UPDATE
+	public function updateUser(): bool
+	{
+		$userDAO = new UserDAO();
+		return $userDAO->update($this);
+	}
+
+	// DELETE
+	public function deleteUser(): bool
+	{
+		$userDAO = new UserDAO();
+		return $userDAO->delete($this);
+	}
+
+
 	// Vérification de l'email
 	public function isValidEmail(): bool
 	{
-		return filter_var($this->email, FILTER_VALIDATE_EMAIL);
+		return filter_var($this->Mail, FILTER_VALIDATE_EMAIL);
 	}
 
 
 	// Fonction pour vérifier les identifiants
-	public static function verifIdentifiant(string $email, string $pwd): mixed
+	public static function verifIdentifiant(string $Mail, string $pwd): mixed
 	{
 		$userDAO = new UserDAO();
-		$user = $userDAO->getUserByEmail($email);
+		$user = $userDAO->getUserByEmail($Mail);
 
 		if (!$user) {
 			return false; //Email inconnu
@@ -101,21 +117,16 @@ class User
 		return $user; //Email connu / Mot de passe connu
 	}
 
-	public function getUserById($id): mixed
-	{
-		$userDAO = new UserDAO();
-		$user = $userDAO->getUserById($id);
-		return $user;
-	}
+	
 
 
 	/**
 	 * GETTERS (accesseurs)
 	 */
 
-	public function getId(): int
+	public function getIdUser(): int
 	{
-		return $this->id;
+		return $this->idUser;
 	}
 
 	/**
@@ -187,9 +198,9 @@ class User
 	 * SETTERS (mutateurs)
 	 */
 
-	public function setId($id): void
+	public function setId($idUser): void
 	{
-		$this->id = $id;
+		$this->idUser = $idUser;
 	}
 
 

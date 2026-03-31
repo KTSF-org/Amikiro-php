@@ -84,17 +84,17 @@ class UserDAO extends Database {
 	*	@param integer Numéro de la clé primaire
 	*	@return mixed object|string|bool
 	*/
-	public function read(int $id=1): mixed {
+	public function read(int $idUser): mixed {
 		$row = false;
-		if($id>0)$row = $this->getOne($id); //on récupère la ligne/tuple concernée
+		if($idUser>0)$row = $this->getOne($idUser); //on récupère la ligne/tuple concernée
 		//gestion de l'index en cas d'erreur :
 		if(!$row) {
-			Error::setException( "l'indentifiant fourni (<b>$id</b>) est invalide !" );
+			Error::setException( "l'indentifiant fourni (<b>$idUser</b>) est invalide !" );
 		}
 		$rowData = (array)$row; //conversion objet --> array
 		unset($rowData[$this->primaryKey], $row); //retire la clé primaire du tableau et $row qui ne sert plus
 		$metier = new User(...$rowData); //crée l'objet User(->User.php) avec toutes les clés du tableau $rowData
-		$metier->setId($id); //ajoute $id dans l'objet métier (User)
+		$metier->setId($idUser); //ajoute $id dans l'objet métier (User)
 		return $metier; //retourne l'objet crée
 	}
 	
@@ -125,9 +125,9 @@ class UserDAO extends Database {
 	* 	@param string $name Nom ou prénom de l'utilisateur
 	* 	@return array
 	*/
-	public function getUsersByName(string $name): mixed {
-		$stmt = $this->getPdo()->prepare("SELECT * FROM `" . $this->tableName . "` WHERE prenom LIKE :sname OR nom LIKE :name");
-		$stmt->execute([':sname' => "%$name%", ':name' => "%$name%"]);
+	public function getUsersByName(string $Name): mixed {
+		$stmt = $this->getPdo()->prepare("SELECT * FROM `" . $this->tableName . "` WHERE Name LIKE :sname OR nom LIKE :name");
+		$stmt->execute([':sname' => "%$Name%", ':name' => "%$Name%"]);
 		return $stmt->fetch(PDO::FETCH_ASSOC);
 	}
 
@@ -138,9 +138,9 @@ class UserDAO extends Database {
 	* 	@param string $name Prénom de l'utilisateur
 	* 	@return object
 	*/
-	public function getLineFrom(string $name): \stdClass {
+	public function getLineFrom(string $Name): \stdClass {
 		//sendSQL() est une méthode du DAO (modele/DAO/base/Database.php)
-		return $this->sendSQL("SELECT * from `" . $this->tableName . "` WHERE prenom = ?", [$name]);
+		return $this->sendSQL("SELECT * from `" . $this->tableName . "` WHERE Name = ?", [$Name]);
 	}
 	
 	/**
@@ -157,13 +157,11 @@ class UserDAO extends Database {
 	
 
 	//Fonction pour récuperer l'email de l'utilisateur
-	public function getUserByEmail(string $email): mixed{
+	public function getUserByEmail(string $Mail): mixed{
 		return $this->sendSQL(
-			"SELECT * FROM `" . $this->tableName . "` WHERE email = ?", [$email]
+			"SELECT * FROM `" . $this->tableName . "` WHERE Mail = ?", [$Mail]
 		);
 	}
 
-	public function getUserById($idUser):mixed {
-		return $this->sendSQL("SELECT * from `" . $this->tableName . "` WHERE IdUser = ?", [$idUser]);
-	}
+	
 }
