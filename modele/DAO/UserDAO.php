@@ -25,7 +25,7 @@ class UserDAO extends Database {
 	public function __construct() {
 		//-------------------------------------------
 		$tableName = 'User';
-		$primaryKey = 'idUser';
+		$primaryKey = 'id';
 		//-------------------------------------------
 		parent::__construct($tableName, $primaryKey);
 	}
@@ -84,7 +84,7 @@ class UserDAO extends Database {
 	*	@param integer Numéro de la clé primaire
 	*	@return mixed object|string|bool
 	*/
-	public function read(int $id=1): mixed {
+	public function read(int $id): mixed {
 		$row = false;
 		if($id>0)$row = $this->getOne($id); //on récupère la ligne/tuple concernée
 		//gestion de l'index en cas d'erreur :
@@ -126,7 +126,7 @@ class UserDAO extends Database {
 	* 	@return array
 	*/
 	public function getUsersByName(string $name): mixed {
-		$stmt = $this->getPdo()->prepare("SELECT * FROM `" . $this->tableName . "` WHERE prenom LIKE :sname OR nom LIKE :name");
+		$stmt = $this->getPdo()->prepare("SELECT * FROM `" . $this->tableName . "` WHERE name LIKE :surname OR name LIKE :name");
 		$stmt->execute([':sname' => "%$name%", ':name' => "%$name%"]);
 		return $stmt->fetch(PDO::FETCH_ASSOC);
 	}
@@ -140,7 +140,7 @@ class UserDAO extends Database {
 	*/
 	public function getLineFrom(string $name): \stdClass {
 		//sendSQL() est une méthode du DAO (modele/DAO/base/Database.php)
-		return $this->sendSQL("SELECT * from `" . $this->tableName . "` WHERE prenom = ?", [$name]);
+		return $this->sendSQL("SELECT * from `" . $this->tableName . "` WHERE name = ?", [$name]);
 	}
 	
 	/**
@@ -157,9 +157,9 @@ class UserDAO extends Database {
 	
 
 	//Fonction pour récuperer l'email de l'utilisateur
-	public function getUserByEmail(string $email): mixed{
+	public function getUserByEmail(string $mail): mixed{
 		return $this->sendSQL(
-			"SELECT * FROM `" . $this->tableName . "` WHERE email = ?", [$email]
+			"SELECT * FROM `" . $this->tableName . "` WHERE mail = ?", [$mail]
 		);
 	}
 

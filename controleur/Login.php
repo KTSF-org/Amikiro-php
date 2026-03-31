@@ -4,6 +4,7 @@ namespace controleur;
 
 use vue\base\MainTemplate as Vue;
 use modele\User;
+use modele\DAO\UserDAO;
 
 class Login {
     public function __construct(){
@@ -42,6 +43,8 @@ class Login {
         ]);
 
         Vue::render('Login', ['erreur' -> $erreur], '', true);
+
+        
         
     }
     

@@ -13,73 +13,97 @@ use modele\DAO\UserDAO;
  * Calculer l'âge à partir de la date de naissance dans une méthode getAge() ...
  */
 
-class User {
+class User
+{
 
-	private int $id=0; //La clé primaire est identifiée par $id
-	
-	protected $param=[]; //La liste des paramètres (ou attributs)
-	
+	private int $id = 0; //La clé primaire est identifiée par $id
+
+	protected $param = []; //La liste des paramètres (ou attributs)
+
 	// Les autres paramètres sont ci-dessous, dans le constructeur...
-	
+
 	// Constructeur : User
 	// Les noms des propriétés/attributs/colonnes de la table (en BDD),
 	// doivent être identiques dans la déclaration du constructeur (ci-dessous).
 	// Ne doit pas être ajouté : la clé primaire, car auto-incrémentée !
-	public function __construct( 
-		private string $nom='',
-		private string $prenom='',
-		private string $email='',
-		private string $dateNaissance='',
-		private string $ville='',
-		private string $enfants='',
-		private string $tel='',
-		private string $avatar='') {
+	public function __construct(
+		private int $codeRole = -1,
+		private string $mail = '',
+		private int $uptime = -1,
+		private string $password = '',
+		private string $name = '',
+		private string $surname = '',
+		private int $countConnect = -1,
+		private int $memberNum = -1
+	) {
 
 		// Gestionnaire d'erreur (pour les requêtes) :
 		try {
 			$this->param = $this->getKey(get_object_vars($this));
-			Error::checkModelArgs(get_object_vars($this), __CLASS__ , func_get_args());
+			Error::checkModelArgs(get_object_vars($this), __CLASS__, func_get_args());
 		} catch (\InvalidArgumentException $e) {
 			$err = "<pre>Erreur : " . $e->getMessage();
 			$err .= Error::print($e->getTrace(), 1);
 			exit($err);
 		}
 	}
-	
+
 	/**
 	 * METHODS
-	 */	
-	
+	 */
+
 	// STOCKER LA LISTE DES ATTRIBUTS
-	private function getKey(array $arr): array {
-		foreach($arr as $key => $value) {
-			if($key==="id" or $key==="param")continue;
-			$param[] = $key; 
+	private function getKey(array $arr): array
+	{
+		foreach ($arr as $key => $value) {
+			if ($key === "id" or $key === "param")
+				continue;
+			$param[] = $key;
 		}
 		return $param;
 	}
-	
+
 	// SORTIR LA LISTE DES ATTRIBUTS
-	public function getParam(): array {
+	public function getParam(): array
+	{
 		return $this->param;
 	}
-	
+
 	// CREATE
-	public function addUser(): bool {
+	public function addUser(): bool
+	{
 		$userDAO = new UserDAO();
 		return $userDAO->create($this);
 	}
 
-	// Vérification de l'email
-	public function isValidEmail(): bool {
-		return filter_var($this->email, FILTER_VALIDATE_EMAIL);
-	}
 	
+	// UPDATE
+	public function updateUser(): bool
+	{
+		$userDAO = new UserDAO();
+		return $userDAO->update($this);
+	}
+
+	// DELETE
+	public function deleteUser(): bool
+	{
+		$userDAO = new UserDAO();
+		return $userDAO->delete($this);
+	}
+
+
+	// Vérification de l'email
+	public function isValidEmail(): bool
+	{
+		return filter_var($this->mail, FILTER_VALIDATE_EMAIL);
+	}
+
 
 	// Fonction pour vérifier les identifiants
-	public static function verifIdentifiant(string $email, string $pwd): mixed {
+	public static function verifIdentifiant(string $Mail, string $pwd): mixed
+	{
 		$userDAO = new UserDAO();
-		$user = $userDAO -> getUserByEmail($email);
+		$user = $userDAO->getUserByEmail($Mail);
 
 		if (!$user) {
 			return false; //Email inconnu
@@ -93,84 +117,153 @@ class User {
 		return $user; //Email connu / Mot de passe connu
 	}
 
+	
+
+
 	/**
 	 * GETTERS (accesseurs)
 	 */
-	
-	public function getId(): int {
+
+	public function getId(): int
+	{
 		return $this->id;
 	}
-	
-	public function getNom(): string {
-		return $this->nom;
+
+	/**
+	 * Get the value of codeRole
+	 */
+	public function getCodeRole()
+	{
+		return $this->codeRole;
 	}
-	
-	public function getPrenom(): string	{
-		return $this->prenom;
+
+	/**
+	 * Get the value of Mail
+	 */
+	public function getMail()
+	{
+		return $this->mail;
 	}
-	
-	public function getEmail(): string {
-		return $this->email;
+
+	/**
+	 * Get the value of Uptime
+	 */
+	public function getUptime()
+	{
+		return $this->uptime;
 	}
-	
-	public function getDateNaissance(): string {
-		return $this->dateNaissance;
+
+	/**
+	 * Get the value of Password
+	 */
+	public function getPassword()
+	{
+		return $this->password;
 	}
-	
-	public function getVille(): string {
-		return $this->ville;
+
+	/**
+	 * Get the value of Name
+	 */
+	public function getName()
+	{
+		return $this->name;
 	}
-	
-	public function getEnfants(): string {
-		return $this->enfants;
+
+	/**
+	 * Get the value of Surname
+	 */
+	public function getSurname()
+	{
+		return $this->surname;
 	}
-	
-	public function getTel(): string {
-		return $this->tel;
+
+	/**
+	 * Get the value of CountConnect
+	 */
+	public function getCountConnect()
+	{
+		return $this->countConnect;
 	}
-	
-	public function getAvatar(): string {
-		return $this->avatar;
+
+	/**
+	 * Get the value of MemberId
+	 */
+	public function getMemberNum()
+	{
+		return $this->memberNum;
 	}
-	
+
+
 	/**
 	 * SETTERS (mutateurs)
 	 */
-	
-	public function setId($id): void {
+
+	public function setId($id): void
+	{
 		$this->id = $id;
 	}
-	
-	public function setNom($nom): void {
-		$this->nom = $nom;
-	}
-	
-	public function setPrenom($prenom): void {
-		$this->prenom = $prenom;
-	}
-	
-	public function setEmail($email): void {
-		$this->email = $email;
-	}
-	
-	public function setDateNaissance($ne_le): void {
-		$this->ne_le = $ne_le;
-	}
-	
-	public function setVille($ville): void {
-		$this->ville = $ville;
-	}
-	
-	public function setEnfants($enfants): void {
-		$this->enfants = $enfants;
-	}
-	
-	public function setTel($tel): void {
-		$this->tel = $tel;
+
+
+	public function setCodeRole($codeRole)
+	{
+		$this->codeRole = $codeRole;
+
+		return $this;
 	}
 
-	public function setAvatar($avatar): void {
-		$this->avatar = $avatar;
+	
+	public function setMail($mail)
+	{
+		$this->mail = $mail;
+
+		return $this;
 	}
 
+	
+	public function setUptime($uptime)
+	{
+		$this->uptime = $uptime;
+
+		return $this;
+	}
+
+	
+	public function setPassword($password)
+	{
+		$this->password = password_hash($password, PASSWORD_DEFAULT);
+
+		return $this;
+	}
+
+	
+	public function setName($name)
+	{
+		$this->name = $name;
+
+		return $this;
+	}
+
+	
+	public function setSurname($surname)
+	{
+		$this->surname = $surname;
+
+		return $this;
+	}
+
+	
+	public function setCountConnect($countConnect)
+	{
+		$this->countConnect = $countConnect;
+
+		return $this;
+	}
+
+	
+	public function setMemberNum($memberNum)
+	{
+		$this->memberNum = $memberNum;
+
+		return $this;
+	}
 }
