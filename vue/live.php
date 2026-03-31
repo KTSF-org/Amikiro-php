@@ -10,7 +10,7 @@
 
     <img id="image0" src=<?= $url2["URL"] ?> class="img-responsive" alt=""
     title="Click here to enter the camera located in Mexico, region Jalisco">
-    //si url de ce type il faut faire un proxy pour cacher l'url
+<!--    si url de ce type il faut faire un proxy pour cacher l'url-->
 
     <video id="video" controls height="500" src="" autoplay width="80%" style="padding-bottom: 60px"></video>
 
@@ -18,7 +18,7 @@
 
 <script>
     const streamUrl = '<?= $url1["URL"] ?>';
-        // 'https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8';
+    /** 'https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8'; */
 
     const video = document.getElementById('video');
 
