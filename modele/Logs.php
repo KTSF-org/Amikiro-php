@@ -13,8 +13,8 @@ class Logs{
 	public function __construct( 
 		private string $action='',
 		private string $targetTable='',
-		private string $idTarget='',
-		private string $idUser='',
+		private int $idTarget='',
+		private int $idUser='',
 		private string $logDate=''
 	
 	) {
@@ -65,10 +65,10 @@ class Logs{
 	public function getTargetTable(): string {
 		return $this->targetTable;
 	}
-	public function getIdTarget(): string {
+	public function getIdTarget(): int {
 		return $this->idTarget;
 	}
-	public function getIdUser(): string {
+	public function getIdUser(): int {
 		return $this->idUser;
 	}
 	public function getLogDate(): string {

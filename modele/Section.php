@@ -14,8 +14,8 @@ class Section{
 		private string $title='',
 		private string $content='',
 		private string $creationDate='',
-		private string $idUser='',
-		private string $idLogs=''
+		private int $idUser='',
+		private int $idLogs=''
 	
 	) {
 
@@ -62,7 +62,7 @@ class Section{
 	public function getTitle(): string {
 		return $this->title;
 	}
-	public function getContent(): int {
+	public function getContent(): string {
 		return $this->content;
 	}
 	public function getCreationDate(): string {
@@ -71,7 +71,7 @@ class Section{
 	public function getIdUser(): int {
 		return $this->idUser;
 	}
-	public function getIdLogs(): string {
+	public function getIdLogs(): int {
 		return $this->idLogs;
 	}
 
