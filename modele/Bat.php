@@ -9,22 +9,17 @@ use mysqli_sql_exception;
 class Bat
 {
 
-    private int $idBat = -1;
+    private int $id=0;
     protected $param = []; //La liste des paramètres (ou attributs)
 
-    private string $name;
-    private string $birthDate;
-    private int $sex;
-    private int $weight;
-    private string $note;
-
     // Constructeur : Bat
-    public function __construct() {
-        $name = "";
-        $birthDate = "";
-        $sex = -1;
-        $weight = -1;
-        $note = "";
+    public function __construct(
+        private string $name = "",
+        private string $birthDate = "",
+        private int $sex = -1,
+        private int $weight = -1,
+        private string $note = ""
+    ) {
         // Gestionnaire d'erreur (pour les requêtes) :
         try {
             $this->param = $this->getKey(get_object_vars($this));
@@ -40,37 +35,46 @@ class Bat
     private function getKey(array $arr): array
     {
         foreach ($arr as $key => $value) {
-            if ($key === "idBat" or $key === "param")
+            if ($key === "IdBat" or $key === "param")
                 continue;
             $param[] = $key;
         }
         return $param;
     }
 
-    // Initialise la chauve-souris
-    public function initBat(string $name, string $birthDate, int $sex, int $weight, string $note) {
-        $this->name = $name;
-        $this->birthDate = $birthDate; 
-        $this->sex = $sex; 
-        $this->weight = $weight;
-        $this->note = $note;
+    // SORTIR LA LISTE DES ATTRIBUTS
+    public function getParam(): array
+    {
+        return $this->param;
     }
 
-    
-
-    public function getBat() : void {
+    // Ajoute la chauve-souris dans la BDD
+    public function addBat(): bool
+    {
         $batDAO = new BatDAO();
-        $data = $batDAO->getBatById(1);
-        var_dump($data);
+        return $batDAO->create($this);
+    }
+
+    // Met à jour la chauve-souris dans la BDD
+    public function updateBat(): bool
+    {
+        $batDAO = new BatDAO();
+        return $batDAO->update($this);
+    }
+
+    // Supprime la chauve-souris de la BDD
+    public function deleteBat() : bool {
+        $batDAO = new BatDAO();
+        return $batDAO->delete($this);
     }
 
     /** 
      * GETTERS
      */
 
-    public function getIdBat(): int
+    public function getId(): int
     {
-        return $this->idBat;
+        return $this->id;
     }
 
     public function getName(): string
@@ -102,9 +106,9 @@ class Bat
      *  SETTERS
      */
 
-    public function setIdBat(int $idBat): void
+    public function setId(int $id): void
     {
-        $this->idBat = $idBat;
+        $this->id = $id;
     }
 
     public function setName(string $name): void
