@@ -10,13 +10,11 @@ class Section{
 	
 	protected $param=[]; //La liste des paramètres (ou attributs)
 
-	public function __construct( 
+	public function __construct(
 		private string $title='',
 		private string $content='',
 		private string $creationDate='',
-		private int $idUser='',
-		private int $idLogs=''
-	
+		private int $idUser=0
 	) {
 
 		// Gestionnaire d'erreur (pour les requêtes) :
@@ -71,10 +69,6 @@ class Section{
 	public function getIdUser(): int {
 		return $this->idUser;
 	}
-	public function getIdLogs(): int {
-		return $this->idLogs;
-	}
-
 	/**
 	 * SETTERS (mutateurs)
 	 */
@@ -94,7 +88,5 @@ class Section{
 	public function setIdUser($idUser): void {
 		$this->idUser = $idUser;
 	}
-	public function setidLogs($idLogs): void {
-		$this->idLogs = $idLogs;
-	}
-}	
+}
+	
