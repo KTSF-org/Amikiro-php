@@ -50,7 +50,7 @@ class Logs{
 	// CREATE
 	public function addLogs(): bool {
 		$logsDao = new LogsDAO();
-		return $LogsDao->create($this);
+		return $logsDao->create($this);
 	}
 
 	/**

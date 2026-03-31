@@ -99,7 +99,7 @@ class CategoryDAO extends Database {
     public function findAll(): array {
         try {
             $stmt = $this->getPdo()->prepare(
-                "SELECT IdCategory, Name FROM `Category` ORDER BY IdCategory ASC"
+                "SELECT IdCategory, Name FROM `Category` ORDER BY IdCategory DESC"
             );
             $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_OBJ) ?: [];

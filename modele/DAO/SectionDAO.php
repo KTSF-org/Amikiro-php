@@ -92,13 +92,13 @@ class SectionDAO extends Database {
 		return $this->deleteOne( $metier->getId() );
 	}
     /**
-     * Retourne tous les logs triées par LogDate.
+     * Retourne les sections triées par CreationDate.
      * @return \stdClass[]
      */
     public function findAll(): array {
         try {
             $stmt = $this->getPdo()->prepare(
-                "SELECT IdSection, Title FROM `Section` ORDER BY CreationDate ASC"
+                "SELECT IdSection, Title FROM `Section` ORDER BY CreationDate DESC"
             );
             $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_OBJ) ?: [];

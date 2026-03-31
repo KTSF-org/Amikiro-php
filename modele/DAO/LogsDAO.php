@@ -96,7 +96,7 @@ class LogsDAO extends Database {
     public function findAll(): array {
         try {
             $stmt = $this->getPdo()->prepare(
-                "SELECT Action, LogDate FROM `Logs` ORDER BY LogDate ASC"
+                "SELECT Action, LogDate FROM `Logs` ORDER BY LogDate DESC"
             );
             $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_OBJ) ?: [];
