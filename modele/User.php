@@ -100,17 +100,17 @@ class User
 
 
 	// Fonction pour vérifier les identifiants
-	public static function verifIdentifiant(string $Mail, string $pwd): mixed
+	public static function verifIdentifiant(string $mail, string $password): mixed
 	{
 		$userDAO = new UserDAO();
-		$user = $userDAO->getUserByEmail($Mail);
+		$user = $userDAO->getUserByEmail($mail);
 
 		if (!$user) {
 			return false; //Email inconnu
 		}
 
 		//Compare le mdp avec le mdp hashe en bdd
-		if (!password_verify($pwd, $user->pwd)) {
+		if (!password_verify($password, $user->password)) {
 			return false; //Mot de passe incorrect
 		}
 

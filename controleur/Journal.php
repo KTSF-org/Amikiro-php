@@ -12,5 +12,6 @@ class Journal {
             'Journal',
             []
         );
+        
     }
 }

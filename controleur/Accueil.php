@@ -17,6 +17,7 @@ class Accueil {
 		/**
 		 *	    VUES
 		 */
+		
 
 		Vue::setTitle('Accueil');
 

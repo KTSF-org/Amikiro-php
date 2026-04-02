@@ -2,47 +2,49 @@
 
 namespace controleur;
 
+use modele\DAO\UserDAO;
 use vue\base\MainTemplate as Vue;
 use modele\User;
-use modele\DAO\UserDAO;
+use app\util\Request;
+use app\util\SessionLogin as UserSession;
+
+
 
 class Login {
     public function __construct(){
         
-        // Si déjà connecté
-        // if (isset($_SESSION['user'])) {
-        //     header('Location: /accueil');
-        //     exit;
-        // }
-
         $erreur = null;
-
-        if (isset($_POST['email']) && isset($_POST['pwd'])) {
-            $email = trim($_POST['email']);
-            $pwd = trim($_POST['pwd']);
-
-            if (empty($email)) {
-                $erreur = "Email obligatoire";
-            } elseif (empty($pwd)) {
-                $erreur = "Mot de passe obligatoire";
-            } else {
-                $user = User::verifIdentifiant($email, $pwd);
-
-                // if ($user) {
-                //     $_SESSION['user'] = $user;
-                //     header('Location: /accueil');
-                //     exit;
-                // }
-                $erreur = "Email ou mot de passe incorrect";
-            }
+        $user = null;
+        // Recupere l'email
+        if (isset($_POST['mail']) && !empty($_POST['mail'])){
+            $userMail = $_POST['mail'];
         }
+
+        // Recupere le mdp
+        if (isset($_POST['password']) && !empty($_POST['password'])){
+            $userPassword = $_POST['password'];
+        }
+
+        // variable $user récupere toute les donnees du user dans la bdd
+        if(isset($userMail) && isset($userPassword)) {
+            $user = User::verifIdentifiant($userMail, $userPassword);
+        }
+
+        if($user){
+            // $_SESSION['user'] = $user;
+            UserSession::login();
+            header("Location: accueil");
+            exit;
+        }
+
+        
 
         Vue::setTitle('Connexion');
         Vue::addCSS([
             ASSET. '/css/login.css',
         ]);
 
-        Vue::render('Login', ['erreur' -> $erreur], '', true);
+        Vue::render('Login', ['erreur' => $erreur],'', true);
 
         
         

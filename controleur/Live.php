@@ -16,7 +16,7 @@ class Live {
         $url2= $video->getURLbyId(2);
 
         
-
+        
 
 
         Vue::setTitle('Live');
