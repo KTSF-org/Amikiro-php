@@ -45,6 +45,7 @@ class Routing {
 		$route->add('/sectionColony', 'controleur\SectionColony');
 
 		$route->add('/parametres', 'controleur\Parametres');
+		$route->add('/confidentialite', 'controleur\Confidentialite');
 		
 		
 
