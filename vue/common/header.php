@@ -11,7 +11,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="<?= ASSET ?>/img/favicon.ico" type="image/x-icon" />
     <title><?= $title ?></title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"> -->
+    <link href="asset/lib/bootstrap/css/bootstrap.css" rel="stylesheet">
     <link rel="stylesheet" href="<?= ASSET ?>/css/popup.css">
     <link rel="stylesheet" href="<?= ASSET ?>/css/main.css">
     <?= $customCSS ?>
