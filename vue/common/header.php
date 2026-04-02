@@ -3,7 +3,7 @@
 /**
  * VUE : COMMON : header.php
  */
-// Mise en cache du rôle pour réduire la charge CPU et simplifier la lecture
+// Mise en cache du rôle
 $userRole = \app\util\SessionLogin::getRole();
 ?>
 <!DOCTYPE html>
@@ -41,15 +41,24 @@ $userRole = \app\util\SessionLogin::getRole();
                         <a href="<?= $actual_link ?>live" class="nav-link">Live</a>
                     </li>
 
-                    <?php if ($userRole > ROLE_INVITE): ?>
+                    <?php if ($userRole >= ROLE_INVITE): ?>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Journal</a>
                             <ul class="dropdown-menu">
+                                <li>
+                                    <h6 class="dropdown-header">Consultation</h6>
+                                </li>
                                 <li><a class="dropdown-item" href="<?= $actual_link ?>journal">Consulter le journal</a></li>
+
                                 <li>
                                     <hr class="dropdown-divider">
                                 </li>
-                                <li><a class="dropdown-item" href="<?= $actual_link ?>journal/stats">Statistiques</a></li>
+
+                                <li>
+                                    <h6 class="dropdown-header">Gestion des données</h6>
+                                </li>
+                                <li><a class="dropdown-item" href="<?= $actual_link ?>journal/categorie">Édition Catégories</a></li>
+                                <li><a class="dropdown-item" href="<?= $actual_link ?>journal/fiche">Édition Fiches Chauve-Souris</a></li>
                             </ul>
                         </li>
                     <?php endif; ?>
@@ -57,10 +66,21 @@ $userRole = \app\util\SessionLogin::getRole();
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Paramètres</a>
                         <ul class="dropdown-menu dropdown-menu-end">
-                            <li><a class="dropdown-item" href="<?= $actual_link ?>parametres">Général</a></li>
-
-                            <?php if ($userRole > ROLE_INVITE): ?>
-                                <li><a class="dropdown-item" href="<?= $actual_link ?>parametres/profil">Gestion des utilisateurs</a></li>
+                            <li>
+                                <h6 class="dropdown-header">Compte</h6>
+                            </li>
+                            <li><a class="dropdown-item" href="<?= $actual_link ?>parametres">Mon Profil</a></li>
+                            <?php if ($userRole === ROLE_ADMIN): ?>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                                <li>
+                                    <h6 class="dropdown-header">Administration</h6>
+                                </li>
+                                <li><a class="dropdown-item" href="<?= $actual_link ?>parametres/utilisateurs">Gestion des utilisateurs</a></li>
+                                <li><a class="dropdown-item" href="<?= $actual_link ?>parametres/logs">Logs Système</a></li>
+                                <li><a class="dropdown-item" href="<?= $actual_link ?>parametres/config">Configuration Serveur</a></li>
+                                <li><a class="dropdown-item" href="<?= $actual_link ?>parametres/config">Configuration Webcam</a></li>
                             <?php endif; ?>
 
                             <li>
