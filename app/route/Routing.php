@@ -39,6 +39,11 @@ class Routing {
         $route->add('/live', 'controleur\Live');
 
 		$route->add('/journal', 'controleur\Journal');
+
+		$route->add('/sectionBat', 'controleur\SectionBat');
+
+		$route->add('/sectionColony', 'controleur\SectionColony');
+
 		$route->add('/parametres', 'controleur\Parametres');
 		
 		
