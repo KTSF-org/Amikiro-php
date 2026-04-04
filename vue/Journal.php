@@ -8,8 +8,6 @@
 
 <div class="container">
 
-    <div class="left">
-        Journal
-    </div>
+    Journal
 
 </div>
