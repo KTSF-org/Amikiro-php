@@ -4,6 +4,7 @@ namespace controleur;
 
 
 use modele\DAO\VideoDAO;
+use modele\User;
 use vue\base\MainTemplate as Vue;
 
 class Live {
@@ -16,8 +17,6 @@ class Live {
         $url2= $video->getURLbyId(2);
 
         
-        
-
 
         Vue::setTitle('Live');
 

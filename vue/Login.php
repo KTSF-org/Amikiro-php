@@ -28,6 +28,12 @@
                     <input type="password" name="password" id="password" class="form-control" placeholder="Votre mot de passe">
                 </div>
 
+                <?php if (isset($erreur) && !empty($erreur)): ?>
+                    <div class="alert alert-danger py-2 text-center" role="alert" style="font-size: 0.9rem;">
+                        <?= $erreur ?>
+                    </div>
+                <?php endif; ?>
+                
                 <div class="d-grid">
                     <button type="submit" class="btn btn-primary">Connexion</button>
                 </div>
