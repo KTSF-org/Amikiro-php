@@ -2,7 +2,6 @@
 
 namespace controleur;
 
-use modele\DAO\UserDAO;
 use vue\base\MainTemplate as Vue;
 use modele\User;
 use app\util\Request as req;

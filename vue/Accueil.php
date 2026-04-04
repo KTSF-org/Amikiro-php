@@ -16,7 +16,7 @@
 		<p class="accueil-sous-titre">Maison des Chauves-Souris</p>
 
 		<?php if ($user): ?>
-		<p class="accueil-connecte">Bienvenue, <?= htmlspecialchars($user['name']) ?> <?= htmlspecialchars($user['surname']) ?></p>
+		<p class="accueil-connecte">Bienvenue, <?= htmlspecialchars($user->name) ?> <?= htmlspecialchars($user->surname) ?></p>
 	<?php endif; ?>
 
 	<hr class="accueil-sep" />
