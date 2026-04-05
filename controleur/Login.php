@@ -4,45 +4,52 @@ namespace controleur;
 
 use vue\base\MainTemplate as Vue;
 use modele\User;
-use modele\DAO\UserDAO;
+use app\util\Request as req;
+use app\util\SessionLogin as UserSession;
+
+
 
 class Login {
     public function __construct(){
         
-        // Si déjà connecté
-        // if (isset($_SESSION['user'])) {
-        //     header('Location: /accueil');
-        //     exit;
-        // }
-
         $erreur = null;
+       
+        $userMail = req::post('mail');
+        $userPassword = req::post('password');
 
-        if (isset($_POST['email']) && isset($_POST['pwd'])) {
-            $email = trim($_POST['email']);
-            $pwd = trim($_POST['pwd']);
+        // On vérifie si l'une des clés existe dans la requête (envoie du formulaire)
+        // Request::is() remplace isset($_POST['mail'])
+        if(req::is('mail') || req::is('password')) {
+            // Vérification des champs vides
+            if(empty($userMail) && empty($userPassword)){
+                $erreur = "Veuillez remplir tous les champs.";
+            }
+            else{
+                // Appel au modèle pour la vérification
+                $user = User::verifIdentifiant($userMail, $userPassword);
+                if($user){
+                    // Si user est good on enregistre le role et l'objet entier en session
+                    UserSession::loginWithRole($user->codeRole);
+                    $_SESSION['user'] = $user;
 
-            if (empty($email)) {
-                $erreur = "Email obligatoire";
-            } elseif (empty($pwd)) {
-                $erreur = "Mot de passe obligatoire";
-            } else {
-                $user = User::verifIdentifiant($email, $pwd);
-
-                // if ($user) {
-                //     $_SESSION['user'] = $user;
-                //     header('Location: /accueil');
-                //     exit;
-                // }
-                $erreur = "Email ou mot de passe incorrect";
+                    // REDIRECTION
+                    header('Location: accueil');
+                    exit;
+                }else {
+                    // Dernier cas d'echec : soit mail inconnu ou password
+                    $erreur = "Email ou mot de passe incorrect.";
+                }
             }
         }
+
+        
 
         Vue::setTitle('Connexion');
         Vue::addCSS([
             ASSET. '/css/login.css',
         ]);
 
-        Vue::render('Login', ['erreur' -> $erreur], '', true);
+        Vue::render('Login', ['erreur' => $erreur],'', true);
 
         
         
