@@ -17,11 +17,8 @@
             <?php endif; ?>
 
             <form method="POST" action="<?= $actual_link ?>login">
-            <form method="POST" action="login">
 
                 <div class="mb-3">
-                    <label for="pseudo" class="form-label">Login</label>
-                    <input type="text" name="mail" id="mail" class="form-control" placeholder="azerty@gmail.com">
                     <label for="email" class="form-label">Email</label>
                     <input type="text" name="email" id="email" class="form-control" placeholder="azerty@gmail.com">
                 </div>

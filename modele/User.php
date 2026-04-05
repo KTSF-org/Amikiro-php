@@ -5,11 +5,11 @@ use app\util\Error;
 use modele\DAO\UserDAO;
 
 /**
- * MODELE : Objet métier : Direct Object (DO) : User 
+ * MODELE : Objet métier : Direct Object (DO) : User
  * Encapsulation, manipulation et récupération des données issues du DAO :
  * -> modele/DAO/UserDAO.php (hérités de : modele/DAO/base/Database.php)
  * Accesseurs / mutateurs de la table : "clients".
- * Logique métier à implémenter, par exemple : 
+ * Logique métier à implémenter, par exemple :
  * Calculer l'âge à partir de la date de naissance dans une méthode getAge() ...
  */
 
@@ -76,7 +76,7 @@ class User
 		return $userDAO->create($this);
 	}
 
-	
+
 	// UPDATE
 	public function updateUser(): bool
 	{
@@ -117,7 +117,7 @@ class User
 		return $user; //Email connu / Mot de passe connu
 	}
 
-	
+
 
 
 	/**
@@ -211,7 +211,7 @@ class User
 		return $this;
 	}
 
-	
+
 	public function setMail($mail)
 	{
 		$this->mail = $mail;
@@ -219,7 +219,7 @@ class User
 		return $this;
 	}
 
-	
+
 	public function setUptime($uptime)
 	{
 		$this->uptime = $uptime;
@@ -227,7 +227,7 @@ class User
 		return $this;
 	}
 
-	
+
 	public function setPassword($password)
 	{
 		$option = ['cost' => 12];
@@ -236,7 +236,7 @@ class User
 		return $this;
 	}
 
-	
+
 	public function setName($name)
 	{
 		$this->name = $name;
@@ -244,7 +244,7 @@ class User
 		return $this;
 	}
 
-	
+
 	public function setSurname($surname)
 	{
 		$this->surname = $surname;
@@ -252,7 +252,7 @@ class User
 		return $this;
 	}
 
-	
+
 	public function setCountConnect($countConnect)
 	{
 		$this->countConnect = $countConnect;
@@ -260,7 +260,7 @@ class User
 		return $this;
 	}
 
-	
+
 	public function setMemberNum($memberNum)
 	{
 		$this->memberNum = $memberNum;
