@@ -4,8 +4,9 @@ namespace controleur;
 
 use vue\base\MainTemplate as Vue;
 use modele\User;
-use app\util\SessionLogin;
 use app\util\BaseURL;
+use app\util\Request as req;
+use app\util\SessionLogin as UserSession;
 
 /**
  * CONTRÔLEUR : Login
@@ -15,8 +16,6 @@ use app\util\BaseURL;
  * puis redirige vers /accueil.
  * Sur GET (ou POST invalide) : affiche le formulaire avec un éventuel message d'erreur.
  */
-use app\util\Request as req;
-use app\util\SessionLogin as UserSession;
 
 
 
@@ -44,7 +43,7 @@ class Login {
                     $_SESSION['user'] = $user;
 
                     // REDIRECTION
-                    header('Location: accueil');
+                    header('Location: ' . BaseURL::getBaseUrl() . 'accueil');
                     exit;
                 }else {
                     // Dernier cas d'echec : soit mail inconnu ou password

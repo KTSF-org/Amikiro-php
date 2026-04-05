@@ -9,6 +9,7 @@ class SectionColony {
 
     public function __construct() {
         Guard::requireLogin();
+        Vue::setTitle('Section Colonies');
         Vue::render(
             'SectionColony',
             []

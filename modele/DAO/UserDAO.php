@@ -126,7 +126,7 @@ class UserDAO extends Database {
 	* 	@return array
 	*/
 	public function getUsersByName(string $name): mixed {
-		$stmt = $this->getPdo()->prepare("SELECT * FROM `" . $this->tableName . "` WHERE name LIKE :surname OR name LIKE :name");
+		$stmt = $this->getPdo()->prepare("SELECT * FROM `" . $this->tableName . "` WHERE name LIKE :name OR surname LIKE :surname");
 		$stmt->execute([':surname' => "%$name%", ':name' => "%$name%"]);
 		return $stmt->fetch(PDO::FETCH_ASSOC);
 	}

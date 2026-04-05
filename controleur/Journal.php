@@ -9,6 +9,7 @@ class Journal {
 
     public function __construct() {
         Guard::requireRole(ROLE_ADHERENT);
+        Vue::setTitle('Journal');
         Vue::render(
             'Journal',
             []

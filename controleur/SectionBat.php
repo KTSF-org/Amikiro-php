@@ -9,6 +9,7 @@ class SectionBat {
 
     public function __construct() {
         Guard::requireLogin();
+        Vue::setTitle('Section Spécimens');
         Vue::render(
             'SectionBat',
             []
