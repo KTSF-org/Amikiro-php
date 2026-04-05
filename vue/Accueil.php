@@ -21,7 +21,7 @@ $currentUser = $user ?? null;
 
         <?php if (!empty($currentUser)): ?>
             <p class="accueil-connecte">
-                Bienvenue, **<?= htmlspecialchars($currentUser['name'] . ' ' . $currentUser['surname']) ?>**
+                Bienvenue, <strong><?= htmlspecialchars($currentUser->name . ' ' . $currentUser->surname) ?></strong>
             </p>
         <?php endif; ?>
 

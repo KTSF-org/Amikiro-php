@@ -3,7 +3,6 @@
 namespace controleur;
 
 use vue\base\MainTemplate as Vue;
-
 class Accueil {
 
 	public function __construct() {
