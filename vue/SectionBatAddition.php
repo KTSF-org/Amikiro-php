@@ -15,6 +15,11 @@
             <input type="text" class="form-control" id="batName" placeholder="Nom" name="batName">
         </div>
 
+        <div class="mb-3 bg-danger">
+            <label for="species" class="form-label">Espèce de la chauve-souris</label>
+            <input type="text" class="form-control" id="batSpecies" placeholder="TODO" name="batSpecies">
+        </div>
+
         <div class="mb-3">
             <label for="birthDate" class="form-label">Date de naissance de la chauve-souris</label>
             </br>
