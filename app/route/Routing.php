@@ -58,6 +58,7 @@ class Routing {
 		$route->add('/parametres/webcam', 'controleur\admin\Webcam');
 
 		$route->add('/confidentialite', 'controleur\Confidentialite');
+		$route->add('/mentionslegales', 'controleur\MentionsLegales');
 		
 		
 

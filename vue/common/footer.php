@@ -5,7 +5,8 @@
 ?>
   <footer class="footer navbar-fixed-bottom bg-dark text-light py-3">
     <div class="container text-center">
-      &copy;<?= date('Y') . ' ' . APP_NAME ?> | <a href="confidentialite" target="_blank" style="color:#FFF"> Politique de confidentialité<a>
+      &copy;<?= date('Y') . ' ' . APP_NAME ?> | <a href="confidentialite" target="_blank" style="color:#FFF"> Politique de confidentialité<a> |
+      <a href="mentionslegales" target="_blank" style="color:#FFF"> Mentions légales<a>
     </div>
   </footer>
 
