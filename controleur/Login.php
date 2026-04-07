@@ -4,8 +4,18 @@ namespace controleur;
 
 use vue\base\MainTemplate as Vue;
 use modele\User;
+use app\util\BaseURL;
 use app\util\Request as req;
 use app\util\SessionLogin as UserSession;
+
+/**
+ * CONTRÔLEUR : Login
+ * Gestion de l'authentification.
+ * Sur POST : vérifie email + mot de passe via User::verifIdentifiant(),
+ * stocke l'objet utilisateur en session, enregistre le rôle via SessionLogin,
+ * puis redirige vers /accueil.
+ * Sur GET (ou POST invalide) : affiche le formulaire avec un éventuel message d'erreur.
+ */
 
 
 
@@ -20,7 +30,7 @@ class Login {
         }
 
         $erreur = null;
-       
+
         $userMail = req::post('mail');
         $userPassword = req::post('password');
 
@@ -38,7 +48,7 @@ class Login {
                     // Si user est good on enregistre le role et l'objet entier en session
                     UserSession::loginWithRole($user, $user->codeRole);
                     // REDIRECTION
-                    header('Location: accueil');
+                    header('Location: ' . BaseURL::getBaseUrl() . 'accueil');
                     exit;
                 }else {
                     // Dernier cas d'echec : soit mail inconnu ou password
@@ -47,7 +57,7 @@ class Login {
             }
         }
 
-        
+
 
         Vue::setTitle('Connexion');
         Vue::addCSS([
@@ -56,10 +66,10 @@ class Login {
 
         Vue::render('Login', ['erreur' => $erreur],'', true);
 
-        
-        
+
+
     }
-    
+
 }
 
 ?>

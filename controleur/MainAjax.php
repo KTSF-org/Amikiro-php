@@ -84,7 +84,9 @@ class MainAjax extends Ajax {
 		$nom = req::post('name'); //$_POST sécurisé avec la méthode Request (app/util/Request.php)
 		$user = $this->db->getUsersByName($nom);
 		if (empty($nom)) $user = false;
-		if($user!==false)$_SESSION['user'] = $user;
+		if ($user !== false && \app\util\SessionLogin::getRole() === ROLE_ADMIN) {
+			$_SESSION['searched_user'] = $user;
+		}
 		return $user;
 	}
 	

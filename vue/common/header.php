@@ -3,7 +3,7 @@
 /**
  * VUE : COMMON : header.php
  */
-// Mise en cache du rôle pour réduire la charge CPU et simplifier la lecture
+// Mise en cache du rôle
 $userRole = \app\util\SessionLogin::getRole();
 ?>
 <!DOCTYPE html>
@@ -31,36 +31,62 @@ $userRole = \app\util\SessionLogin::getRole();
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
         <div class="container-fluid">
-            <a class="navbar-brand" href="<?= $actual_link ?>">
+            <a class="navbar-brand" href="<?= $actual_link ?>accueil">
                 <div class="app-logo"><?= htmlspecialchars(MAIN_TITLE) ?></div>
             </a>
 
             <div class="d-flex align-items-center">
                 <ul class="nav nav-pills">
                     <li class="nav-item">
-                        <a href="<?= $actual_link ?>live" class="nav-link">Live</a>
+                        <a href="<?= $actual_link ?>live" class="nav-link nav-link-public">Live</a>
                     </li>
 
-                    <?php if ($userRole > ROLE_INVITE): ?>
+                    <?php if ($userRole >= ROLE_ADHERENT): ?>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Journal</a>
                             <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="<?= $actual_link ?>journal">Consulter le journal</a></li>
                                 <li>
-                                    <hr class="dropdown-divider">
+                                    <h6 class="dropdown-header">Consultation</h6>
                                 </li>
-                                <li><a class="dropdown-item" href="<?= $actual_link ?>journal/stats">Statistiques</a></li>
+                                <li><a class="dropdown-item" href="<?= $actual_link ?>journal">Consulter le journal</a></li>
+
+                                <?php if ($userRole >= ROLE_NATURALISTE): ?>
+                                    <li>
+                                        <hr class="dropdown-divider">
+                                    </li>
+                                    <li>
+                                        <h6 class="dropdown-header">Gestion des données</h6>
+                                    </li>
+                                    <li><a class="dropdown-item" href="<?= $actual_link ?>journal/categorie">Édition Catégories</a></li>
+                                    <li><a class="dropdown-item" href="<?= $actual_link ?>journal/fiche">Édition Fiches Chauve-Souris</a></li>
+                                <?php endif; ?>
                             </ul>
                         </li>
                     <?php endif; ?>
 
+                    <?php if (!\app\util\SessionLogin::isLogin()): ?>
+                    <li class="nav-item">
+                        <a href="<?= $actual_link ?>login" class="nav-link nav-link-public">Se connecter</a>
+                    </li>
+                    <?php endif; ?>
+
+                    <?php if (\app\util\SessionLogin::isLogin()): ?>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Paramètres</a>
                         <ul class="dropdown-menu dropdown-menu-end">
-                            <li><a class="dropdown-item" href="<?= $actual_link ?>parametres">Général</a></li>
-
-                            <?php if ($userRole > ROLE_INVITE): ?>
-                                <li><a class="dropdown-item" href="<?= $actual_link ?>parametres/profil">Gestion des utilisateurs</a></li>
+                            <li>
+                                <h6 class="dropdown-header">Compte</h6>
+                            </li>
+                            <li><a class="dropdown-item" href="<?= $actual_link ?>parametres/profil">Mon Profil</a></li>
+                            <?php if ($userRole === ROLE_ADMIN): ?>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                                <li>
+                                    <h6 class="dropdown-header">Administration</h6>
+                                </li>
+                                <li><a class="dropdown-item" href="<?= $actual_link ?>parametres/utilisateurs">Gestion des utilisateurs</a></li>
+                                <li><a class="dropdown-item" href="<?= $actual_link ?>parametres/webcam">Configuration Webcam</a></li>
                             <?php endif; ?>
 
                             <li>
@@ -69,6 +95,7 @@ $userRole = \app\util\SessionLogin::getRole();
                             <li><a class="dropdown-item text-danger" href="<?= $actual_link ?>logout">Déconnexion</a></li>
                         </ul>
                     </li>
+                    <?php endif; ?>
                 </ul>
             </div>
         </div>
