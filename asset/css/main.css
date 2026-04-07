@@ -38,3 +38,30 @@ html, body {
 .left {
   text-align: left;
 }
+
+.rgpd-container {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 800px;
+    background: grey;
+    color: #333;
+    padding: 15px 25px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    border-radius: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 9999;
+    font-family: sans-serif;
+    border: 1px solid gray;
+}
+
+.rgpd-buttons { display: flex; gap: 15px; align-items: center; }
+
+.btn-link { color: #333; font-size: 14px; text-decoration: underline; }
+
+/* Cacher le bandeau s'il a déjà été fermé */
+.hidden { display: none; }
