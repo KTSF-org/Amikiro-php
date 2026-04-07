@@ -18,10 +18,9 @@ $currentUser = $user ?? null;
 
         <h1 class="accueil-titre text-uppercase"><?= htmlspecialchars(MAIN_TITLE) ?></h1>
         <p class="accueil-sous-titre lead">Maison des Chauves-Souris</p>
-
         <?php if (!empty($currentUser)): ?>
             <p class="accueil-connecte">
-                Bienvenue, <strong><?= htmlspecialchars($currentUser->name . ' ' . $currentUser->surname) ?></strong>
+                Bienvenue, <strong><?= htmlspecialchars($currentUser->getName() . ' ' . $currentUser->getSurname()) ?></strong>
             </p>
         <?php endif; ?>
 

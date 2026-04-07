@@ -38,7 +38,7 @@ class Login {
         // Request::is() remplace isset($_POST['mail'])
         if(req::is('mail') || req::is('password')) {
             // Vérification des champs vides
-            if(empty($userMail) && empty($userPassword)){
+            if(empty($userMail) || empty($userPassword)){
                 $erreur = "Veuillez remplir tous les champs.";
             }
             else{
@@ -46,7 +46,7 @@ class Login {
                 $user = User::verifIdentifiant($userMail, $userPassword);
                 if($user){
                     // Si user est good on enregistre le role et l'objet entier en session
-                    UserSession::loginWithRole($user, $user->codeRole);
+                    UserSession::loginWithRole($user->codeRole, $user->id);
                     // REDIRECTION
                     header('Location:  accueil');
                     exit;
@@ -59,6 +59,8 @@ class Login {
 
 
 
+
+
         Vue::setTitle('Connexion');
         Vue::addCSS([
             ASSET. '/css/login.css',
@@ -66,7 +68,7 @@ class Login {
 
         Vue::render('Login', ['erreur' => $erreur],'', true);
 
-
+      
 
     }
 

@@ -2,7 +2,10 @@
 
 namespace controleur;
 
+use modele\DAO\UserDAO;
+use modele\User;
 use vue\base\MainTemplate as Vue;
+use app\util\SessionLogin as UserSession;
 class Accueil {
 
 	public function __construct() {
@@ -11,10 +14,12 @@ class Accueil {
 		 *	    SESSION
 		 */
 		
-		// On récupère l'objet qu'on a stocké dans 'LOGIN' au moment du login
-		$user = $_SESSION['LOGIN'] ?? null;
 		
+		$userId = UserSession::getUserId();
+		$userDAO = new UserDAO();
+		$user = $userDAO->getUsersById($userId);
 		
+
 		/**
 		 *	    VUES
 		 */
