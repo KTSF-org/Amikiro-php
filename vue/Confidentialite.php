@@ -15,8 +15,8 @@
             border-radius: 8px;
         }
         .legal-container h1 { color: #2c3e50; border-bottom: 2px solid #2c3e50; padding-bottom: 10px; }
-        .legal-container h2 { color: #2980b9; margin-top: 30px; text-transform: uppercase; font-size: 1.2em; }
-        .legal-container h3 { color: #444; margin-top: 20px; }
+        .legal-container h2 { color: #2980b9; margin-top: 30px; text-transform: uppercase; font-size: 1.4em; }
+        .legal-container h3 { color: #444; margin-top: 20px; font-size: 1.3em; }
         .legal-container p { margin: 10px 0; }
         .legal-container ul { margin-bottom: 20px; }
         .legal-container li { margin-bottom: 8px; }
@@ -39,19 +39,19 @@
 <body>
 
 <div class="legal-container">
-    <h1>DOCUMENT LÉGAL DU SITE INTERNET : AMIKIRO LIVE</h1>
+    <h1>Politique de Confidentialité & Charte de la communauté</h1>
 
     <section>
-        <h2>PARTIE 1 : POLITIQUE DE CONFIDENTIALITÉ (RGPD)</h2>
+        <h2>POLITIQUE DE CONFIDENTIALITÉ (RGPD)</h2>
         <p class="date-update">Dernière mise à jour : 2 avril 2026</p>
         
         <p>Notre association accorde une importance primordiale à la protection de la vie privée de ses membres et des visiteurs de son site. Cette politique détaille la manière dont nous collectons et traitons vos données.</p>
 
-        <h3>1. Responsable du traitement</h3>
+        <h3>Responsable du traitement</h3>
         <p>Le responsable du traitement des données est l'association <strong>AMIKIRO</strong>, située au 1 place de l’église, 56540 KERNASCLEDEN.<br>
         Contact : <a href="mailto:contact@amikiro.fr">contact@amikiro.fr</a>.</p>
 
-        <h3>2. Données collectées et finalités</h3>
+        <h3>Données collectées et finalités</h3>
         <p>Dans le cadre de la gestion du site et du flux vidéo, nous collectons les données suivantes :</p>
         <ul>
             <li><strong>Création de compte (Espace Membre) :</strong> Nom, prénom, adresse e-mail. Ces données sont nécessaires pour vous identifier et vous donner accès aux fonctionnalités réservées.</li>
@@ -60,26 +60,26 @@
             Les images diffusées restent la propriété d’AMIKIRO. Toute tentative de détournement du flux ou de rediffusion sur une autre plateforme sans autorisation écrite est strictement interdite.</li>
         </ul>
 
-        <h3>3. Base légale</h3>
+        <h3>Base légale</h3>
         <p>Le traitement de vos données repose sur votre <strong>consentement</strong> (lors de la création du compte) et sur l'<strong>intérêt légitime</strong> de l'association à maintenir un environnement sécurisé et interactif pour ses membres.</p>
 
-        <h3>4. Conservation des données</h3>
+        <h3>Conservation des données</h3>
         <ul>
             <li><strong>Comptes Membres :</strong> Les données sont conservées tant que le compte est actif. Après 3 ans d'inactivité, les comptes sont automatiquement supprimés.</li>
             <li><strong>Commentaires :</strong> Ils sont conservés tant que le flux vidéo ou le sujet associé est en ligne, sauf si vous en demandez la suppression.</li>
         </ul>    
 
-            <h3>5. Destinataires des données</h3>
+            <h3>Destinataires des données</h3>
         <p>Vos données ne sont jamais vendues, louées ou transmises à des tiers à des fins commerciales. Elles sont strictement réservées à l'usage interne de l'association pour l'animation de la communauté.</p>
 
-        <h3>6. Vos droits</h3>
+        <h3>Vos droits</h3>
         <p>Conformément au RGPD, vous disposez d'un droit d'accès, de rectification et de suppression de vos données. Pour exercer ces droits, contactez-nous à : <a href="mailto:contact@amikiro.fr">contact@amikiro.fr</a>.</p>
     </section>
 
     <hr>
 
     
-        <h2>PARTIE 2 : CHARTE DE BONNE CONDUITE ET MODÉRATION</h2>
+        <h2>CHARTE DE BONNE CONDUITE ET MODÉRATION</h2>
         <p><strong>Bienvenue dans la communauté de la colonie !</strong></p>
         <p>Pour que cet espace d'échange reste agréable pour tous les passionnés de chauves-souris, nous vous demandons de respecter les règles suivantes :</p>
         <ul>
