@@ -2,9 +2,9 @@
 
 namespace controleur;
 
+
 use vue\base\MainTemplate as Vue;
 use modele\User;
-use app\util\BaseURL;
 use app\util\Request as req;
 use app\util\SessionLogin as UserSession;
 
@@ -48,7 +48,7 @@ class Login {
                     // Si user est good on enregistre le role et l'objet entier en session
                     UserSession::loginWithRole($user, $user->codeRole);
                     // REDIRECTION
-                    header('Location: ' . BaseURL::getBaseUrl() . 'accueil');
+                    header('Location:  accueil');
                     exit;
                 }else {
                     // Dernier cas d'echec : soit mail inconnu ou password

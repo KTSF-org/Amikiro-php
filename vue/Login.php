@@ -12,21 +12,23 @@
             <h4 class="text-center mb-4">Connexion</h4>
 
             <!-- Erreur de connexion transmise par le contrôleur -->
-            <?php if (!empty($erreur)): ?>
-                <div class="alert alert-danger"><?= htmlspecialchars($erreur) ?></div>
-            <?php endif; ?>
 
             <form method="POST" action="<?= $actual_link ?>login">
 
                 <div class="mb-3">
                     <label for="email" class="form-label">Email</label>
-                    <input type="text" name="email" id="email" class="form-control" placeholder="azerty@gmail.com">
+                    <input type="text" name="mail" id="mail" class="form-control" placeholder="azerty@gmail.com">
                 </div>
 
                 <div class="mb-3">
                     <label for="pwd" class="form-label">Mot de passe</label>
-                    <input type="password" name="password" id="password" class="form-control" placeholder="Votre mot de passe">
+                    <input type="password" name="password" id="password" class="form-control"
+                        placeholder="Votre mot de passe">
                 </div>
+
+                <?php if (!empty($erreur)): ?>
+                    <div class="alert alert-danger"><?= htmlspecialchars($erreur) ?></div>
+                <?php endif; ?>
 
                 <div class="d-grid">
                     <button type="submit" class="btn btn-primary">Connexion</button>
