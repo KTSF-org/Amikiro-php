@@ -2,9 +2,9 @@
 
 namespace controleur;
 
+
 use vue\base\MainTemplate as Vue;
 use modele\User;
-use app\util\BaseURL;
 use app\util\Request as req;
 use app\util\SessionLogin as UserSession;
 
@@ -21,6 +21,13 @@ use app\util\SessionLogin as UserSession;
 
 class Login {
     public function __construct(){
+        
+        // Redirige l'utilisateur sur la page d'accueil
+        // si il tente d'aller sur la page de login alors qu'il est deja co
+        if (UserSession::isLogin()){
+            header('Location: accueil');
+            exit;
+        }
 
         $erreur = null;
 
@@ -39,11 +46,9 @@ class Login {
                 $user = User::verifIdentifiant($userMail, $userPassword);
                 if($user){
                     // Si user est good on enregistre le role et l'objet entier en session
-                    UserSession::loginWithRole($user->codeRole);
-                    $_SESSION['user'] = $user;
-
+                    UserSession::loginWithRole($user, $user->codeRole);
                     // REDIRECTION
-                    header('Location: ' . BaseURL::getBaseUrl() . 'accueil');
+                    header('Location:  accueil');
                     exit;
                 }else {
                     // Dernier cas d'echec : soit mail inconnu ou password

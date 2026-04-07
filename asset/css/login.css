@@ -4,6 +4,6 @@
 }
 
 /* Exception : pages accessibles sans être connecté */
-.navbar .nav-link-public {
+/* .navbar .nav-link-public {
     pointer-events: auto;
-}
+} */

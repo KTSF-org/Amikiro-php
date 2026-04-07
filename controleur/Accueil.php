@@ -10,8 +10,10 @@ class Accueil {
 		/**
 		 *	    SESSION
 		 */
-
-		$user = isset($_SESSION['user']) ? $_SESSION['user'] : null;
+		
+		// On récupère l'objet qu'on a stocké dans 'LOGIN' au moment du login
+		$user = $_SESSION['LOGIN'] ?? null;
+		
 		
 		/**
 		 *	    VUES
