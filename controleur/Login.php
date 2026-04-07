@@ -12,6 +12,13 @@ use app\util\SessionLogin as UserSession;
 class Login {
     public function __construct(){
         
+        // Redirige l'utilisateur sur la page d'accueil
+        // si il tente d'aller sur la page de login alors qu'il est deja co
+        if (UserSession::isLogin()){
+            header('Location: accueil');
+            exit;
+        }
+
         $erreur = null;
        
         $userMail = req::post('mail');
@@ -29,9 +36,7 @@ class Login {
                 $user = User::verifIdentifiant($userMail, $userPassword);
                 if($user){
                     // Si user est good on enregistre le role et l'objet entier en session
-                    UserSession::loginWithRole($user->codeRole);
-                    $_SESSION['user'] = $user;
-
+                    UserSession::loginWithRole($user, $user->codeRole);
                     // REDIRECTION
                     header('Location: accueil');
                     exit;
