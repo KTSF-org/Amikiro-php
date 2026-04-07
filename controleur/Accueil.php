@@ -6,6 +6,7 @@ use modele\DAO\UserDAO;
 use modele\User;
 use vue\base\MainTemplate as Vue;
 use app\util\SessionLogin as UserSession;
+use app\util\UserInfo;
 class Accueil {
 
 	public function __construct() {
@@ -15,10 +16,7 @@ class Accueil {
 		 */
 		
 		
-		$userId = UserSession::getUserId();
-		$userDAO = new UserDAO();
-		$user = $userDAO->getUsersById($userId);
-		
+		$user = UserInfo::getUserInfo();
 
 		/**
 		 *	    VUES
