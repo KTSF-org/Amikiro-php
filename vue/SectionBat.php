@@ -10,7 +10,7 @@
 
     <p>
     Création fiche chauve-souris (formulaire avec les champs à remplir). </br>
-    Ce menu s'affiche si l'urilisateur souhaite enregistrer une nouvelle chauve-souris
+    Ce menu s'affiche si l'utilisateur souhaite enregistrer une nouvelle chauve-souris
     </p>
 
     <div class="">
