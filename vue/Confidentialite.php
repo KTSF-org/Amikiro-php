@@ -88,6 +88,9 @@
             <li><strong>Protection de la vie privée :</strong> Ne publiez jamais de coordonnées personnelles (téléphone, adresse réelle) dans les commentaires.</li>
             <li><strong>Signalement :</strong> Ce site est géré par des bénévoles. Si vous observez un comportement inapproprié, merci de nous le signaler à <a href="mailto:contact@amikiro.fr">contact@amikiro.fr</a>.</li>
         </ul>
+    <br>
+    <br>
 </div>
+
 
 </body>
