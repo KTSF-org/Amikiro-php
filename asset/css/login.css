@@ -1,3 +1,9 @@
+/* Désactive la navigation depuis la page login */
 .navbar .nav-link {
     pointer-events: none;
 }
+
+/* Exception : pages accessibles sans être connecté */
+/* .navbar .nav-link-public {
+    pointer-events: auto;
+} */

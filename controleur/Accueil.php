@@ -2,8 +2,11 @@
 
 namespace controleur;
 
+use modele\DAO\UserDAO;
+use modele\User;
 use vue\base\MainTemplate as Vue;
-
+use app\util\SessionLogin as UserSession;
+use app\util\UserInfo;
 class Accueil {
 
 	public function __construct() {
@@ -11,12 +14,14 @@ class Accueil {
 		/**
 		 *	    SESSION
 		 */
-
-		$user = isset($_SESSION['user']) ? $_SESSION['user'] : null;
+		
+		
+		$user = UserInfo::getUserInfo();
 
 		/**
 		 *	    VUES
 		 */
+		
 
 		Vue::setTitle('Accueil');
 

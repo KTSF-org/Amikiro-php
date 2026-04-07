@@ -38,13 +38,27 @@ class Routing {
 
         $route->add('/live', 'controleur\Live');
 
+		// Journal et ses sous-pages (édition des données métier)
 		$route->add('/journal', 'controleur\Journal');
+		$route->add('/journal/categorie', 'controleur\journal\Categorie');
+		$route->add('/journal/fiche', 'controleur\journal\Fiche');
+
+		// Déconnexion — détruit la session et redirige vers /login
+		$route->add('/logout', 'controleur\Logout');
 
 		$route->add('/sectionBat', 'controleur\SectionBat');
-
 		$route->add('/sectionColony', 'controleur\SectionColony');
 
+		// Paramètres utilisateur
 		$route->add('/parametres', 'controleur\Parametres');
+		$route->add('/parametres/profil', 'controleur\Profil');
+
+		// Paramètres admin (accès restreint à ROLE_ADMIN, contrôle à implémenter dans chaque contrôleur)
+		$route->add('/parametres/utilisateurs', 'controleur\admin\Utilisateurs');
+		$route->add('/parametres/webcam', 'controleur\admin\Webcam');
+
+		$route->add('/confidentialite', 'controleur\Confidentialite');
+		$route->add('/mentionslegales', 'controleur\MentionsLegales');
 		
 		
 

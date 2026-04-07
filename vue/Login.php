@@ -1,32 +1,34 @@
 <?php
-// VUE LOGIN
+/**
+ * VUE : Login
+ * Formulaire d'authentification.
+ * $erreur : message d'erreur transmis par le contrôleur (null si aucune tentative).
+ * Le wrapper HTML (DOCTYPE, head, body) est fourni par MainTemplate — ne pas le redéclarer.
+ */
 ?>
-
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
-</head>
-
-
 <div class="d-flex justify-content-center align-items-center py-5">
     <div style="width: 100%; max-width: 400px;">
         <div class="border border-dark rounded p-4 bg-white shadow-sm">
             <h4 class="text-center mb-4">Connexion</h4>
-            <form method="POST" action="/login">
+
+            <!-- Erreur de connexion transmise par le contrôleur -->
+
+            <form method="POST" action="<?= $actual_link ?>login">
 
                 <div class="mb-3">
-                    <label for="pseudo" class="form-label">Login</label>
-                    <input type="text" name="email" id="email" class="form-control" placeholder="azerty@gmail.com">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="text" name="mail" id="mail" class="form-control" placeholder="azerty@gmail.com">
                 </div>
 
                 <div class="mb-3">
                     <label for="pwd" class="form-label">Mot de passe</label>
-                    <input type="password" name="pwd" id="pwd" class="form-control" placeholder="Votre mot de passe">
+                    <input type="password" name="password" id="password" class="form-control"
+                        placeholder="Votre mot de passe">
                 </div>
+
+                <?php if (!empty($erreur)): ?>
+                    <div class="alert alert-danger"><?= htmlspecialchars($erreur) ?></div>
+                <?php endif; ?>
 
                 <div class="d-grid">
                     <button type="submit" class="btn btn-primary">Connexion</button>
@@ -36,8 +38,3 @@
         </div>
     </div>
 </div>
-
-
-</body>
-
-</html>

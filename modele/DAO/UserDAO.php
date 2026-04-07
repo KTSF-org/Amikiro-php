@@ -84,7 +84,7 @@ class UserDAO extends Database {
 	*	@param integer Numéro de la clé primaire
 	*	@return mixed object|string|bool
 	*/
-	public function read(int $id): mixed {
+	public function getUsersById(int $id): mixed {
 		$row = false;
 		if($id>0)$row = $this->getOne($id); //on récupère la ligne/tuple concernée
 		//gestion de l'index en cas d'erreur :
@@ -126,10 +126,11 @@ class UserDAO extends Database {
 	* 	@return array
 	*/
 	public function getUsersByName(string $name): mixed {
-		$stmt = $this->getPdo()->prepare("SELECT * FROM `" . $this->tableName . "` WHERE name LIKE :surname OR name LIKE :name");
-		$stmt->execute([':sname' => "%$name%", ':name' => "%$name%"]);
+		$stmt = $this->getPdo()->prepare("SELECT * FROM `" . $this->tableName . "` WHERE name LIKE :name OR surname LIKE :surname");
+		$stmt->execute([':surname' => "%$name%", ':name' => "%$name%"]);
 		return $stmt->fetch(PDO::FETCH_ASSOC);
 	}
+
 
 	/**
 	*	Méthode sendSQL() implémentée dans le DAO (modele/DAO/base/Database.php)

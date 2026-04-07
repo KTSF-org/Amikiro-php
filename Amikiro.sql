@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : db
--- Généré le : mar. 31 mars 2026 à 09:41
+-- Généré le : mar. 07 avr. 2026 à 10:07
 -- Version du serveur : 8.4.7
 -- Version de PHP : 8.3.26
 
@@ -72,13 +72,6 @@ CREATE TABLE `ColonySection` (
   `idCategory` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
---
--- Déchargement des données de la table `ColonySection`
---
-
-INSERT INTO `ColonySection` (`idSection`, `idCategory`) VALUES
-(1, 1);
-
 -- --------------------------------------------------------
 
 --
@@ -111,13 +104,6 @@ CREATE TABLE `Section` (
   `IdLogs` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
---
--- Déchargement des données de la table `Section`
---
-
-INSERT INTO `Section` (`id`, `title`, `content`, `creationDate`, `idUser`, `IdLogs`) VALUES
-(1, 'rUBRIQUE TEST', 'ghyuodyt', '2026-03-30 09:45:07', 1, 1);
-
 -- --------------------------------------------------------
 
 --
@@ -128,13 +114,6 @@ CREATE TABLE `SpecimenSection` (
   `idSection` int NOT NULL,
   `idBat` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
---
--- Déchargement des données de la table `SpecimenSection`
---
-
-INSERT INTO `SpecimenSection` (`idSection`, `idBat`) VALUES
-(1, 1);
 
 -- --------------------------------------------------------
 
@@ -159,7 +138,10 @@ CREATE TABLE `User` (
 --
 
 INSERT INTO `User` (`id`, `codeRole`, `mail`, `uptime`, `password`, `name`, `surname`, `countConnect`, `memberNum`) VALUES
-(1, 1, 'test@mail.fr', 0, 'oui', 'Jean', 'Test', 0, NULL);
+(7, 0, 'kevin@gmail.com', 45, '$2y$12$Hpnzv/jsBxu2OkDuwOrVie6WacUxAJA.mhSjXoTOXXrPkyoe4ls.m', 'Kevin', 'Bidoof', 16, 26),
+(8, 1, 'simon@gmail.com', 45, '$2y$12$iRJ8aapSwIs43BB4ufvwQuZF.Xzy/tTHArdCkwP3oMBHUBhd9ZlXa', 'Simon', 'GPT', 20, 29),
+(9, 2, 'tani@gmail.com', 45, '$2y$12$GWJ1rMAS91C5wUhOjmO9iuci1/eRK0RhYuvenK8CeUUfBRPPAo//a', 'Tani', 'OUI', 40, 6),
+(10, 3, 'florian@gmail.com', 20, '$2y$12$a9EFeMArbCkmku5q3D6Keuh2286jCl9EgFxG0yrGj.dsX2ttotnZO', 'Florian', 'CS2', 41, 15);
 
 -- --------------------------------------------------------
 
@@ -270,7 +252,7 @@ ALTER TABLE `Section`
 -- AUTO_INCREMENT pour la table `User`
 --
 ALTER TABLE `User`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT pour la table `Video`

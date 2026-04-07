@@ -2,18 +2,15 @@
 
 namespace controleur;
 
+use app\util\Request as req;
 use vue\base\MainTemplate as Vue;
-use app\util\Guard;
 
-class Journal {
+class MentionsLegales {
 
     public function __construct() {
-        Guard::requireRole(ROLE_ADHERENT);
-        Vue::setTitle('Journal');
         Vue::render(
-            'Journal',
+            'MentionsLegales',
             []
         );
-        
     }
 }

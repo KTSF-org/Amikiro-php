@@ -4,6 +4,7 @@ namespace modele\DAO;
 
 use modele\DAO\base\Database;
 use modele\Video;
+use app\util\Error;
 use PDO;
 
 class VideoDAO extends Database
@@ -51,7 +52,7 @@ class VideoDAO extends Database
     public function create($video): bool{
         $data = $this->getAllData($video);
         //createOne() et getLastKey() sont des méthodes du DAO (modele/DAO/base/Database.php)
-        $bool = $this->create($data);
+        $bool = $this->createOne($data);
         $video->setId($this->getLastKey());
         return $bool;
     }

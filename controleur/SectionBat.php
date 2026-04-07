@@ -6,6 +6,7 @@ use app\util\Request as req;
 use app\util\BaseURL as url;
 
 use vue\base\MainTemplate as Vue;
+use app\util\Guard;
 
 use modele\Bat;
 use modele\Section;
