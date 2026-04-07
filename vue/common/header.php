@@ -22,7 +22,7 @@ $userRole = \app\util\SessionLogin::getRole();
 
     <script src="<?= ASSET ?>/js/popup.js" defer></script>
     <script src="<?= ASSET ?>/js/main.js" defer></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/hls.js/1.4.12/hls.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" defer></script>
     <script src="<?= ASSET ?>/js/<?= $_SESSION['CUSTOM_JS'] ?>" defer></script>
     <?= $customJS ?>
