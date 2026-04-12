@@ -9,6 +9,19 @@ use app\util\Request;
 use modele\User;
 use modele\DAO\UserDAO;
 
+/**
+ * CONTRÔLEUR : Admin / UtilisateursCreer
+ * Gère la création d'un nouveau compte utilisateur.
+ * Accès restreint à ROLE_ADMIN.
+ *
+ * Sur POST : valide les champs, construit l'objet User, hache le mot de passe
+ *   via setPassword(), insère en base, puis redirige vers la liste.
+ * Sur GET  : affiche le formulaire vide.
+ *
+ * Règles métier appliquées :
+ *   - ROLE_ADMIN non assignable à la création (bloqué côté serveur).
+ *   - Les champs prénom, nom, email et mot de passe sont obligatoires.
+ */
 class UtilisateursCreer {
 
     public function __construct() {
@@ -29,8 +42,8 @@ class UtilisateursCreer {
             } elseif (empty($name) || empty($surname) || empty($mail) || empty($password)) {
                 $error = 'Tous les champs obligatoires doivent être remplis.';
             } else {
-                // 'tmp' évite l'exception de checkModelArgs sur password vide ;
-                // setPassword() le remplace immédiatement par le hash réel.
+                // Le constructeur User exige un password non vide : 'tmp' est un placeholder
+                // immédiatement remplacé par le hash de $password via setPassword().
                 $metier = new User($codeRole, $mail, 0, 'tmp', $name, $surname, 0, $memberNum);
                 $metier->setPassword($password);
 

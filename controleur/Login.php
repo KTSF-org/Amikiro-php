@@ -13,10 +13,19 @@ use app\util\SessionLogin as UserSession;
 /**
  * CONTRÔLEUR : Login
  * Gestion de l'authentification.
+ *
  * Sur POST : vérifie email + mot de passe via User::verifIdentifiant(),
- * stocke l'objet utilisateur en session, enregistre le rôle via SessionLogin,
- * puis redirige vers /accueil.
+ *   contrôle l'abonnement pour les comptes ROLE_ADHERENT,
+ *   stocke l'objet utilisateur en session, enregistre le rôle via SessionLogin,
+ *   puis redirige vers /accueil.
  * Sur GET (ou POST invalide) : affiche le formulaire avec un éventuel message d'erreur.
+ *
+ * Logique d'abonnement à la connexion :
+ *   - Applicable uniquement aux comptes dont le rôle est ROLE_ADHERENT.
+ *   - Si aucun abonnement actif n'est trouvé en base, le rôle est rétrogradé
+ *     à ROLE_INVITE en BDD et dans la session courante.
+ *   - ROLE_NATURALISTE n'est pas affecté : son abonnement est administratif,
+ *     non lié au contrôle d'accès.
  */
 
 
