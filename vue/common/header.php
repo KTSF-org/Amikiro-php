@@ -37,9 +37,10 @@ $userRole = \app\util\SessionLogin::getRole();
             </a>
 
             <div class="d-flex align-items-center">
+                <?php if (\app\util\SessionLogin::isLogin()): ?>
                 <ul class="nav nav-pills">
                     <li class="nav-item">
-                        <a href="<?= $actual_link ?>live" class="nav-link nav-link-public">Live</a>
+                        <a href="<?= $actual_link ?>live" class="nav-link">Live</a>
                     </li>
 
                     <?php if ($userRole >= ROLE_ADHERENT): ?>
@@ -65,13 +66,6 @@ $userRole = \app\util\SessionLogin::getRole();
                         </li>
                     <?php endif; ?>
 
-                    <?php if (!\app\util\SessionLogin::isLogin()): ?>
-                    <li class="nav-item">
-                        <a href="<?= $actual_link ?>login" class="nav-link nav-link-public">Se connecter</a>
-                    </li>
-                    <?php endif; ?>
-
-                    <?php if (\app\util\SessionLogin::isLogin()): ?>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Paramètres</a>
                         <ul class="dropdown-menu dropdown-menu-end">
@@ -89,15 +83,14 @@ $userRole = \app\util\SessionLogin::getRole();
                                 <li><a class="dropdown-item" href="<?= $actual_link ?>parametres/utilisateurs">Gestion des utilisateurs</a></li>
                                 <li><a class="dropdown-item" href="<?= $actual_link ?>parametres/webcam">Configuration Webcam</a></li>
                             <?php endif; ?>
-
                             <li>
                                 <hr class="dropdown-divider">
                             </li>
                             <li><a class="dropdown-item text-danger" href="<?= $actual_link ?>logout">Déconnexion</a></li>
                         </ul>
                     </li>
-                    <?php endif; ?>
                 </ul>
+                <?php endif; ?>
             </div>
         </div>
     </nav>
