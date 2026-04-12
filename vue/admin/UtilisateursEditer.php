@@ -43,7 +43,16 @@
 
                 <div class="mb-3">
                     <label for="codeRole" class="form-label">Rôle</label>
+                    <?php if ($isSelf): ?>
+                        <p class="form-control-plaintext">Administrateur
+                            <small class="text-muted">(non modifiable)</small>
+                        </p>
+                    <?php else: ?>
                     <select class="form-select" id="codeRole" name="codeRole">
+                        <option value="<?= ROLE_INVITE ?>"
+                            <?= $metier->getCodeRole() === ROLE_INVITE ? 'selected' : '' ?>>
+                            Invité
+                        </option>
                         <option value="<?= ROLE_ADHERENT ?>"
                             <?= $metier->getCodeRole() === ROLE_ADHERENT ? 'selected' : '' ?>>
                             Adhérent
@@ -52,11 +61,8 @@
                             <?= $metier->getCodeRole() === ROLE_NATURALISTE ? 'selected' : '' ?>>
                             Naturaliste
                         </option>
-                        <option value="<?= ROLE_ADMIN ?>"
-                            <?= $metier->getCodeRole() === ROLE_ADMIN ? 'selected' : '' ?>>
-                            Administrateur
-                        </option>
                     </select>
+                    <?php endif; ?>
                 </div>
 
                 <div class="mb-4">

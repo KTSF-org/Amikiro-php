@@ -7,13 +7,6 @@ use app\util\Guard;
 use vue\base\MainTemplate as Vue;
 use modele\DAO\UserDAO;
 
-/**
- * CONTRÔLEUR : Profil
- * Affichage et modification du profil de l'utilisateur connecté.
- * Sur POST : met à jour name et surname via UserDAO, puis rafraîchit $_SESSION['user'].
- * Sur GET : affiche le formulaire pré-rempli avec les données de session.
- * Dépend de $_SESSION['user'] — aucune action si non connecté.
- */
 class Profil {
 
     public function __construct() {
@@ -21,30 +14,52 @@ class Profil {
 
         $user    = $_SESSION['user'] ?? null;
         $success = null;
+        $error   = null;
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && $user !== null) {
-            $name    = Request::post('name');
-            $surname = Request::post('surname');
-
-            // Chargement de l'objet métier User depuis la BDD pour l'update
+            $action  = $_POST['action'] ?? '';
             $userDAO = new UserDAO();
             $metier  = $userDAO->getUsersById($user->id);
-            $metier->setName($name)->setSurname($surname);
-            $success = $userDAO->update($metier);
 
-            // Mise à jour de la session pour refléter les nouvelles valeurs
-            if ($success) {
-                $user->name    = $name;
-                $user->surname = $surname;
-                $_SESSION['user'] = $user;
+            if ($action === 'identity') {
+                $name    = Request::post('name');
+                $surname = Request::post('surname');
+
+                if (empty($name) || empty($surname)) {
+                    $error = 'Le prénom et le nom ne peuvent pas être vides.';
+                } else {
+                    $metier->setName($name)->setSurname($surname);
+                    $success = $userDAO->update($metier);
+                    if ($success) {
+                        $user->name    = $name;
+                        $user->surname = $surname;
+                        $_SESSION['user'] = $user;
+                    }
+                }
+
+            } elseif ($action === 'password') {
+                $current  = Request::post('current_password');
+                $new      = Request::post('new_password');
+                $confirm  = Request::post('confirm_password');
+
+                if (!password_verify($current, $metier->getPassword())) {
+                    $error = 'Mot de passe actuel incorrect.';
+                } elseif (empty($new)) {
+                    $error = 'Le nouveau mot de passe ne peut pas être vide.';
+                } elseif ($new !== $confirm) {
+                    $error = 'Les mots de passe ne correspondent pas.';
+                } else {
+                    $metier->setPassword($new);
+                    $success = $userDAO->update($metier);
+                }
             }
         }
 
         Vue::setTitle('Mon Profil');
-
         Vue::render('Profil', [
             'user'    => $user,
             'success' => $success,
+            'error'   => $error,
         ]);
     }
 }

@@ -14,14 +14,10 @@ const APP_VERSION = '0.0.0';
 const MAIN_TITLE = 'AMIKIRO LIVE';
 
 //Fonction debug() : sort var_dump() à la place de print_r()
-const DEBUG_DUMP = false; 
+const DEBUG_DUMP = false;
 
 //Affiche les informations de débogage sur les requêtes AJAX :
 const AJAX_DEBUG = false; //true -> le navigateur à recharger
-
-// Mode développement : court-circuite Guard (injecte une session ROLE_ADMIN fictive).
-// Mettre à false avant tout déploiement.
-const DEV_MODE = true;
 
 //Nom du répertoire des fichiers statiques (images, js, css) :
 const ASSET = 'asset';

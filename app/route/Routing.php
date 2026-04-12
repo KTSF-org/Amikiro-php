@@ -33,6 +33,8 @@ class Routing {
 		$route->add('/admin/test', 'controleur\admin\Test', ['hello', 'world']);
 		//méthode / fonction personalisée :
 		$route->add('/phpinfo', function () { phpinfo(); });
+		//login automatique en dev — à retirer avant mise en production :
+		$route->add('/dev/login', 'controleur\DevLogin');
 		//ajout d'un controleur JavaScript (génération dynamique d'un script JS), voir app/Setup.php :
 		$route->add('asset/js/' . $_SESSION['CUSTOM_JS'], 'controleur\util\CustomJS');
 

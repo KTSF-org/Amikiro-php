@@ -25,9 +25,13 @@ class Utilisateurs {
             exit;
         }
 
-        $users = $userDAO->getAll();
+        $users     = $userDAO->getAll();
+        $currentId = (int)($_SESSION['user']->id ?? 0);
 
         Vue::setTitle('Gestion des utilisateurs');
-        Vue::render('admin/Utilisateurs', ['users' => $users]);
+        Vue::render('admin/Utilisateurs', [
+            'users'     => $users,
+            'currentId' => $currentId,
+        ]);
     }
 }

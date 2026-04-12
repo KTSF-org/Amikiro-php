@@ -24,7 +24,9 @@ class UtilisateursCreer {
             $codeRole  = (int)($_POST['codeRole'] ?? ROLE_ADHERENT);
             $memberNum = (int)($_POST['memberNum'] ?? 0);
 
-            if (empty($name) || empty($surname) || empty($mail) || empty($password)) {
+            if ($codeRole === ROLE_ADMIN) {
+                $error = 'Impossible de créer un compte administrateur.';
+            } elseif (empty($name) || empty($surname) || empty($mail) || empty($password)) {
                 $error = 'Tous les champs obligatoires doivent être remplis.';
             } else {
                 // 'tmp' évite l'exception de checkModelArgs sur password vide ;

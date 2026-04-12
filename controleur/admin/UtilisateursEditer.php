@@ -19,19 +19,24 @@ class UtilisateursEditer {
             exit;
         }
 
-        $userDAO = new UserDAO();
-        $metier  = $userDAO->getUsersById($id);
-        $error   = null;
+        $userDAO   = new UserDAO();
+        $metier    = $userDAO->getUsersById($id);
+        $currentId = (int)($_SESSION['user']->id ?? 0);
+        $isSelf    = ($id === $currentId);
+        $error     = null;
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $name      = Request::post('name');
             $surname   = Request::post('surname');
             $mail      = Request::post('mail');
             $password  = Request::post('password');
-            $codeRole  = (int)($_POST['codeRole'] ?? $metier->getCodeRole());
             $memberNum = (int)($_POST['memberNum'] ?? $metier->getMemberNum());
+            // Le rôle de l'admin connecté ne peut pas être modifié
+            $codeRole  = $isSelf ? $metier->getCodeRole() : (int)($_POST['codeRole'] ?? $metier->getCodeRole());
 
-            if (empty($name) || empty($surname) || empty($mail)) {
+            if (!$isSelf && $codeRole === ROLE_ADMIN) {
+                $error = 'Impossible d\'attribuer le rôle administrateur.';
+            } elseif (empty($name) || empty($surname) || empty($mail)) {
                 $error = 'Tous les champs obligatoires doivent être remplis.';
             } else {
                 $metier->setName($name)
@@ -54,8 +59,9 @@ class UtilisateursEditer {
 
         Vue::setTitle('Modifier un compte');
         Vue::render('admin/UtilisateursEditer', [
-            'metier' => $metier,
-            'error'  => $error,
+            'metier'  => $metier,
+            'error'   => $error,
+            'isSelf'  => $isSelf,
         ]);
     }
 }

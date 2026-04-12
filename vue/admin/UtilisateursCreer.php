@@ -37,9 +37,9 @@
                 <div class="mb-3">
                     <label for="codeRole" class="form-label">Rôle</label>
                     <select class="form-select" id="codeRole" name="codeRole">
+                        <option value="<?= ROLE_INVITE ?>">Invité</option>
                         <option value="<?= ROLE_ADHERENT ?>">Adhérent</option>
                         <option value="<?= ROLE_NATURALISTE ?>">Naturaliste</option>
-                        <option value="<?= ROLE_ADMIN ?>">Administrateur</option>
                     </select>
                 </div>
 

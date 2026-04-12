@@ -81,6 +81,7 @@ function roleLabel(int $code): string {
                     <td>
                         <a href="<?= $actual_link ?>parametres/utilisateurs/editer?id=<?= (int)$u->id ?>"
                            class="btn btn-sm btn-primary">Éditer</a>
+                        <?php if ((int)$u->id !== $currentId): ?>
                         <form method="POST"
                               action="<?= $actual_link ?>parametres/utilisateurs"
                               class="d-inline"
@@ -89,6 +90,7 @@ function roleLabel(int $code): string {
                             <input type="hidden" name="id" value="<?= (int)$u->id ?>">
                             <button type="submit" class="btn btn-sm btn-danger">Supprimer</button>
                         </form>
+                        <?php endif; ?>
                     </td>
                 </tr>
                 <?php endforeach; endif; ?>

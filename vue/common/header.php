@@ -20,6 +20,7 @@ $userRole = \app\util\SessionLogin::getRole();
     <link rel="stylesheet" href="<?= ASSET ?>/css/main.css">
     <?= $customCSS ?>
 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="<?= ASSET ?>/js/popup.js" defer></script>
     <script src="<?= ASSET ?>/js/main.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
