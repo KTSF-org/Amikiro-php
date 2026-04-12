@@ -28,7 +28,7 @@ class Profil {
 
             // Chargement de l'objet métier User depuis la BDD pour l'update
             $userDAO = new UserDAO();
-            $metier  = $userDAO->read($user->id);
+            $metier  = $userDAO->getUsersById($user->id);
             $metier->setName($name)->setSurname($surname);
             $success = $userDAO->update($metier);
 

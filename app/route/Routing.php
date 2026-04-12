@@ -54,6 +54,8 @@ class Routing {
 		$route->add('/parametres/profil', 'controleur\Profil');
 
 		// Paramètres admin (accès restreint à ROLE_ADMIN, contrôle à implémenter dans chaque contrôleur)
+		$route->add('/parametres/utilisateurs/creer', 'controleur\admin\UtilisateursCreer');
+		$route->add('/parametres/utilisateurs/editer', 'controleur\admin\UtilisateursEditer');
 		$route->add('/parametres/utilisateurs', 'controleur\admin\Utilisateurs');
 		$route->add('/parametres/webcam', 'controleur\admin\Webcam');
 
