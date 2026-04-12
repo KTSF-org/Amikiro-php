@@ -289,6 +289,21 @@ COMMIT;
 -- --------------------------------------------------------
 
 --
+-- Structure de la table `Abonnement`
+--
+
+CREATE TABLE `Abonnement` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `idUser` int NOT NULL,
+  `startDate` date NOT NULL,
+  `endDate` date NOT NULL,
+  PRIMARY KEY (`id`),
+  CONSTRAINT `AbonnementUserConstraint` FOREIGN KEY (`idUser`) REFERENCES `User` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Structure de la table `Config`
 --
 
