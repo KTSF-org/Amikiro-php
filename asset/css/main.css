@@ -1,32 +1,37 @@
 /*** Main CSS ***/
 
-html, body {
-	height: 100%;
-	margin: 0;
+html,
+body {
+    height: 100%;
+    margin: 0;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    padding-bottom: 30px;
 }
 
 .container {
-	min-height: 100vh;
-	/* taille du footer + 20px */
-	padding-bottom: 80px;
+    min-height: 100%;
+    /* taille du footer + 20px */
+    margin-bottom: 50px;
 }
 
 .spacer {
+    clear: both;
     height: 20px;
 }
 
 .footer {
-	position: fixed;
-	bottom: 0;
-	left: 0;
-	right: 0;
-	height: 60px;
-	background-color: #f0f0f0;
-	text-align: center;
+    position: fixed;
+    height: 30px;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: #f0f0f0;
+    text-align: center;
 }
 
 .app-logo {
-	/* En CSS l'image est chargée à un niveau supérieur */
+    /* En CSS l'image est chargée à un niveau supérieur */
     background-image: url('../img/app.png');
     background-size: 30px 30px;
     background-repeat: no-repeat;
@@ -36,7 +41,7 @@ html, body {
 }
 
 .left {
-  text-align: left;
+    text-align: left;
 }
 
 .rgpd-container {
@@ -49,7 +54,7 @@ html, body {
     background: grey;
     color: #333;
     padding: 15px 25px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
     border-radius: 12px;
     display: flex;
     justify-content: space-between;
@@ -59,9 +64,19 @@ html, body {
     border: 1px solid gray;
 }
 
-.rgpd-buttons { display: flex; gap: 15px; align-items: center; }
+.rgpd-buttons {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
 
-.btn-link { color: #333; font-size: 14px; text-decoration: underline; }
+.btn-link {
+    color: #333;
+    font-size: 14px;
+    text-decoration: underline;
+}
 
 /* Cacher le bandeau s'il a déjà été fermé */
-.hidden { display: none; }
+.hidden {
+    display: none;
+}
