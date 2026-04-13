@@ -6,7 +6,7 @@ use DateTime;
 use modele\DAO\SpeciesDAO;
 use mysqli_sql_exception;
 
-class Bat
+class Species
 {
     private int $id = 0;
     protected $param = [];
@@ -44,6 +44,26 @@ class Bat
         return $this->param;
     }
 
+    // Ajoute l'espece dans la BDD
+    public function addSpecies(): bool
+    {
+        $speciesDAO = new SpeciesDAO();
+        return $speciesDAO->create($this);
+    }
+
+    // Met à jour l'eppece dans la BDD
+    public function updateSpecies(): bool
+    {
+        $speciesDAO = new SpeciesDAO();
+        return $speciesDAO->update($this);
+    }
+
+    // Supprime l'espece de la bdd
+    public function deleteSpecies() : bool {
+         $speciesDAO = new SpeciesDAO();
+         return $speciesDAO->delete($this);
+    }
+
     /** 
      * GETTERS
      */
@@ -53,12 +73,12 @@ class Bat
         return $this->id;
     }
 
-        public function getScientificName(): string
+    public function getScientificName(): string
     {
         return $this->scientificName;
     }
 
-        public function getCommonName(): string
+    public function getCommonName(): string
     {
         return $this->commonName;
     }
