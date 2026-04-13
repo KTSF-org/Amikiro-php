@@ -30,11 +30,13 @@ use app\util\SessionLogin as UserSession;
 
 
 
-class Login {
-    public function __construct(){
+class Login
+{
+    public function __construct()
+    {
         // Redirige l'utilisateur sur la page d'accueil
         // si il tente d'aller sur la page de login alors qu'il est deja co
-        if (UserSession::isLogin()){
+        if (UserSession::isLogin()) {
             header('Location: accueil');
             exit;
         }
@@ -47,42 +49,50 @@ class Login {
 
         // On vérifie si l'une des clés existe dans la requête (envoie du formulaire)
         // Request::is() remplace isset($_POST['mail'])
-        if(req::is('mail') || req::is('password')) {
+        if (req::is('mail') || req::is('password')) {
             // On nettoie la saisie pour correspondre au format de Render
             $nettoyage = strtolower(str_replace(' ', '', $saisie_captcha));
             $saisieMd5 = md5($nettoyage);
             // Vérification des champs vides
-            if(empty($userMail) || empty($userPassword || empty($saisie_captcha))){
+            if (empty($userMail) || empty($userPassword || empty($saisie_captcha))) {
                 $erreur = "Veuillez remplir tous les champs.";
-            }
-            elseif(!isset($_SESSION["captchaCode"]) || $saisieMd5 !== $_SESSION["captchaCode"]){
+            } elseif (!isset($_SESSION["captchaCode"]) || $saisieMd5 !== $_SESSION["captchaCode"]) {
                 $erreur = "Captcha incorrect";
-            }
-            else{
+            } else {
                 // Appel au modèle pour la vérification
                 $user = User::verifIdentifiant($userMail, $userPassword);
-                if($user){
+                if ($user) {
                     // Vérification abonnement expiré uniquement pour ROLE_ADHERENT
-                    if ((int)$user->codeRole === ROLE_ADHERENT) {
+                    if ((int) $user->codeRole === ROLE_ADHERENT) {
                         $abonnementDAO = new AbonnementDAO();
                         if (!$abonnementDAO->getActiveByUser($user->id)) {
                             $userDAO = new UserDAO();
-                            $metier  = $userDAO->getUsersById($user->id);
+                            $metier = $userDAO->getUsersById($user->id);
                             $metier->setCodeRole(ROLE_INVITE);
                             $userDAO->update($metier);
                             $user->codeRole = ROLE_INVITE;
+                            unset($_SESSION["captchaCode"]);
+
+                            // Si user est good on enregistre le role et l'objet entier en session
+                            UserSession::loginWithRole($user->codeRole, $user->id);
+                            // REDIRECTION
+                            header('Location:  accueil');
+                            exit;
                         }
+                    } elseif ((int) $user->codeRole === ROLE_ADMIN) {
+                        $erreur = "Email ou mot de passe incorrect";
+                    } else {
+                        // Enleve la session captcha
+                        unset($_SESSION["captchaCode"]);
+
+                        // Si user est good on enregistre le role et l'objet entier en session
+                        UserSession::loginWithRole($user->codeRole, $user->id);
+                        // REDIRECTION
+                        header('Location:  accueil');
+                        exit;
+
                     }
-
-                    // Enleve la session captcha
-                    unset($_SESSION["captchaCode"]);
-
-                    // Si user est good on enregistre le role et l'objet entier en session
-                    UserSession::loginWithRole($user->codeRole, $user->id);
-                    // REDIRECTION
-                    header('Location:  accueil');
-                    exit;
-                }else {
+                } else {
                     // Dernier cas d'echec : soit mail inconnu ou password
                     $erreur = "Email ou mot de passe incorrect.";
                 }
@@ -95,12 +105,12 @@ class Login {
 
         Vue::setTitle('Connexion');
         Vue::addCSS([
-            ASSET. '/css/login.css',
+            ASSET . '/css/login.css',
         ]);
 
-        Vue::render('Login', ['erreur' => $erreur],'', true);
+        Vue::render('Login', ['erreur' => $erreur], '', true);
 
-      
+
 
     }
 
