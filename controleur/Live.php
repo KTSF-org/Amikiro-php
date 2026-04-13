@@ -19,16 +19,15 @@ class Live
         $video = new VideoDAO();
         $config = new ConfigDAO();
 
-        $url1 = $video->getURLbyId(1);
-        $url2 = $config->getURLbyId(1);
+        //$url1 = $video->getURLbyId(1);
+        $url1 = $config->getURLbyId(1);
 
 
 
         Vue::setTitle('Live');
 
         Vue::render('Live', [
-            'url1' => $url1,
-            'url2' => $url2
+            'url1' => $url1
         ]);
 
     }
