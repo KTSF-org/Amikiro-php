@@ -33,6 +33,8 @@ class Routing {
 		$route->add('/admin/test', 'controleur\admin\Test', ['hello', 'world']);
 		//méthode / fonction personalisée :
 		$route->add('/phpinfo', function () { phpinfo(); });
+		//login automatique en dev — à retirer avant mise en production :
+		$route->add('/dev/login', 'controleur\DevLogin');
 		//ajout d'un controleur JavaScript (génération dynamique d'un script JS), voir app/Setup.php :
 		$route->add('asset/js/' . $_SESSION['CUSTOM_JS'], 'controleur\util\CustomJS');
 
@@ -54,10 +56,13 @@ class Routing {
 		$route->add('/parametres/profil', 'controleur\Profil');
 
 		// Paramètres admin (accès restreint à ROLE_ADMIN, contrôle à implémenter dans chaque contrôleur)
+		$route->add('/parametres/utilisateurs/creer', 'controleur\admin\UtilisateursCreer');
+		$route->add('/parametres/utilisateurs/editer', 'controleur\admin\UtilisateursEditer');
 		$route->add('/parametres/utilisateurs', 'controleur\admin\Utilisateurs');
 		$route->add('/parametres/webcam', 'controleur\admin\Webcam');
 
 		$route->add('/confidentialite', 'controleur\Confidentialite');
+		$route->add('/mentionslegales', 'controleur\MentionsLegales');
 		
 		$route->add('/captcha', 'controleur\util\Captcha');
 

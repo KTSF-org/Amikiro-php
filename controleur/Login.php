@@ -5,16 +5,27 @@ namespace controleur;
 
 use vue\base\MainTemplate as Vue;
 use modele\User;
+use modele\DAO\UserDAO;
+use modele\DAO\AbonnementDAO;
 use app\util\Request as req;
 use app\util\SessionLogin as UserSession;
 
 /**
  * CONTRÔLEUR : Login
  * Gestion de l'authentification.
+ *
  * Sur POST : vérifie email + mot de passe via User::verifIdentifiant(),
- * stocke l'objet utilisateur en session, enregistre le rôle via SessionLogin,
- * puis redirige vers /accueil.
+ *   contrôle l'abonnement pour les comptes ROLE_ADHERENT,
+ *   stocke l'objet utilisateur en session, enregistre le rôle via SessionLogin,
+ *   puis redirige vers /accueil.
  * Sur GET (ou POST invalide) : affiche le formulaire avec un éventuel message d'erreur.
+ *
+ * Logique d'abonnement à la connexion :
+ *   - Applicable uniquement aux comptes dont le rôle est ROLE_ADHERENT.
+ *   - Si aucun abonnement actif n'est trouvé en base, le rôle est rétrogradé
+ *     à ROLE_INVITE en BDD et dans la session courante.
+ *   - ROLE_NATURALISTE n'est pas affecté : son abonnement est administratif,
+ *     non lié au contrôle d'accès.
  */
 
 
@@ -45,6 +56,17 @@ class Login {
                 // Appel au modèle pour la vérification
                 $user = User::verifIdentifiant($userMail, $userPassword);
                 if($user){
+                    // Vérification abonnement expiré uniquement pour ROLE_ADHERENT
+                    if ((int)$user->codeRole === ROLE_ADHERENT) {
+                        $abonnementDAO = new AbonnementDAO();
+                        if (!$abonnementDAO->getActiveByUser($user->id)) {
+                            $userDAO = new UserDAO();
+                            $metier  = $userDAO->getUsersById($user->id);
+                            $metier->setCodeRole(ROLE_INVITE);
+                            $userDAO->update($metier);
+                            $user->codeRole = ROLE_INVITE;
+                        }
+                    }
                     // Si user est good on enregistre le role et l'objet entier en session
                     UserSession::loginWithRole($user->codeRole, $user->id);
                     // REDIRECTION

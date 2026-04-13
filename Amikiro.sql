@@ -286,6 +286,43 @@ ALTER TABLE `SpecimenSection`
   ADD CONSTRAINT `SectionConstraint` FOREIGN KEY (`idSection`) REFERENCES `Section` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `Abonnement`
+--
+
+CREATE TABLE `Abonnement` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `idUser` int NOT NULL,
+  `startDate` date NOT NULL,
+  `endDate` date NOT NULL,
+  PRIMARY KEY (`id`),
+  CONSTRAINT `AbonnementUserConstraint` FOREIGN KEY (`idUser`) REFERENCES `User` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `Config`
+--
+
+CREATE TABLE `Config` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `streamUrl` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '',
+  `sessionDuration` int NOT NULL DEFAULT 3600,
+  `viewerLimit` int NOT NULL DEFAULT 10,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Données initiales de la table `Config`
+--
+
+INSERT INTO `Config` (`streamUrl`, `sessionDuration`, `viewerLimit`) VALUES ('', 3600, 10);
+
+COMMIT;
+
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
