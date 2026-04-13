@@ -32,7 +32,6 @@ use app\util\SessionLogin as UserSession;
 
 class Login {
     public function __construct(){
-        
         // Redirige l'utilisateur sur la page d'accueil
         // si il tente d'aller sur la page de login alors qu'il est deja co
         if (UserSession::isLogin()){
@@ -44,13 +43,20 @@ class Login {
 
         $userMail = req::post('mail');
         $userPassword = req::post('password');
+        $saisie_captcha = req::post('captcha_code');
 
         // On vérifie si l'une des clés existe dans la requête (envoie du formulaire)
         // Request::is() remplace isset($_POST['mail'])
         if(req::is('mail') || req::is('password')) {
+            // On nettoie la saisie pour correspondre au format de Render
+            $nettoyage = strtolower(str_replace(' ', '', $saisie_captcha));
+            $saisieMd5 = md5($nettoyage);
             // Vérification des champs vides
-            if(empty($userMail) || empty($userPassword)){
+            if(empty($userMail) || empty($userPassword || empty($saisie_captcha))){
                 $erreur = "Veuillez remplir tous les champs.";
+            }
+            elseif(!isset($_SESSION["captchaCode"]) || $saisieMd5 !== $_SESSION["captchaCode"]){
+                $erreur = "Captcha incorrect";
             }
             else{
                 // Appel au modèle pour la vérification
@@ -67,6 +73,10 @@ class Login {
                             $user->codeRole = ROLE_INVITE;
                         }
                     }
+
+                    // Enleve la session captcha
+                    unset($_SESSION["captchaCode"]);
+
                     // Si user est good on enregistre le role et l'objet entier en session
                     UserSession::loginWithRole($user->codeRole, $user->id);
                     // REDIRECTION

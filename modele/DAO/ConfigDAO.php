@@ -21,6 +21,8 @@ use modele\DAO\base\Database;
 class ConfigDAO extends Database {
 
     public function __construct() {
+        $tablename="config";
+        $primarykey="id";
         parent::__construct('Config', 'id');
     }
 
@@ -41,5 +43,9 @@ class ConfigDAO extends Database {
      */
     public function updateConfig(array $data): bool {
         return $this->updateOne(1, $data);
+    }
+
+    public function getURLbyId(int $id): mixed {
+        return $this->sendSQLAssoc("SELECT * from `" . $this->tableName . "` WHERE id = ?", [$id]);
     }
 }

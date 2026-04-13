@@ -3,10 +3,8 @@
 namespace controleur;
 
 use modele\DAO\UserDAO;
-use modele\User;
 use vue\base\MainTemplate as Vue;
 use app\util\SessionLogin as UserSession;
-use app\util\UserInfo;
 use app\util\Guard;
 
 class Accueil {
@@ -18,8 +16,17 @@ class Accueil {
 		 *	    SESSION
 		 */
 		
+		$id = UserSession::getUserId();
+		$userDAO = new UserDAO();
+		// READ
+		$user = $userDAO->getUsersById($id);
+
+		// getter
+		$surname = $user->getSurname();
+		$name = $user->getName();
 		
-		$user = UserInfo::getUserInfo();
+		
+		
 		
 
 		/**
@@ -34,7 +41,8 @@ class Accueil {
 		]);
 
 		Vue::render('Accueil', [
-			'user' => $user,
+			'surname' => $surname,
+			'name' => $name,
 		]);
 
 	}
