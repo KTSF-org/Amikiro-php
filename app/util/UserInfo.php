@@ -15,6 +15,7 @@ class UserInfo {
         $userId = UserSession::getUserId();
 		$userDAO = new UserDAO();
 		$user = $userDAO->getUsersById($userId);
+        
 
         return $user;
     }

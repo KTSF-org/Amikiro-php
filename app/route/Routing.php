@@ -64,7 +64,7 @@ class Routing {
 		$route->add('/confidentialite', 'controleur\Confidentialite');
 		$route->add('/mentionslegales', 'controleur\MentionsLegales');
 		
-		
+		$route->add('/captcha', 'controleur\util\Captcha');
 
 
 		//Contrôleur 404 par défaut :

@@ -20,6 +20,7 @@ class Accueil {
 		
 		
 		$user = UserInfo::getUserInfo();
+		
 
 		/**
 		 *	    VUES

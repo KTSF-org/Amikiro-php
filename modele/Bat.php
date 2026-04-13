@@ -4,6 +4,7 @@ namespace modele;
 use app\util\Error;
 use DateTime;
 use modele\DAO\BatDAO;
+use modele\Species;
 use mysqli_sql_exception;
 
 class Bat
@@ -15,6 +16,7 @@ class Bat
     // Constructeur : Bat
     public function __construct(
         private string $name = "",
+        private int $idSpecies = -1,
         private string $birthDate = "",
         private int $sex = -1,
         private int $weight = -1,
@@ -82,6 +84,11 @@ class Bat
         return $this->name;
     }
 
+    public function getIdSpecies(): int
+    {
+        return $this->idSpecies;
+    }
+
     public function getBirthDate(): string
     {
         return $this->birthDate;
@@ -116,6 +123,11 @@ class Bat
         $this->name = $name;
     }
 
+    public function setIdSpecies(int $idSpecies): void
+    {
+        $this->idSpecies = $idSpecies;
+    }
+
     public function setBirthDate(string $birthDate): void
     {
         $this->birthDate = $birthDate;
@@ -135,9 +147,5 @@ class Bat
     {
         $this->note = $note;
     }
-
-
-
-
 
 }
