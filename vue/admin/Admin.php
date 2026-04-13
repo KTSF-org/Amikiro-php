@@ -9,7 +9,7 @@
 <div class="d-flex justify-content-center align-items-center py-5">
     <div style="width: 100%; max-width: 400px;">
         <div class="border border-dark rounded p-4 bg-white shadow-sm">
-            <h4 class="text-center mb-4">Connexion</h4>
+            <h4 class="text-center mb-4">Connexion Admin</h4>
 
             <!-- Erreur de connexion transmise par le contrôleur -->
 
