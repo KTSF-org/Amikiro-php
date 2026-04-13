@@ -65,7 +65,19 @@ class BatDAO extends Database
     }
 
     // CRUD READ: Retourne toutes les chauve-souris
-    //public function getAllBat(): mixed {}
+    public function getAllBat(): array {
+        $allBats = array();
+        $data = (array) $this->getAll();
+        foreach ($data as $elem) {
+            $rowData = (array) $elem;
+            $id = $rowData[$this->primaryKey];
+            unset($rowData[$this->primaryKey], $elem);
+            $bat = new Bat(...$rowData);
+            $bat->setId($id);  
+            array_push($allBats, $bat);
+        }
+        return $allBats;
+    }
 
 
     // CRUD UPDATE: met à jour la chauve-souris dans la BDD

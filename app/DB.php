@@ -9,13 +9,6 @@
  *	Exemple : services: db: ==> const DB_SERVER = 'db';
  *
  */
-// const DB_SERVER = 'db'; //127.0.0.1 PAR DEFAUT EN LOCAL
-// const DB_DATABASE = 'Amikiro'; //NOM DE LA BDD
-// const DB_USER = 'root'; //NOM DE L'UTILISATEUR MYSQL
-// const DB_PASSWORD = 'secret'; //MOT DE PASSE
-// const DB_PORT = '3306'; //3306, PORT PAR DEFAUT
-// const DB_DEBUG = false; //RENFORCE LE TRAITEMENT DES ERREURS SQL
-
 const DB_SERVER = '172.16.120.127'; // 'db'; //127.0.0.1 PAR DEFAUT EN LOCAL
 const DB_DATABASE = 'KTSF'; // 'Amikiro'; //NOM DE LA BDD
 const DB_USER = 'dev'; // 'root'; //NOM DE L'UTILISATEUR MYSQL
