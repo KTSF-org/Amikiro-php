@@ -93,6 +93,7 @@ class UserDAO extends Database {
 		}
 		$rowData = (array)$row; //conversion objet --> array
 		unset($rowData[$this->primaryKey], $row); //retire la clé primaire du tableau et $row qui ne sert plus
+		$rowData['memberNum'] = (int)($rowData['memberNum'] ?? 0); //guard : memberNum nullable en BDD, int requis par le constructeur
 		$metier = new User(...$rowData); //crée l'objet User(->User.php) avec toutes les clés du tableau $rowData
 		$metier->setId($id); //ajoute $id dans l'objet métier (User)
 		return $metier; //retourne l'objet crée

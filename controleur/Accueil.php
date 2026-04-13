@@ -7,9 +7,12 @@ use modele\User;
 use vue\base\MainTemplate as Vue;
 use app\util\SessionLogin as UserSession;
 use app\util\UserInfo;
+use app\util\Guard;
+
 class Accueil {
 
 	public function __construct() {
+		Guard::requireLogin();
 
 		/**
 		 *	    SESSION
@@ -17,6 +20,7 @@ class Accueil {
 		
 		
 		$user = UserInfo::getUserInfo();
+		
 
 		/**
 		 *	    VUES

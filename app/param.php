@@ -14,7 +14,7 @@ const APP_VERSION = '0.0.0';
 const MAIN_TITLE = 'AMIKIRO LIVE';
 
 //Fonction debug() : sort var_dump() à la place de print_r()
-const DEBUG_DUMP = false; 
+const DEBUG_DUMP = false;
 
 //Affiche les informations de débogage sur les requêtes AJAX :
 const AJAX_DEBUG = false; //true -> le navigateur à recharger

@@ -4,6 +4,7 @@ namespace controleur;
 
 use vue\base\Ajax as Ajax;
 use app\util\Request as req;
+use app\util\Guard;
 use modele\DAO\UserDAO as Model;
 
 /**
@@ -48,6 +49,7 @@ class MainAjax extends Ajax {
 	 * @param string $message Retourne le message par défaut, ceci n'est pas indispensable.
 	 */
 	public function __construct(string $message='') {
+		Guard::requireLogin();
 
 		if(!empty($message)) {
 			$this->message = $message;
