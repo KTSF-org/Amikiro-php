@@ -5,6 +5,7 @@ namespace controleur;
 use app\util\Request as req;
 use app\util\BaseURL as url;
 
+use modele\DAO\BatDAO;
 use vue\base\MainTemplate as Vue;
 use app\util\Guard;
 
@@ -25,12 +26,90 @@ class SectionBat
         if (!isset($_GET["page"])) {
 
             // Création du code html pour afficher la liste des chauve-souris de la BDD
-            //TODO
+            $speciesDAO = new SpeciesDAO();
+            $batDAO = new BatDAO();
+            $bats = $batDAO->getAllBat();
+            $batList = "";
+            $batDetailsModals = "";
+
+            foreach ($bats as $bat) {
+
+                $id = $bat->getId();
+                $name = $bat->getName();
+                $species = $speciesDAO->getSpeciesById($bat->getIdSpecies())->getCommonName();
+                $sex = "";
+                switch ($bat->getSex()) {
+                    case 1:
+                        $sex = "Femelle";
+                        break;
+                    case 2:
+                        $sex = "Mâle";
+                        break;
+                    default:
+                        $sex = "Inconnu";
+                        break;
+                }
+
+                $details = '
+                <button type="button" class="btn btn-sm"
+                data-bs-toggle="modal" data-bs-target="#modal' . $id . '">
+                    afficher
+                </button>
+                ';
+
+                $batList .= "
+                <div class='row'>
+                    <div class='col-1 text-center border'>
+                        <input type='radio' class='form-check-input' name='batSelected'>
+                    </div>
+                    <div class='col-2 text-center border'>" .
+                    $id . "
+                    </div>
+                    <div class='col border'>" .
+                    $name . "
+                    </div>
+                    <div class='col-2 border'>
+                            " . $details . "
+                        </div>
+                </div>
+                ";
+
+                $batDetailsModals .= '
+                <div class="modal fade" id="modal' . $id . '" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5">' . $name . '</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                Espece : ' . $species . '<br/>
+                                Date de naissance : ' . $bat->getBirthDate() . '<br/>
+                                Sexe : ' . $sex . '<br/>
+                                Poids : ' . $bat->getWeight() . ' grammes<br/><br/>
+                                Note :<br/> ' . $bat->getNote() . '
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                ';
+            }
+
+            if (
+                !empty($_POST["sectionTitle"]) &&
+                !empty($_POST["sectionObservation"])
+            ) {
+                //TODO Création et stockage de la fiche Bat.
+            }
 
 
             Vue::render(
                 'SectionBat',
-                ["url" => $url]
+                [
+                    "url" => $url,
+                    "batList" => $batList,
+                    "batDetailsModals" => $batDetailsModals
+                ]
             );
 
         }
