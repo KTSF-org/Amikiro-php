@@ -13,7 +13,7 @@
     
     <script>
         var video = document.getElementById('video');
-        var videoUrl = "<?= $url1["url"] ?>";
+        var videoUrl = "<?= $url2['streamUrl'] ?>";
 
         if (Hls.isSupported()) {
             var hls = new Hls();
