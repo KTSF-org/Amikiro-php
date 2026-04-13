@@ -26,6 +26,13 @@
                         placeholder="Votre mot de passe">
                 </div>
 
+                <div class="mt-5 mb-3">
+                    <div class="text-center mb-3">
+                        <img src="<?= $actual_link ?>captcha" id="captcha_img" alt="Captcha">
+                    </div>
+                    <input type="text" name="captcha_code" class="form-control" placeholder="Code">
+                </div>
+
                 <?php if (!empty($erreur)): ?>
                     <div class="alert alert-danger"><?= htmlspecialchars($erreur) ?></div>
                 <?php endif; ?>
