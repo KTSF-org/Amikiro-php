@@ -17,7 +17,7 @@
                 <div class="card-body">
                     <h5 class="card-title mb-3">Informations du compte</h5>
                     <form method="POST"
-                          action="<?= $actual_link ?>parametres/utilisateurs/editer?id=<?= $metier->getId() ?>">
+                          action="<?= $actual_link ?>parametres/utilisateurs?page=editer&id=<?= $metier->getId() ?>">
                         <input type="hidden" name="action" value="identity">
 
                         <div class="mb-3">
@@ -106,7 +106,7 @@
 
                     <!-- Formulaire nouvel abonnement -->
                     <form method="POST"
-                          action="<?= $actual_link ?>parametres/utilisateurs/editer?id=<?= $metier->getId() ?>">
+                          action="<?= $actual_link ?>parametres/utilisateurs?page=editer&id=<?= $metier->getId() ?>">
                         <input type="hidden" name="action" value="abonnement">
                         <div class="row g-2 align-items-end">
                             <div class="col">

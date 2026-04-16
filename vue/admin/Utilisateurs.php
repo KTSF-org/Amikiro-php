@@ -14,7 +14,7 @@ function roleLabel(int $code): string {
 
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1>Gestion des utilisateurs</h1>
-        <a href="<?= $actual_link ?>parametres/utilisateurs/creer" class="btn btn-success">+ Créer un compte</a>
+        <a href="<?= $actual_link ?>parametres/utilisateurs?page=creer" class="btn btn-success">+ Créer un compte</a>
     </div>
 
     <!-- Recherche AJAX -->
@@ -79,7 +79,7 @@ function roleLabel(int $code): string {
                     <td><?= roleLabel((int)$u->codeRole) ?></td>
                     <td><?= (int)$u->memberNum ?></td>
                     <td>
-                        <a href="<?= $actual_link ?>parametres/utilisateurs/editer?id=<?= (int)$u->id ?>"
+                        <a href="<?= $actual_link ?>parametres/utilisateurs?page=editer&id=<?= (int)$u->id ?>"
                            class="btn btn-sm btn-primary">Éditer</a>
                         <?php if ((int)$u->id !== $currentId): ?>
                         <form method="POST"
@@ -128,7 +128,7 @@ $(document).ready(function () {
                     );
                     $('#btnEditer').attr(
                         'href',
-                        '<?= $actual_link ?>parametres/utilisateurs/editer?id=' + response.id
+                        '<?= $actual_link ?>parametres/utilisateurs?page=editer&id=' + response.id
                     );
                     $('#deleteSearchId').val(response.id);
                     $('#ajaxResult').show();

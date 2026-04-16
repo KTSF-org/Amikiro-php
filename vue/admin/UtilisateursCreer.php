@@ -12,7 +12,7 @@
                 <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>
             <?php endif; ?>
 
-            <form method="POST" action="<?= $actual_link ?>parametres/utilisateurs/creer">
+            <form method="POST" action="<?= $actual_link ?>parametres/utilisateurs?page=creer">
 
                 <div class="mb-3">
                     <label for="name" class="form-label">Prénom <span class="text-danger">*</span></label>
