@@ -13,7 +13,7 @@
         Ce menu s'affiche si l'utilisateur souhaite enregistrer une nouvelle chauve-souris
     </p>
 
-    <form method="post" action="SectionBat">
+    <form method="post" action="sectionBat">
         <div class="row align-items-start">
 
             <div class="col">
@@ -26,27 +26,37 @@
                 <div class="mb-3">
                     <label for="observation" class="form-label">Observations</label>
                     <textarea class="form-control" id="sectionObservation" rows="3" placeholder=""
-                        name="batNotes"></textarea>
+                        name="sectionObservation"></textarea>
                 </div>
-
-                <div class="mb-3">
-                    <div class="form-floating">
-                        <select class="form-select" id="floatingSelect" aria-label="Floating label select example" name="sectionCategory">
-                            <option selected>Catégorie</option>
-                            <option value="1">One</option>
-                            <option value="2">Two</option>
-                            <option value="3">Three</option>
-                        </select>
-                        <label for="floatingSelect">Works with selects</label>
-                    </div>
-                </div>
+                <button type="submit" class="btn btn-primary">Enregistrer la fiche</button>
             </div>
 
             <div class="col">
-                col 2
-                <a href="<?= $url ?>" role="button" class="btn btn-primary">
-                    Ajouter une nouvelle chauve-souris
-                </a>
+                <div>
+                    Liste des chauve-souris
+                    <a href="<?= $url ?>" role="button" class="btn btn-primary">
+                        Ajouter une nouvelle chauve-souris
+                    </a>
+                </div>
+                <div class="container">
+                    <div class="row">
+                        <div class="col-1 text-center border">
+                            -
+                        </div>
+                        <div class="col-2 text-center border">
+                            #
+                        </div>
+                        <div class="col border">
+                            Nom
+                        </div>
+                        <div class="col-2 border">
+                            Détails
+                        </div>
+                    </div>
+                    <?= $batList ?>
+                    <?= $batDetailsModals ?>
+                </div>
+
             </div>
 
         </div>

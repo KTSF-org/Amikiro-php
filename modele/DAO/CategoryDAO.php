@@ -80,4 +80,18 @@ class CategoryDAO extends Database {
             return null;
         }
     }
+
+	public function getAllcategories(): array {
+		$allCategories = array();
+		$data = (array)$this->getAll();
+		foreach ($data as $elem){
+			$rowData = (array)$elem;
+			$id = $rowData[$this->primaryKey];
+			unset($rowData[$this->primaryKey], $elem);
+			$category = new Category(...$rowData);
+			$category->setId($id);
+			array_push($allCategories, $category);
+		}
+		return $allCategories;
+	}
 }
