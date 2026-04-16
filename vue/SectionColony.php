@@ -8,22 +8,22 @@
 
 <div class="container">
 
-    <p>Création fiche colonie (formulaire avec les champs à remplir).</p>
+    <p>Création fiche colonie (formulaire avec les champs à remplir)</p>
 
-    <form action="SectionColony" method="post">
+    <form method="POST" action="<?= $actual_link?>sectionColony">
         <!-- Champs du formulaire -->
         <div class="mb-3 col-3">
-            <label for="colonyName" class="form-label">Titre rubrique</label>
+            <label for="colonyTitle" class="form-label">Titre rubrique</label>
             <input type="text" class="form-control" id="title" placeholder="Titre rubrique" >
         </div>
         <div class="mb-3 row col-8">
             <div class="mb-3 col-3">
             <label for="Date" class="form-label">Date</label>
-            <input type="date" class="form-control" id="date" name="colonyDate">
+            <input type="datetime-local" class="" id="date" name="colonyDate">
             </div>
             <div class="mb-3 col-3">
             <label for="Date" class="form-label">Heure</label>
-            <input type="time" class="form-control" id="time" name="colonyDate">
+            <input type="time" class="form-control" id="time" name="colonyHour">
             </div>
         </div>
         <div class="mb-3 col-3">
@@ -46,3 +46,15 @@
 
 
 </div>
+<script>
+    $doument.ready(function(){
+        $(document).on("submit", "form", function(e){
+            e.preventDefault();
+            $.ajax({
+                url: "controller/SectionColony.php",
+                method: "POST",
+               
+            });
+        });
+
+    })
