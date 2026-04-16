@@ -6,18 +6,25 @@
 
 ?>
 
-<div class="">
+<div class="container-fluid">
 
-    <form method="post" action="sectionBat">
+    <a href="sectionBat" role="button" class="btn btn-primary m-1">Retour</a>
+
+    <form method="post" action="sectionBat?page=addition">
 
         <div class="mb-3">
             <label for="name" class="form-label">Nom de la chauve-souris</label>
             <input type="text" class="form-control" id="batName" placeholder="Nom" name="batName">
         </div>
 
-        <div class="mb-3 bg-danger">
-            <label for="species" class="form-label">Espèce de la chauve-souris</label>
-            <input type="text" class="form-control" id="batSpecies" placeholder="TODO" name="batSpecies">
+        <div class="mb-3">
+            <div class="form-floating">
+                <select class="form-select" id="floatingSelect" aria-label="Floating label select example"
+                    name="batSpecies">
+                    <?= $speciesList ?>
+                </select>
+                <label for="floatingSelect">Espèce de la chauve-souris</label>
+            </div>
         </div>
 
         <div class="mb-3">

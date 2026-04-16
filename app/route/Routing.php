@@ -60,6 +60,8 @@ class Routing {
 		$route->add('/parametres/utilisateurs/editer', 'controleur\admin\UtilisateursEditer');
 		$route->add('/parametres/utilisateurs', 'controleur\admin\Utilisateurs');
 		$route->add('/parametres/webcam', 'controleur\admin\Webcam');
+		// URL SPECIFIQUE ADMIN
+		$route->add('/' . URL_ADMIN, 'controleur\admin\AdminControleur');
 
 		$route->add('/confidentialite', 'controleur\Confidentialite');
 		$route->add('/mentionslegales', 'controleur\MentionsLegales');
