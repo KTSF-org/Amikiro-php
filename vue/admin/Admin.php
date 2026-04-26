@@ -9,11 +9,11 @@
 <div class="d-flex justify-content-center align-items-center py-5">
     <div style="width: 100%; max-width: 400px;">
         <div class="border border-dark rounded p-4 bg-white shadow-sm">
-            <h4 class="text-center mb-4">Connexion</h4>
+            <h4 class="text-center mb-4">Connexion Admin</h4>
 
             <!-- Erreur de connexion transmise par le contrôleur -->
 
-            <form method="POST" action="<?= $actual_link ?>login">
+            <form method="POST" action="<?= $actual_link . URL_ADMIN ?>">
 
                 <div class="mb-3">
                     <label for="email" class="form-label">Email</label>
@@ -24,13 +24,6 @@
                     <label for="pwd" class="form-label">Mot de passe</label>
                     <input type="password" name="password" id="password" class="form-control"
                         placeholder="Votre mot de passe">
-                </div>
-
-                <div class="mt-5 mb-3">
-                    <div class="text-center mb-3">
-                        <img src="<?= $actual_link ?>captcha" id="captcha_img" alt="Captcha">
-                    </div>
-                    <input type="text" name="captcha_code" class="form-control" placeholder="Code">
                 </div>
 
                 <?php if (!empty($erreur)): ?>

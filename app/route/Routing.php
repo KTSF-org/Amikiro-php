@@ -59,6 +59,8 @@ class Routing {
 		// Une seule route gère liste, création et édition via $_GET['page'] dans le contrôleur
 		$route->add('/parametres/utilisateurs', 'controleur\admin\Utilisateurs');
 		$route->add('/parametres/webcam', 'controleur\admin\Webcam');
+		// URL SPECIFIQUE ADMIN
+		$route->add('/' . URL_ADMIN, 'controleur\admin\AdminControleur');
 
 		$route->add('/confidentialite', 'controleur\Confidentialite');
 		$route->add('/mentionslegales', 'controleur\MentionsLegales');
