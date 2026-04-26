@@ -15,6 +15,8 @@ class Utilisateurs {
     public function __construct() {
         Guard::requireRole(ROLE_ADMIN);
 
+        // Dispatch interne : une seule route gère liste, création et édition
+        // selon la valeur de $_GET['page'] (?page=creer, ?page=editer, ou rien pour la liste)
         match ($_GET['page'] ?? '') {
             'creer'  => $this->creer(),
             'editer' => $this->editer(),
@@ -29,6 +31,7 @@ class Utilisateurs {
             $id        = (int)($_POST['id'] ?? 0);
             $currentId = (int)($_SESSION['user']->id ?? 0);
 
+            // Empêche un admin de supprimer son propre compte
             if ($id > 0 && $id !== $currentId) {
                 $metier = $userDAO->getUsersById($id);
                 $metier->deleteUser();
@@ -59,6 +62,7 @@ class Utilisateurs {
             $codeRole  = (int)($_POST['codeRole'] ?? ROLE_ADHERENT);
             $memberNum = (int)($_POST['memberNum'] ?? 0);
 
+            // Bloquer la création de comptes admin depuis l'interface
             if ($codeRole === ROLE_ADMIN) {
                 $error = 'Impossible de créer un compte administrateur.';
             } elseif (empty($name) || empty($surname) || empty($mail) || empty($password)) {
@@ -110,7 +114,8 @@ class Utilisateurs {
                 } else {
                     $successAbo = $abonnementDAO->createForUser($id, $startDate, $endDate);
 
-                    if ($successAbo && $metier->getCodeRole() === ROLE_INVITE) {
+                    // Promeut automatiquement l'utilisateur en ROLE_ADHERENT si son rôle était INVITE
+                if ($successAbo && $metier->getCodeRole() === ROLE_INVITE) {
                         $metier->setCodeRole(ROLE_ADHERENT);
                         $userDAO->update($metier);
                     }
@@ -122,6 +127,7 @@ class Utilisateurs {
                 $mail      = Request::post('mail');
                 $password  = Request::post('password');
                 $memberNum = (int)($_POST['memberNum'] ?? $metier->getMemberNum());
+                // Un admin ne peut pas changer son propre rôle
                 $codeRole  = $isSelf
                     ? $metier->getCodeRole()
                     : (int)($_POST['codeRole'] ?? $metier->getCodeRole());

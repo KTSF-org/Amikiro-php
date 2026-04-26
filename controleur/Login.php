@@ -67,7 +67,8 @@ class Login {
                             $user->codeRole = ROLE_INVITE;
                         }
                     }
-                    // Si user est good on enregistre le role et l'objet entier en session
+                    // Stocke l'objet utilisateur complet en session (stdClass depuis PDO FETCH_OBJ)
+                    $_SESSION['user'] = $user;
                     UserSession::loginWithRole($user->codeRole, $user->id);
                     // REDIRECTION
                     header('Location:  accueil');

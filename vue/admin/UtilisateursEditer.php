@@ -16,6 +16,7 @@
             <div class="card mb-4">
                 <div class="card-body">
                     <h5 class="card-title mb-3">Informations du compte</h5>
+                    <!-- name="action" permet au contrôleur de distinguer ce formulaire de celui d'abonnement -->
                     <form method="POST"
                           action="<?= $actual_link ?>parametres/utilisateurs?page=editer&id=<?= $metier->getId() ?>">
                         <input type="hidden" name="action" value="identity">
@@ -48,7 +49,7 @@
 
                         <div class="mb-3">
                             <label for="codeRole" class="form-label">Rôle</label>
-                            <?php if ($isSelf): ?>
+                            <?php if ($isSelf): // un admin ne peut pas modifier son propre rôle ?>
                                 <p class="form-control-plaintext">Administrateur
                                     <small class="text-muted">(non modifiable)</small>
                                 </p>
@@ -81,7 +82,7 @@
                 </div>
             </div>
 
-            <!-- Abonnement -->
+            <!-- Abonnement : masqué quand l'admin édite son propre compte -->
             <?php if (!$isSelf): ?>
             <div class="card mb-4">
                 <div class="card-body">
@@ -104,7 +105,7 @@
                         <div class="alert alert-danger py-2"><?= htmlspecialchars($errorAbo) ?></div>
                     <?php endif; ?>
 
-                    <!-- Formulaire nouvel abonnement -->
+                    <!-- Formulaire nouvel abonnement : action="abonnement" pour distinguer du formulaire identité -->
                     <form method="POST"
                           action="<?= $actual_link ?>parametres/utilisateurs?page=editer&id=<?= $metier->getId() ?>">
                         <input type="hidden" name="action" value="abonnement">
@@ -142,7 +143,7 @@
                                 <td><?= date('d/m/Y', strtotime($abo->startDate)) ?></td>
                                 <td><?= date('d/m/Y', strtotime($abo->endDate)) ?></td>
                                 <td>
-                                    <?php if ($abo->endDate >= date('Y-m-d')): ?>
+                                    <?php if ($abo->endDate >= date('Y-m-d')): // comparaison de chaînes ISO 8601 (Y-m-d), fonctionne car format fixe ?>
                                         <span class="badge bg-success">Actif</span>
                                     <?php else: ?>
                                         <span class="badge bg-secondary">Expiré</span>
