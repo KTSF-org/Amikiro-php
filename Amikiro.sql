@@ -312,6 +312,7 @@ CREATE TABLE `Config` (
   `streamUrl` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '',
   `sessionDuration` int NOT NULL DEFAULT 3600,
   `viewerLimit` int NOT NULL DEFAULT 10,
+  `viewerCount` int NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
@@ -319,7 +320,7 @@ CREATE TABLE `Config` (
 -- Données initiales de la table `Config`
 --
 
-INSERT INTO `Config` (`streamUrl`, `sessionDuration`, `viewerLimit`) VALUES ('', 3600, 10);
+INSERT INTO `Config` (`streamUrl`, `sessionDuration`, `viewerLimit`, `viewerCount`) VALUES ('', 3600, 10, 0);
 
 COMMIT;
 
