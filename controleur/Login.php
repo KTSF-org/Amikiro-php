@@ -93,14 +93,6 @@ class Login
 
                     }
                 } else {
-                    }
-                    // Stocke l'objet utilisateur complet en session (stdClass depuis PDO FETCH_OBJ)
-                    $_SESSION['user'] = $user;
-                    UserSession::loginWithRole($user->codeRole, $user->id);
-                    // REDIRECTION
-                    header('Location:  accueil');
-                    exit;
-                }else {
                     // Dernier cas d'echec : soit mail inconnu ou password
                     $erreur = "Email ou mot de passe incorrect.";
                 }
