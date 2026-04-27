@@ -27,3 +27,11 @@ const ROLE_INVITE     = 0;
 const ROLE_ADHERENT   = 1;
 const ROLE_NATURALISTE = 2;
 const ROLE_ADMIN      = 3;
+
+// PHPMailer — Dev : Mailpit localhost:1025 / Prod : remplacer par SMTP hébergeur
+const MAIL_HOST      = 'mailpit';
+const MAIL_PORT      = 1025;
+const MAIL_USER      = '';
+const MAIL_PASS      = '';
+const MAIL_FROM      = 'noreply@amikiro.fr';
+const MAIL_FROM_NAME = 'Amikiro';

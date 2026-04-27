@@ -6,7 +6,7 @@ namespace controleur\common;
 use vue\base\MainTemplate as Vue;
 use modele\User;
 use modele\DAO\UserDAO;
-use modele\DAO\AbonnementDAO;
+use modele\DAO\SubscriptionDAO;
 use app\util\Request as req;
 use app\util\SessionLogin as UserSession;
 
@@ -64,8 +64,8 @@ class Login
                 if ($user) {
                     // Vérification abonnement expiré uniquement pour ROLE_ADHERENT
                     if ((int) $user->codeRole === ROLE_ADHERENT) {
-                        $abonnementDAO = new AbonnementDAO();
-                        if (!$abonnementDAO->getActiveByUser($user->id)) {
+                        $subscriptionDAO = new SubscriptionDAO();
+                        if (!$subscriptionDAO->getActiveByUser($user->id)) {
                             $userDAO = new UserDAO();
                             $metier = $userDAO->getUsersById($user->id);
                             $metier->setCodeRole(ROLE_INVITE);

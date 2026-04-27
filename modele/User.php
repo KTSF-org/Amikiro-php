@@ -34,7 +34,7 @@ class User
 		private string $name = '',
 		private string $surname = '',
 		private int $countConnect = -1,
-		private int $memberNum = -1
+		private string $memberNum = ''
 	) {
 
 		// Gestionnaire d'erreur (pour les requêtes) :

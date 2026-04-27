@@ -55,7 +55,7 @@ class Routing {
 
 		// Paramètres admin (accès restreint à ROLE_ADMIN, contrôle à implémenter dans chaque contrôleur)
 		// Une seule route gère liste, création et édition via $_GET['page'] dans le contrôleur
-		$route->add('/parametres/utilisateurs', 'controleur\admin\Utilisateurs');
+		$route->add('/parametres/utilisateurs', 'controleur\admin\Users');
 		$route->add('/parametres/webcam', 'controleur\admin\Webcam');
 		// URL SPECIFIQUE ADMIN
 		$route->add('/' . URL_ADMIN, 'controleur\admin\AdminControleur');

@@ -1,7 +1,4 @@
 <?php
-/** VUE : Admin / Utilisateurs */
-
-// Convertit un code de rôle entier en libellé lisible pour l'affichage
 function roleLabel(int $code): string {
     return match($code) {
         ROLE_INVITE      => 'Invité',
@@ -16,11 +13,9 @@ function roleLabel(int $code): string {
 
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1>Gestion des utilisateurs</h1>
-        <!-- ?page=creer déclenche la méthode creer() dans le contrôleur Utilisateurs -->
-        <a href="<?= $actual_link ?>parametres/utilisateurs?page=creer" class="btn btn-success">+ Créer un compte</a>
+        <a href="<?= $actual_link ?>parametres/utilisateurs?page=create" class="btn btn-success">+ Créer un compte</a>
     </div>
 
-    <!-- Recherche AJAX : interroge MainAjax->getUserBySearch() via la clé ?findUsers -->
     <div class="card mb-4">
         <div class="card-body">
             <h5 class="card-title mb-3">Recherche rapide</h5>
@@ -37,7 +32,7 @@ function roleLabel(int $code): string {
                  class="alert alert-info d-flex justify-content-between align-items-center mb-0">
                 <span id="ajaxResultText"></span>
                 <div class="d-flex gap-2">
-                    <a id="btnEditer" href="#" class="btn btn-sm btn-primary">Éditer</a>
+                    <a id="btnEdit" href="#" class="btn btn-sm btn-primary">Éditer</a>
                     <form id="formDeleteSearch" method="POST"
                           action="<?= $actual_link ?>parametres/utilisateurs"
                           class="d-inline"
@@ -54,7 +49,6 @@ function roleLabel(int $code): string {
         </div>
     </div>
 
-    <!-- Liste complète -->
     <div class="table-responsive">
         <table class="table table-striped align-middle">
             <thead class="table-dark">
@@ -80,11 +74,11 @@ function roleLabel(int $code): string {
                     <td><?= htmlspecialchars($u->surname) ?></td>
                     <td><?= htmlspecialchars($u->mail) ?></td>
                     <td><?= roleLabel((int)$u->codeRole) ?></td>
-                    <td><?= (int)$u->memberNum ?></td>
+                    <td><?= htmlspecialchars($u->memberNum ?? '') ?></td>
                     <td>
-                        <a href="<?= $actual_link ?>parametres/utilisateurs?page=editer&id=<?= (int)$u->id ?>"
+                        <a href="<?= $actual_link ?>parametres/utilisateurs?page=edit&id=<?= (int)$u->id ?>"
                            class="btn btn-sm btn-primary">Éditer</a>
-                        <?php if ((int)$u->id !== $currentId): // masque le bouton supprimer sur la ligne de l'admin connecté ?>
+                        <?php if ((int)$u->id !== $currentId): ?>
                         <form method="POST"
                               action="<?= $actual_link ?>parametres/utilisateurs"
                               class="d-inline"
@@ -116,7 +110,6 @@ $(document).ready(function () {
         $('#ajaxLoader').show();
         $('#ajaxResult, #ajaxNoResult').hide();
 
-        // AjaxRequest est défini dans asset/js/main.js
         const request = new AjaxRequest(
             '<?= $actual_link ?>ajax?findUsers',
             'POST',
@@ -126,14 +119,13 @@ $(document).ready(function () {
         request.send(
             (response) => {
                 $('#ajaxLoader').hide();
-                // La réponse est un objet utilisateur ou false si aucun résultat
                 if (response && response.id) {
                     $('#ajaxResultText').text(
                         response.name + ' ' + response.surname + ' — ' + response.mail
                     );
-                    $('#btnEditer').attr(
+                    $('#btnEdit').attr(
                         'href',
-                        '<?= $actual_link ?>parametres/utilisateurs?page=editer&id=' + response.id
+                        '<?= $actual_link ?>parametres/utilisateurs?page=edit&id=' + response.id
                     );
                     $('#deleteSearchId').val(response.id);
                     $('#ajaxResult').show();
