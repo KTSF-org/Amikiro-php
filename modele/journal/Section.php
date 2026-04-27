@@ -51,6 +51,12 @@ class Section{
 		return $sectionDao->create($this);
 	}
 
+	// DELETE
+	public function deleteSection(): bool {
+		$sectionDao = new SectionDAO();
+		return $sectionDao->delete($this);
+	}
+
 	/**
 	 * GETTERS (accesseurs)
 	 */

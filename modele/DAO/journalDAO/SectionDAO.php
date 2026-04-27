@@ -36,7 +36,7 @@ class SectionDAO extends Database {
 		return $bool;
 	}
 
-	public function read(int $id = 1): mixed {
+	public function find(int $id): mixed {
 		$row = false;
 		if ($id > 0) $row = $this->getOne($id);
 		if (!$row) {
