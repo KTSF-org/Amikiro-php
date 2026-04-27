@@ -60,6 +60,7 @@ class ConfigDAO extends Database {
      * Décrémente le compteur de viewers actifs (plancher à 0).
      */
     public function decrementViewers(): void {
+        // GREATEST(0, ...) empêche le compteur de passer en négatif si decrementViewers est appelé en double
         $this->getPdo()->exec("UPDATE `Config` SET viewerCount = GREATEST(0, viewerCount - 1) WHERE id = 1");
     }
 }

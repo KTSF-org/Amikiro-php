@@ -21,7 +21,8 @@ class Test {
 		if (User::isLogin()) {
 			$activeUser=null;
 			if(isset($_SESSION['user'])) {
-				$user = $_SESSION['user']['prenom'] . ' ' . $_SESSION['user']['nom'];
+				// $_SESSION['user'] est un stdClass (PDO FETCH_OBJ) : accès avec -> et non []
+				$user = $_SESSION['user']->name . ' ' . $_SESSION['user']->surname;
 				$activeUser = "<b>" . $user . "</b> est connecté.";
 			}
 			echo "La session LOGIN est activée ! " . $activeUser;
@@ -34,8 +35,6 @@ class Test {
 			echo "<br/><pre>Sessions active de l'application -> $v(".chr(36)."_SESSION) :</pre>";
 			debug($_SESSION);
 		}
-		
-		User::login();
 		
 	}
 }

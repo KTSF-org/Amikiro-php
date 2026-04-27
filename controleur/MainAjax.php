@@ -38,8 +38,9 @@ class MainAjax extends Ajax {
 		return [
 			// - "findUsers" est utilisé dans : vue/ajax/ajaxRechercher.php
 			// - la méthode protégée : "getUserBySearch" est implémentée ci-dessous.
-			'findUsers'  => 'getUserBySearch',
-			'liveLeave'  => 'liveLeave',
+			'findUsers'   => 'getUserBySearch',
+			'liveLeave'   => 'liveLeave',
+			'viewerCount' => 'getViewerCount',
 		];
 	}
 
@@ -98,8 +99,19 @@ class MainAjax extends Ajax {
 	 * Appelé via navigator.sendBeacon() au beforeunload.
 	 */
 	protected function liveLeave(): bool {
-		(new ConfigDAO())->decrementViewers();
+		if (isset($_SESSION['in_live'])) {
+			(new ConfigDAO())->decrementViewers();
+			unset($_SESSION['in_live']);
+		}
 		return true;
+	}
+
+	/**
+	 * Retourne le nombre de viewers actifs en temps réel.
+	 * Interrogé périodiquement par la vue Live via setInterval.
+	 */
+	protected function getViewerCount(): int {
+		return (int)((new ConfigDAO())->getURLbyId(1)['viewerCount'] ?? 0);
 	}
 
 }
