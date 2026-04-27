@@ -1,9 +1,9 @@
 <?php
 
-namespace modele;
+namespace modele\journal;
 use app\util\Error;
 use DateTime;
-use modele\DAO\SpeciesDAO;
+use modele\DAO\journalDAO\SpeciesDAO;
 use mysqli_sql_exception;
 
 class Species

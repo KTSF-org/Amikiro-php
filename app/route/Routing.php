@@ -21,10 +21,10 @@ class Routing {
 		$route = new Router();
 
 		//PAGE LOGIN
-		$route->add('', 'controleur\Login'); //page par défaut
-		$route->add('/login', 'controleur\Login');
-		$route->add('/accueil', 'controleur\Accueil');
-		$route->add('/about', 'controleur\About');
+		$route->add('', 'controleur\common\Login'); //page par défaut
+		$route->add('/login', 'controleur\common\Login');
+		$route->add('/accueil', 'controleur\common\Accueil');
+		$route->add('/about', 'controleur\common\About');
 		//charge une image en interne (hors asset) :
 		$route->add('/img', 'controleur\util\Image');
 		//charge la classe MainAjax($message), 'Hello AJAX' un message de sortie par défaut :
@@ -41,18 +41,16 @@ class Routing {
         $route->add('/live', 'controleur\Live');
 
 		// Journal et ses sous-pages (édition des données métier)
-		$route->add('/journal', 'controleur\Journal');
-		$route->add('/journal/categorie', 'controleur\journal\Categorie');
-		$route->add('/journal/fiche', 'controleur\journal\Fiche');
+		$route->add('/journal', 'controleur\journal\Journal');
+		// $route->add('/journal/categorie', 'controleur\journal\Categorie');
 
 		// Déconnexion — détruit la session et redirige vers /login
-		$route->add('/logout', 'controleur\Logout');
+		$route->add('/logout', 'controleur\common\Logout');
 
-		$route->add('/sectionBat', 'controleur\SectionBat');
-		$route->add('/sectionColony', 'controleur\SectionColony');
+		$route->add('/sectionBat', 'controleur\journal\SectionBat');
+		$route->add('/sectionColony', 'controleur\journal\SectionColony');
 
 		// Paramètres utilisateur
-		$route->add('/parametres', 'controleur\Parametres');
 		$route->add('/parametres/profil', 'controleur\Profil');
 
 		// Paramètres admin (accès restreint à ROLE_ADMIN, contrôle à implémenter dans chaque contrôleur)
@@ -62,14 +60,14 @@ class Routing {
 		// URL SPECIFIQUE ADMIN
 		$route->add('/' . URL_ADMIN, 'controleur\admin\AdminControleur');
 
-		$route->add('/confidentialite', 'controleur\Confidentialite');
-		$route->add('/mentionslegales', 'controleur\MentionsLegales');
+		$route->add('/confidentialite', 'controleur\legale\Confidentialite');
+		$route->add('/mentionslegales', 'controleur\legale\MentionsLegales');
 		
 		$route->add('/captcha', 'controleur\util\Captcha');
 
 
 		//Contrôleur 404 par défaut :
-		$route->set404('controleur\NotFound');
+		$route->set404('controleur\common\NotFound');
 		
 		if (self::$debug) $route->help();
 		$route->run();

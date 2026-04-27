@@ -1,6 +1,6 @@
 <?php
 
-namespace controleur;
+namespace controleur\common;
 
 
 use vue\base\MainTemplate as Vue;

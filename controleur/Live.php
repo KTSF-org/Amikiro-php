@@ -36,7 +36,7 @@ class Live
         $url1 = $config->getURLbyId(1);
 
         Vue::setTitle('Live');
-        Vue::render('Live', ['url1' => $url1]);
+        Vue::render('live/Live', ['url1' => $url1]);
 
     }
 }

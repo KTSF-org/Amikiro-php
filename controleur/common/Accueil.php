@@ -1,6 +1,6 @@
 <?php
 
-namespace controleur;
+namespace controleur\common;
 
 use modele\DAO\UserDAO;
 use vue\base\MainTemplate as Vue;
@@ -40,7 +40,7 @@ class Accueil {
 			ASSET . '/css/accueil.css',
 		]);
 
-		Vue::render('Accueil', [
+		Vue::render('common/Accueil', [
 			'surname' => $surname,
 			'name' => $name,
 		]);
