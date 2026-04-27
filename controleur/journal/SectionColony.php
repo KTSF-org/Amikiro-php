@@ -1,13 +1,13 @@
 <?php
 
-namespace controleur;
+namespace controleur\journal;
 
-use modele\DAO\CategoryDAO;
+use modele\DAO\journalDAO\CategoryDAO;
 use vue\base\MainTemplate as Vue;
 use app\util\Guard;
 use app\util\Request;
 use app\util\BaseURL;
-use modele\Section;
+use modele\journal\Section;
 use app\util\SessionLogin as UserSession;
 
 class SectionColony {
@@ -49,7 +49,7 @@ class SectionColony {
         }
 
         Vue::render(
-            'SectionColony',
+            'journal/SectionColony',
             [
                 'categories' => $catList
             ]

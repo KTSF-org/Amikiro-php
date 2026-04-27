@@ -1,16 +1,16 @@
 <?php
 
-namespace modele\DAO;
+namespace modele\DAO\journalDAO;
 
 use modele\DAO\base\Database;
-use modele\Category;
+use modele\journal\Section;
 use app\util\Error;
 use PDO;
 
-class CategoryDAO extends Database {
+class SectionDAO extends Database {
 
     public function __construct() {
-        parent::__construct('Category', 'id');
+        parent::__construct('Section', 'id');
     }
 
 	private function getAllData($metier): array {
@@ -44,7 +44,7 @@ class CategoryDAO extends Database {
 		}
 		$rowData = (array)$row;
 		unset($rowData[$this->primaryKey], $row);
-		$metier = new Category(...$rowData);
+		$metier = new Section(...$rowData);
 		$metier->setId($id);
 		return $metier;
 	}
@@ -61,37 +61,13 @@ class CategoryDAO extends Database {
     public function findAll(): array {
         try {
             $stmt = $this->getPdo()->prepare(
-                "SELECT id, name FROM `Category` ORDER BY id DESC"
+                "SELECT id, title FROM `Section` ORDER BY creationDate DESC"
             );
             $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_OBJ) ?: [];
         } catch (\PDOException $e) {
-            error_log('[CategoryDAO::findAll] ' . $e->getMessage());
+            error_log('[SectionDAO::findAll] ' . $e->getMessage());
             return [];
         }
     }
-
-    public function findById(int $id): ?\stdClass {
-        try {
-            $row = $this->getOne((string)$id);
-            return $row ?: null;
-        } catch (\PDOException $e) {
-            error_log('[CategoryDAO::findById] ' . $e->getMessage());
-            return null;
-        }
-    }
-
-	public function getAllcategories(): array {
-		$allCategories = array();
-		$data = (array)$this->getAll();
-		foreach ($data as $elem){
-			$rowData = (array)$elem;
-			$id = $rowData[$this->primaryKey];
-			unset($rowData[$this->primaryKey], $elem);
-			$category = new Category(...$rowData);
-			$category->setId($id);
-			array_push($allCategories, $category);
-		}
-		return $allCategories;
-	}
 }

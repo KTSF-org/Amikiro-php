@@ -1,11 +1,11 @@
 <?php
 
-namespace modele\DAO;
+namespace modele\DAO\journalDAO;
 
 use ArrayObject;
 use modele\DAO\base\Database;
 use app\util\Error;
-use modele\Species;
+use modele\journal\Species;
 use PDO;
 use UnexpectedValueException;
 

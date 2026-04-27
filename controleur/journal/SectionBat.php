@@ -1,17 +1,17 @@
 <?php
 
-namespace controleur;
+namespace controleur\journal;
 
 use app\util\Request as req;
 use app\util\BaseURL as url;
 
-use modele\DAO\BatDAO;
+use modele\DAO\journalDAO\BatDAO;
 use vue\base\MainTemplate as Vue;
 use app\util\Guard;
 
-use modele\Bat;
+use modele\journal\Bat;
 use modele\Section;
-use modele\DAO\SpeciesDAO;
+use modele\DAO\journalDAO\SpeciesDAO;
 use modele\Species;
 
 class SectionBat
@@ -163,7 +163,7 @@ class SectionBat
             }
 
             Vue::render(
-                'SectionBatAddition',
+                'journal/SectionBatAddition',
                 [
                     "url" => $url,
                     "speciesList" => $speciesList

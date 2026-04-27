@@ -1,6 +1,6 @@
 <?php
 
-namespace controleur;
+namespace controleur\common;
 
 use app\util\SessionLogin;
 use app\util\BaseURL;
