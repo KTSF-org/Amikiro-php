@@ -69,7 +69,7 @@ class Users {
      * sont générés automatiquement côté serveur, jamais saisis dans le formulaire.
      * Si le rôle est ROLE_ADHERENT et que des dates sont fournies,
      * une période d'accès est créée immédiatement.
-     * Un email de bienvenue avec les identifiants sont envoyés après création.
+     * Un email de bienvenue avec les identifiants est envoyés après création.
      */
     private function create(): void {
         $error = null;
@@ -124,8 +124,8 @@ class Users {
      * Modifie un compte existant.
      *
      * Deux formulaires distincts sur la même page, identifiés par POST action :
-     *   - identity    → mise à jour des informations du compte
-     *   - subscription → ajout d'une nouvelle période d'accès
+     *   - identity => mise à jour des informations du compte
+     *   - subscription => ajout d'une nouvelle période d'accès
      *
      * Un admin ne peut pas modifier son propre rôle.
      * L'ajout d'une période d'accès à un ROLE_INVITE le promeut automatiquement
