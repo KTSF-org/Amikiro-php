@@ -1,5 +1,7 @@
 <?php
 
+// COUCOU
+
 /**
  *  *******************
  *  Globales DB configs
