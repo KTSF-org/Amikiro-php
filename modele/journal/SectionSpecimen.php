@@ -4,14 +4,13 @@ namespace modele\journal;
 use app\util\Error;
 use modele\DAO\SectionSpecimenDAO;
 
-class SectionSpecimen extends Section
+class SectionSpecimen
 {
 
+    protected $param = []; //La liste des paramètres (ou attributs)
+
     public function __construct(
-        private string $title = '',
-        private string $content = '',
-        private string $creationDate = '',
-        private int $idUser = 0,
+        private int $idSection = 0,
         private int $idBat = 0
     ) {
 
@@ -47,19 +46,6 @@ class SectionSpecimen extends Section
         return $this->param;
     }
 
-    /**
-	 * GETTERS (accesseurs)
-	 */
-	public function getIdBat(): int {
-		return $this->idBat;
-	}
-
-    /**
-	 * SETTERS (mutateurs)
-	 */
-
-	 public function setIdBat($idBat): void {
-		$this->idBat = $idBat;
-	}
+    //TODO CRUD à faire
 
 }
