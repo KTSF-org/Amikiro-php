@@ -1,8 +1,8 @@
 <?php
 
-namespace modele;
+namespace modele\journal;
 use app\util\Error;
-use modele\DAO\SectionDAO;
+use modele\DAO\journalDAO\SectionDAO;
 
 class Section{
 

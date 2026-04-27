@@ -1,6 +1,6 @@
 <?php
 
-namespace controleur;
+namespace controleur\common;
 
 use app\util\Request as req;
 use vue\base\MainTemplate as Vue;
@@ -39,7 +39,7 @@ class About {
 		 */
 
 		Vue::render(
-			'About',
+			'legale/About',
 			[
 				'cls' => $this->getClassName(),
 				'ns' => $this->getNamespace(),

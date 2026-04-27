@@ -1,15 +1,15 @@
 <?php
 
-namespace controleur;
+namespace controleur\legale;
 
 use app\util\Request as req;
 use vue\base\MainTemplate as Vue;
 
-class Confidentialite {
+class MentionsLegales {
 
     public function __construct() {
         Vue::render(
-            'Confidentialite',
+            'legale/MentionsLegales',
             []
         );
     }

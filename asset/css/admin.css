@@ -1,0 +1,8 @@
+/* CSS POUR LA PAGE DE CONNEXION POUR L'ADMIN */
+.navbar-brand{
+    pointer-events: none;
+}
+
+h4 {
+    color: red;
+}

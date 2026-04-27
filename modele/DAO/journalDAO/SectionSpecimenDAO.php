@@ -1,9 +1,9 @@
 <?php
 
-namespace modele\DAO;
+namespace modele\DAO\journalDAO;
 
 use modele\DAO\base\Database;
-use modele\Section;
+use modele\journal\Section;
 use app\util\Error;
 use PDO;
 
