@@ -11,6 +11,14 @@ use modele\User;
 use modele\DAO\UserDAO;
 use modele\DAO\SubscriptionDAO;
 
+/**
+ * Contrôleur : gestion des comptes utilisateurs (admin uniquement).
+ *
+ * Une seule route gère trois pages via le paramètre GET ?page :
+ *   - (vide)   → liste des comptes
+ *   - create   → formulaire de création
+ *   - edit&id  → formulaire de modification
+ */
 class Users {
 
     public function __construct() {
@@ -23,6 +31,11 @@ class Users {
         };
     }
 
+    /**
+     * Affiche la liste de tous les comptes.
+     * Gère aussi la suppression (POST action=delete).
+     * Un admin ne peut pas supprimer son propre compte.
+     */
     private function index(): void {
         $userDAO = new UserDAO();
 
@@ -49,6 +62,15 @@ class Users {
         ]);
     }
 
+    /**
+     * Crée un nouveau compte utilisateur.
+     *
+     * Le mot de passe (8 caractères aléatoires) et le numéro adhérent
+     * sont générés automatiquement côté serveur, jamais saisis dans le formulaire.
+     * Si le rôle est ROLE_ADHERENT et que des dates sont fournies,
+     * une période d'accès est créée immédiatement.
+     * Un email de bienvenue avec les identifiants sont envoyés après création.
+     */
     private function create(): void {
         $error = null;
 
@@ -57,11 +79,14 @@ class Users {
             $surname   = Request::post('surname');
             $mail      = Request::post('mail');
             $codeRole  = (int)($_POST['codeRole'] ?? ROLE_ADHERENT);
+            // Format : AMI- suivi de 8 caractères hexadécimaux en majuscules
             $memberNum = 'AMI-' . strtoupper(bin2hex(random_bytes(4)));
             $startDate = $_POST['startDate'] ?? '';
             $endDate   = $_POST['endDate']   ?? '';
+            // Vrai si l'admin a rempli au moins une des deux dates
             $hasDates  = !empty($startDate) || !empty($endDate);
             $chars     = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            // random_int est cryptographiquement sûr, contrairement à rand()
             $password  = implode('', array_map(fn() => $chars[random_int(0, strlen($chars) - 1)], range(1, 8)));
 
             if ($codeRole === ROLE_ADMIN) {
@@ -82,6 +107,7 @@ class Users {
                         $subscriptionDAO = new SubscriptionDAO();
                         $subscriptionDAO->createForUser($user->getId(), $startDate, $endDate);
                     }
+                    // L'échec du mail ne bloque pas la création du compte
                     Mailer::sendWelcome($mail, $name, $password, $memberNum);
                     header('Location: ' . BaseURL::getBaseUrl() . 'parametres/utilisateurs');
                     exit;
@@ -94,6 +120,17 @@ class Users {
         Vue::render('admin/UsersCreate', ['error' => $error]);
     }
 
+    /**
+     * Modifie un compte existant.
+     *
+     * Deux formulaires distincts sur la même page, identifiés par POST action :
+     *   - identity    → mise à jour des informations du compte
+     *   - subscription → ajout d'une nouvelle période d'accès
+     *
+     * Un admin ne peut pas modifier son propre rôle.
+     * L'ajout d'une période d'accès à un ROLE_INVITE le promeut automatiquement
+     * en ROLE_ADHERENT.
+     */
     private function edit(): void {
         $id = (int)($_GET['id'] ?? 0);
         if ($id <= 0) {
@@ -151,6 +188,7 @@ class Users {
                          ->setCodeRole($codeRole)
                          ->setMemberNum($memberNum);
 
+                    // Le mot de passe n'est mis à jour que s'il est fourni
                     if (!empty($password)) {
                         $user->setPassword($password);
                     }
