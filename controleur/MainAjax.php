@@ -6,6 +6,7 @@ use vue\base\Ajax as Ajax;
 use app\util\Request as req;
 use app\util\Guard;
 use modele\DAO\UserDAO as Model;
+use modele\DAO\ConfigDAO;
 
 /**
  *	Classe chargée depuis le routing : route/routing.php
@@ -37,8 +38,9 @@ class MainAjax extends Ajax {
 		return [
 			// - "findUsers" est utilisé dans : vue/ajax/ajaxRechercher.php
 			// - la méthode protégée : "getUserBySearch" est implémentée ci-dessous.
-			'findUsers' => 'getUserBySearch',
-			// - D'autres lignes ?
+			'findUsers'   => 'getUserBySearch',
+			'liveLeave'   => 'liveLeave',
+			'viewerCount' => 'getViewerCount',
 		];
 	}
 
@@ -91,6 +93,25 @@ class MainAjax extends Ajax {
 		}
 		return $user;
 	}
-	
-	
+
+	/**
+	 * Décrémente le compteur de viewers actifs quand l'utilisateur quitte la page Live.
+	 * Appelé via navigator.sendBeacon() au beforeunload.
+	 */
+	protected function liveLeave(): bool {
+		if (isset($_SESSION['in_live'])) {
+			(new ConfigDAO())->decrementViewers();
+			unset($_SESSION['in_live']);
+		}
+		return true;
+	}
+
+	/**
+	 * Retourne le nombre de viewers actifs en temps réel.
+	 * Interrogé périodiquement par la vue Live via setInterval.
+	 */
+	protected function getViewerCount(): int {
+		return (int)((new ConfigDAO())->getURLbyId(1)['viewerCount'] ?? 0);
+	}
+
 }

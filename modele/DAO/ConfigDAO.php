@@ -21,6 +21,8 @@ use modele\DAO\base\Database;
 class ConfigDAO extends Database {
 
     public function __construct() {
+        $tablename="config";
+        $primarykey="id";
         parent::__construct('Config', 'id');
     }
 
@@ -41,5 +43,24 @@ class ConfigDAO extends Database {
      */
     public function updateConfig(array $data): bool {
         return $this->updateOne(1, $data);
+    }
+
+    public function getURLbyId(int $id): mixed {
+        return $this->sendSQLAssoc("SELECT * from `" . $this->tableName . "` WHERE id = ?", [$id]);
+    }
+
+    /**
+     * Incrémente le compteur de viewers actifs.
+     */
+    public function incrementViewers(): void {
+        $this->getPdo()->exec("UPDATE `Config` SET viewerCount = viewerCount + 1 WHERE id = 1");
+    }
+
+    /**
+     * Décrémente le compteur de viewers actifs (plancher à 0).
+     */
+    public function decrementViewers(): void {
+        // GREATEST(0, ...) empêche le compteur de passer en négatif si decrementViewers est appelé en double
+        $this->getPdo()->exec("UPDATE `Config` SET viewerCount = GREATEST(0, viewerCount - 1) WHERE id = 1");
     }
 }

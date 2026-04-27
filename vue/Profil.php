@@ -7,7 +7,7 @@
  *   $error   — string|null   : message d'erreur de validation
  */
 
-$roleLabel = match((int)($user->codeRole ?? -1)) {
+$roleLabel = match((int)($role ?? -1)) {
     ROLE_INVITE      => 'Invité',
     ROLE_ADHERENT    => 'Adhérent',
     ROLE_NATURALISTE => 'Naturaliste',
@@ -33,13 +33,13 @@ $roleLabel = match((int)($user->codeRole ?? -1)) {
                     <h5 class="card-title mb-3">Mes informations</h5>
                     <dl class="row mb-0">
                         <dt class="col-sm-4">Prénom</dt>
-                        <dd class="col-sm-8"><?= htmlspecialchars($user->name ?? '') ?></dd>
+                        <dd class="col-sm-8"><?= $name ?? ''?></dd>
 
                         <dt class="col-sm-4">Nom</dt>
-                        <dd class="col-sm-8"><?= htmlspecialchars($user->surname ?? '') ?></dd>
+                        <dd class="col-sm-8"><?= htmlspecialchars($surname ?? '') ?></dd>
 
                         <dt class="col-sm-4">Email</dt>
-                        <dd class="col-sm-8"><?= htmlspecialchars($user->mail ?? '') ?></dd>
+                        <dd class="col-sm-8"><?= htmlspecialchars($mail ?? '') ?></dd>
 
                         <dt class="col-sm-4">Rôle</dt>
                         <dd class="col-sm-8 mb-0"><?= $roleLabel ?></dd>
@@ -55,13 +55,11 @@ $roleLabel = match((int)($user->codeRole ?? -1)) {
                         <input type="hidden" name="action" value="identity">
                         <div class="mb-3">
                             <label for="name" class="form-label">Prénom</label>
-                            <input type="text" class="form-control" id="name" name="name"
-                                   value="<?= htmlspecialchars($user->name ?? '') ?>" required>
+                            <input type="text" class="form-control" id="name" name="name">
                         </div>
                         <div class="mb-3">
                             <label for="surname" class="form-label">Nom</label>
-                            <input type="text" class="form-control" id="surname" name="surname"
-                                   value="<?= htmlspecialchars($user->surname ?? '') ?>" required>
+                            <input type="text" class="form-control" id="surname" name="surname">
                         </div>
                         <button type="submit" class="btn btn-primary">Enregistrer</button>
                     </form>
