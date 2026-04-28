@@ -71,7 +71,7 @@
 
                         <div class="mb-3">
                             <label class="form-label">N° adhérent</label>
-                            <input type="text" class="form-control" value="<?= htmlspecialchars($user->getMemberNum()) ?>" readonly>
+                            <dd class="col-sm-8 mb-0"><?= htmlspecialchars($user->getMemberNum()) ?></dd>
                         </div>
 
                         <button type="submit" class="btn btn-primary">Enregistrer</button>
