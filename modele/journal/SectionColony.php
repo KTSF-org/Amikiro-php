@@ -1,18 +1,22 @@
 <?php
-
 namespace modele\journal;
 use app\util\Error;
-use modele\DAO\journalDAO\SectionSpecimenDAO;
+use modele\DAO\journalDAO\SectionColonyDAO;
 
-class SectionSpecimen
+
+
+class SectionColony
 {
+
     private int $id=0;
     protected $param = []; //La liste des paramètres (ou attributs)
 
+    // Constructeur : Bat
     public function __construct(
         private int $idSection = -1,
-        private int $idBat = -1
+        private int $idCategory = -1 
     ) {
+
 
         // Gestionnaire d'erreur (pour les requêtes) :
         try {
@@ -25,12 +29,9 @@ class SectionSpecimen
         }
     }
 
-    /**
-     * METHODS
-     */
-
+    // METHODS
     // STOCKER LA LISTE DES ATTRIBUTS
-    private function getKey(array $arr): array
+     private function getKey(array $arr): array
     {
         foreach ($arr as $key => $value) {
             if ($key === "id" or $key === "param")
@@ -47,29 +48,27 @@ class SectionSpecimen
     }
 
 
-
+    
     // CREATE
-    public function addSectionSpecimen(): bool
+    public function addSectionColony(): bool
     {
-        $sectionSpecimenDAO = new SectionSpecimenDAO();
-        return $sectionSpecimenDAO->create($this);
-
+        $sectionColonyDAO = new SectionColonyDAO();
+        return $sectionColonyDAO->create($this);
     }
 
-    // Update : Met à jour le sectionSpecimen dans la BDD
-    public function updateSectionSpecimen(): bool
+    // UPDATE : Met à jour la sectionColony dans la BDD
+    public function updateSectionColony(): bool
     {
-        $sectionSpecimenDAO = new SectionSpecimenDAO();
-        return $sectionSpecimenDAO->update($this);
+        $sectionColonyDAO = new SectionColonyDAO();
+        return $sectionColonyDAO->update($this);
     }
 
-    // Delete
-    public function deleteSectionSpecimen(): bool
+    // DELETE
+    public function deleteSectionColony(): bool
     {
-        $sectionSpecimenDAO = new SectionSpecimenDAO();
-        return $sectionSpecimenDAO->delete($this);
+        $sectionColonyDAO = new SectionColonyDAO();
+        return $sectionColonyDAO->delete($this);
     }
-
 
 
 
@@ -85,11 +84,12 @@ class SectionSpecimen
         return $this->idSection;
     }
 
-    public function getIdBat()
+    public function getIdCategory()
     {
-        return $this->idBat;
+        return $this->idCategory;
     }
-    
+
+
     // SETTER
     public function setId(int $id): void
     {
@@ -102,8 +102,8 @@ class SectionSpecimen
 
     }
 
-    public function setIdBat(int $idBat): void
+    public function setIdCategory(int $idCategory): void
     {
-        $this->idBat = $idBat;
+        $this->idCategory = $idCategory;
     }
 }
