@@ -1,11 +1,7 @@
 <?php 
 ?>
 
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <title>Mentions Légales - AMIKIRO LIVE</title>
-    <style>
+<style>
         .legal-container {
             font-family: sans-serif;
             line-height: 1.6;
@@ -26,9 +22,7 @@
             margin: 20px 0;
             font-weight: bold;
         }
-    </style>
-</head>
-<body>
+</style>
 
 <div class="legal-container">
     <h1>MENTIONS LÉGALES</h1>
@@ -76,7 +70,7 @@
         <p>Tout litige en relation avec l'utilisation du site <strong>AMIKIRO LIVE</strong> est soumis au droit français. Il est fait attribution exclusive de juridiction aux tribunaux compétents de Lorient.</p>
     
          <p style="margin-top:40px; font-size: 0.9em; text-align: center;">
-        <a href="confidentialite.php">Consulter la Politique de Confidentialité & Charte de la communauté</a>
+        <a href="confidentialite">Consulter la Politique de Confidentialité & Charte de la communauté</a>
         </p>
     </section>
     <br>

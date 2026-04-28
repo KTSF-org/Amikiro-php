@@ -8,6 +8,7 @@ use app\util\BaseURL as url;
 use modele\DAO\journalDAO\BatDAO;
 use vue\base\MainTemplate as Vue;
 use app\util\Guard;
+use app\util\Request;
 
 use modele\journal\Bat;
 use modele\Section;
@@ -21,79 +22,24 @@ class SectionBat
     {
 
         $url = url::getBaseUrl() . "sectionBat?page=addition";
+        $bat = null;
 
         // Page de la fiche chauve-souris
         if (!isset($_GET["page"])) {
 
-            // Création du code html pour afficher la liste des chauve-souris de la BDD
+            // Tableau associatif, clé : idSpecies, valeur : commonName (de Species).
             $speciesDAO = new SpeciesDAO();
-            $batDAO = new BatDAO();
-            $bats = $batDAO->getAllBat();
-            $batList = "";
-            $batDetailsModals = "";
-
-            foreach ($bats as $bat) {
-
-                $id = $bat->getId();
-                $name = $bat->getName();
-                $species = $speciesDAO->getSpeciesById($bat->getIdSpecies())->getCommonName();
-                $sex = "";
-                switch ($bat->getSex()) {
-                    case 1:
-                        $sex = "Femelle";
-                        break;
-                    case 2:
-                        $sex = "Mâle";
-                        break;
-                    default:
-                        $sex = "Inconnu";
-                        break;
-                }
-
-                $details = '
-                <button type="button" class="btn btn-sm"
-                data-bs-toggle="modal" data-bs-target="#modal' . $id . '">
-                    afficher
-                </button>
-                ';
-
-                $batList .= "
-                <div class='row'>
-                    <div class='col-1 text-center border'>
-                        <input type='radio' class='form-check-input' name='batSelected'>
-                    </div>
-                    <div class='col-2 text-center border'>" .
-                    $id . "
-                    </div>
-                    <div class='col border'>" .
-                    $name . "
-                    </div>
-                    <div class='col-2 border'>
-                            " . $details . "
-                        </div>
-                </div>
-                ";
-
-                $batDetailsModals .= '
-                <div class="modal fade" id="modal' . $id . '" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h1 class="modal-title fs-5">' . $name . '</h1>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                Espece : ' . $species . '<br/>
-                                Date de naissance : ' . $bat->getBirthDate() . '<br/>
-                                Sexe : ' . $sex . '<br/>
-                                Poids : ' . $bat->getWeight() . ' grammes<br/><br/>
-                                Note :<br/> ' . $bat->getNote() . '
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                ';
+            $speciesAsso = [];
+            $speciesList = $speciesDAO->getAllSpecies();
+            foreach ($speciesList as $spe) {
+                $speciesAsso[$spe->getId()] = $spe->getCommonName();
             }
+
+            // Tableau
+            $sexList = ["Inconnu", "Femelle", "Mâle"];
+ 
+            $batDAO = new BatDAO();
+            $batList = $batDAO->getAllBat();
 
             if (
                 !empty($_POST["sectionTitle"]) &&
@@ -102,18 +48,18 @@ class SectionBat
                 //TODO Création et stockage de la fiche Bat.
             }
 
-
             Vue::render(
-                'SectionBat',
+                'journal/SectionBat',
                 [
                     "url" => $url,
                     "batList" => $batList,
-                    "batDetailsModals" => $batDetailsModals
+                    "speciesList" => $speciesAsso,
+                    "sexList" => $sexList
                 ]
             );
 
         }
-        // Page de l'ajout d'une chauve-souris
+        // Page de l'ajout ou modification d'une chauve-souris
         else {
 
             // Création du code html pour la liste des espèces présente dans la BDD
@@ -162,11 +108,21 @@ class SectionBat
                 $bat->addBat();
             }
 
+            // Si c'est une modification de la chauve-souris
+            $modif = Request::has("id");
+            if ($modif) {
+                $batId = Request::get("id", "");
+                $batDAO = new BatDAO();
+                $bat = $batDAO->getBatById((int) $batId);
+                //TODO envoyer à la vue et tout
+            }
+
             Vue::render(
                 'journal/SectionBatAddition',
                 [
                     "url" => $url,
-                    "speciesList" => $speciesList
+                    "speciesList" => $speciesList,
+                    "bat" => $bat
                 ]
             );
         }
