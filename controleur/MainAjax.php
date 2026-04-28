@@ -82,16 +82,10 @@ class MainAjax extends Ajax {
 	 * ==> voir au-dessus le tableau dans la fonction ajaxRoute().
 	 * @return mixed Retourne le nom ou le prénom recherché, ou false
 	 */
-	protected function getUserBySearch(): mixed {
-		// attention $_POST n'est pas sécurisé !
-		// $nom = $_POST['name'] ?? ''; //??=opérateur nullable, équivalent à isset
-		$nom = req::post('name'); //$_POST sécurisé avec la méthode Request (app/util/Request.php)
-		$user = $this->db->getUsersByName($nom);
-		if (empty($nom)) $user = false;
-		if ($user !== false && \app\util\SessionLogin::getRole() === ROLE_ADMIN) {
-			$_SESSION['searched_user'] = $user;
-		}
-		return $user;
+	protected function getUserBySearch(): array {
+		$nom   = req::post('name'); //$_POST sécurisé avec la méthode Request (app/util/Request.php)
+		$users = empty($nom) ? [] : $this->db->getUsersByName($nom);
+		return $users;
 	}
 
 	/**

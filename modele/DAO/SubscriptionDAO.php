@@ -50,6 +50,39 @@ class SubscriptionDAO extends Database {
      * @param string $startDate Date de début (YYYY-MM-DD).
      * @param string $endDate   Date de fin (YYYY-MM-DD).
      */
+    /**
+     * Supprime toutes les périodes d'accès d'un utilisateur.
+     * À appeler avant la suppression du compte.
+     */
+    public function deleteByUser(int $userId): void {
+        $this->getPdo()->prepare(
+            "DELETE FROM `Abonnement` WHERE idUser = ?"
+        )->execute([$userId]);
+    }
+
+    /**
+     * Retourne les abonnements actifs pour une liste d'IDs, indexés par idUser.
+     * En cas de chevauchement, conserve celui dont la date de fin est la plus éloignée.
+     *
+     * @param int[] $userIds
+     * @return array<int, \stdClass>
+     */
+    public function getActiveByUserIds(array $userIds): array {
+        if (empty($userIds)) return [];
+        $placeholders = implode(',', array_fill(0, count($userIds), '?'));
+        $stmt = $this->getPdo()->prepare(
+            "SELECT * FROM `Abonnement` WHERE idUser IN ($placeholders)
+             AND endDate >= CURDATE() ORDER BY endDate DESC"
+        );
+        $stmt->execute($userIds);
+        $result = [];
+        foreach ($stmt->fetchAll(PDO::FETCH_OBJ) as $row) {
+            // Un seul abonnement retenu par utilisateur (le plus tardif)
+            $result[$row->idUser] ??= $row;
+        }
+        return $result;
+    }
+
     public function createForUser(int $userId, string $startDate, string $endDate): bool {
         return $this->createOne([
             'idUser'    => $userId,

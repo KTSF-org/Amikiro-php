@@ -35,3 +35,4 @@ const MAIL_USER      = '';
 const MAIL_PASS      = '';
 const MAIL_FROM      = 'noreply@amikiro.fr';
 const MAIL_FROM_NAME = 'Amikiro';
+

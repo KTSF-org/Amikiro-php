@@ -39,7 +39,7 @@
                 </div>
 
                 <div id="accessDates" class="mb-4 p-3 border rounded" style="display:none;">
-                    <p class="fw-semibold mb-2">Période d'accès <span class="text-muted fw-normal">(optionnel)</span></p>
+                    <p class="fw-semibold mb-2" id="accessDatesLabel"></p>
                     <div class="row g-3">
                         <div class="col-6">
                             <label for="startDate" class="form-label">Début</label>
@@ -60,8 +60,24 @@
                 (function () {
                     const select = document.getElementById('codeRole');
                     const block  = document.getElementById('accessDates');
+                    const label  = document.getElementById('accessDatesLabel');
+                    const INVITE      = '<?= ROLE_INVITE ?>';
+                    const ADHERENT    = '<?= ROLE_ADHERENT ?>';
+                    const NATURALISTE = '<?= ROLE_NATURALISTE ?>';
+
                     function toggle() {
-                        block.style.display = (select.value === '<?= ROLE_ADHERENT ?>') ? '' : 'none';
+                        const role = select.value;
+                        // Naturaliste sans rôle d'invité/adhérent : pas de temps d'accès à définir
+                        if (role === NATURALISTE) {
+                            block.style.display = 'none';
+                            return;
+                        }
+                        block.style.display = '';
+                        if (role === INVITE) {
+                            label.innerHTML = 'Temps d\'accès <span class="text-danger">*</span>';
+                        } else {
+                            label.innerHTML = 'Temps d\'accès <span class="text-muted fw-normal">(optionnel)</span>';
+                        }
                     }
                     select.addEventListener('change', toggle);
                     toggle();

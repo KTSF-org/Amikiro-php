@@ -42,7 +42,17 @@
                                 Nouveau mot de passe
                                 <small class="text-muted">(laisser vide pour conserver l'actuel)</small>
                             </label>
-                            <input type="password" class="form-control" id="password" name="password">
+                            <input type="password" class="form-control" id="password" name="password"
+                                   oninput="checkPasswords()">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="passwordConfirm" class="form-label">Confirmer le mot de passe</label>
+                            <input type="password" class="form-control" id="passwordConfirm"
+                                   oninput="checkPasswords()">
+                            <div id="passwordMismatch" class="form-text text-danger" style="display:none">
+                                Les mots de passe ne correspondent pas.
+                            </div>
                         </div>
 
                         <div class="mb-3">
@@ -53,10 +63,12 @@
                                 </p>
                             <?php else: ?>
                             <select class="form-select" id="codeRole" name="codeRole">
+                                <?php if ($user->getCodeRole() !== ROLE_ADHERENT): ?>
                                 <option value="<?= ROLE_INVITE ?>"
                                     <?= $user->getCodeRole() === ROLE_INVITE ? 'selected' : '' ?>>
                                     Invité
                                 </option>
+                                <?php endif; ?>
                                 <option value="<?= ROLE_ADHERENT ?>"
                                     <?= $user->getCodeRole() === ROLE_ADHERENT ? 'selected' : '' ?>>
                                     Adhérent
@@ -71,30 +83,53 @@
 
                         <div class="mb-3">
                             <label class="form-label">N° adhérent</label>
-                            <dd class="col-sm-8 mb-0"><?= htmlspecialchars($user->getMemberNum()) ?></dd>
+                            <?php
+                            $role = $user->getCodeRole();
+                            $num  = $user->getMemberNum();
+                            if ($role === ROLE_INVITE && empty($num)): ?>
+                                <p class="mb-0 text-muted">INVITE</p>
+                            <?php elseif ($role === ROLE_INVITE): ?>
+                                <p class="mb-0 text-danger fw-semibold"><?= htmlspecialchars($num) ?></p>
+                            <?php elseif (!empty($num)): ?>
+                                <p class="mb-0 text-success fw-semibold"><?= htmlspecialchars($num) ?></p>
+                            <?php else: ?>
+                                <p class="mb-0 text-muted">—</p>
+                            <?php endif; ?>
                         </div>
 
-                        <button type="submit" class="btn btn-primary">Enregistrer</button>
+                        <button type="submit" class="btn btn-primary" id="submitIdentity">Enregistrer</button>
                     </form>
+
+                    <script>
+                    function checkPasswords() {
+                        const pwd     = document.getElementById('password').value;
+                        const confirm = document.getElementById('passwordConfirm').value;
+                        const mismatch = document.getElementById('passwordMismatch');
+                        const submit   = document.getElementById('submitIdentity');
+                        const differs  = pwd.length > 0 && pwd !== confirm;
+                        mismatch.style.display = differs ? '' : 'none';
+                        submit.disabled = differs;
+                    }
+                    </script>
                 </div>
             </div>
 
             <?php if (!$isSelf): ?>
             <div class="card mb-4">
                 <div class="card-body">
-                    <h5 class="card-title mb-3">Abonnement</h5>
+                    <h5 class="card-title mb-3">Temps d'accès</h5>
 
                     <?php if ($activeSubscription): ?>
                         <div class="alert alert-success py-2 mb-3">
-                            Abonnement actif jusqu'au
+                            Accès actif jusqu'au
                             <strong><?= date('d/m/Y', strtotime($activeSubscription->endDate)) ?></strong>
                         </div>
                     <?php else: ?>
-                        <div class="alert alert-warning py-2 mb-3">Aucun abonnement actif.</div>
+                        <div class="alert alert-warning py-2 mb-3">Aucun temps d'accès actif.</div>
                     <?php endif; ?>
 
                     <?php if ($subscriptionSuccess): ?>
-                        <div class="alert alert-success py-2">Abonnement enregistré.</div>
+                        <div class="alert alert-success py-2">Temps d'accès enregistré.</div>
                     <?php elseif ($subscriptionError): ?>
                         <div class="alert alert-danger py-2"><?= htmlspecialchars($subscriptionError) ?></div>
                     <?php endif; ?>
@@ -116,6 +151,15 @@
                                 <button type="submit" class="btn btn-success">Activer</button>
                             </div>
                         </div>
+                        <?php if ($user->getCodeRole() === ROLE_INVITE): ?>
+                        <div class="form-check mt-3">
+                            <input class="form-check-input" type="checkbox"
+                                   name="promoteToAdherent" id="promoteToAdherent" value="1">
+                            <label class="form-check-label" for="promoteToAdherent">
+                                Promouvoir en adhérent
+                            </label>
+                        </div>
+                        <?php endif; ?>
                     </form>
 
                     <?php if (!empty($subscriptionHistory)): ?>
@@ -145,6 +189,12 @@
                             <?php endforeach; ?>
                         </tbody>
                     </table>
+                    <?php endif; ?>
+                    <?php if ($user->getCodeRole() === ROLE_NATURALISTE): ?>
+                    <p class="text-muted small mt-3 mb-0">
+                        Le temps d'accès est purement informatif pour un naturaliste,
+                        il n'affecte pas sa capacité à se connecter.
+                    </p>
                     <?php endif; ?>
                 </div>
             </div>

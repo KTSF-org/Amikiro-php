@@ -63,7 +63,7 @@ class Mailer {
         <table cellpadding="6" style="border-collapse:collapse;">
             <tr><td><strong>Email</strong></td><td>' . htmlspecialchars($mail) . '</td></tr>
             <tr><td><strong>Mot de passe</strong></td><td>' . htmlspecialchars($password) . '</td></tr>
-            <tr><td><strong>N° adhérent</strong></td><td>' . htmlspecialchars($memberNum) . '</td></tr>
+            ' . (!empty($memberNum) ? '<tr><td><strong>N° adhérent</strong></td><td>' . htmlspecialchars($memberNum) . '</td></tr>' : '') . '
         </table>
         <p style="margin-top:16px;color:#888;font-size:0.9em;">Pensez à modifier votre mot de passe après votre première connexion.</p>
         ';

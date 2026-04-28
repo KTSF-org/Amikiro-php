@@ -10,6 +10,7 @@ use app\util\Mailer;
 use modele\User;
 use modele\DAO\UserDAO;
 use modele\DAO\SubscriptionDAO;
+use modele\DAO\ConfigDAO;
 
 /**
  * Contrôleur : gestion des comptes utilisateurs (admin uniquement).
@@ -36,29 +37,60 @@ class Users {
      * Gère aussi la suppression (POST action=delete).
      * Un admin ne peut pas supprimer son propre compte.
      */
+    private const PER_PAGE = 20;
+
     private function index(): void {
-        $userDAO = new UserDAO();
+        $userDAO         = new UserDAO();
+        $subscriptionDAO = new SubscriptionDAO();
+        $configDAO       = new ConfigDAO();
 
-        if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'delete') {
-            $id        = (int)($_POST['id'] ?? 0);
-            $currentId = (int)($_SESSION['user']->id ?? 0);
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $action = $_POST['action'] ?? '';
 
-            if ($id > 0 && $id !== $currentId) {
-                $user = $userDAO->getUsersById($id);
-                $user->deleteUser();
+            if ($action === 'delete') {
+                $id        = (int)($_POST['id'] ?? 0);
+                $currentId = (int)($_SESSION['user']->id ?? 0);
+                if ($id > 0 && $id !== $currentId) {
+                    // Nettoie les abonnements avant la suppression du compte
+                    $subscriptionDAO->deleteByUser($id);
+                    $userDAO->getUsersById($id)->deleteUser();
+                }
+                header('Location: ' . BaseURL::getBaseUrl() . 'parametres/utilisateurs');
+                exit;
             }
 
-            header('Location: ' . BaseURL::getBaseUrl() . 'parametres/utilisateurs');
-            exit;
+            if ($action === 'saveConfig') {
+                $days = max(1, (int)($_POST['guestDefaultAccessDays'] ?? 7));
+                $configDAO->updateConfig(['guestDefaultAccessDays' => $days]);
+                header('Location: ' . BaseURL::getBaseUrl() . 'parametres/utilisateurs');
+                exit;
+            }
         }
 
-        $users     = $userDAO->getAll();
-        $currentId = (int)($_SESSION['user']->id ?? 0);
+        $roleFilter  = isset($_GET['role']) && $_GET['role'] !== '' ? (int)$_GET['role'] : -1;
+        $currentPage = max(1, (int)($_GET['p'] ?? 1));
+        $offset      = ($currentPage - 1) * self::PER_PAGE;
+
+        $totalUsers  = $userDAO->countFiltered($roleFilter);
+        $totalPages  = max(1, (int)ceil($totalUsers / self::PER_PAGE));
+        $currentPage = min($currentPage, $totalPages);
+        $users       = $userDAO->getAllFiltered($roleFilter, $offset, self::PER_PAGE);
+        $currentId   = (int)($_SESSION['user']->id ?? 0);
+        $config      = $configDAO->getConfig();
+        $guestDefaultAccessDays = (int)($config->guestDefaultAccessDays ?? 7);
+
+        $userIds      = array_map(fn($u) => (int)$u->id, $users);
+        $activeByUser = $subscriptionDAO->getActiveByUserIds($userIds);
 
         Vue::setTitle('Gestion des utilisateurs');
         Vue::render('admin/Users', [
-            'users'     => $users,
-            'currentId' => $currentId,
+            'users'                  => $users,
+            'currentId'              => $currentId,
+            'guestDefaultAccessDays' => $guestDefaultAccessDays,
+            'activeByUser'           => $activeByUser,
+            'currentPage'            => $currentPage,
+            'totalPages'             => $totalPages,
+            'roleFilter'             => $roleFilter,
         ]);
     }
 
@@ -79,8 +111,10 @@ class Users {
             $surname   = Request::post('surname');
             $mail      = Request::post('mail');
             $codeRole  = (int)($_POST['codeRole'] ?? ROLE_ADHERENT);
-            // Format : AMI- suivi de 8 caractères hexadécimaux en majuscules
-            $memberNum = 'AMI-' . strtoupper(bin2hex(random_bytes(4)));
+            // Les invités n'ont pas de numéro adhérent ; généré pour les autres rôles
+            $memberNum = ($codeRole !== ROLE_INVITE)
+                ? 'AMI-' . strtoupper(bin2hex(random_bytes(4)))
+                : '';
             $startDate = $_POST['startDate'] ?? '';
             $endDate   = $_POST['endDate']   ?? '';
             // Vrai si l'admin a rempli au moins une des deux dates
@@ -89,21 +123,29 @@ class Users {
             // random_int est cryptographiquement sûr, contrairement à rand()
             $password  = implode('', array_map(fn() => $chars[random_int(0, strlen($chars) - 1)], range(1, 8)));
 
+            // Les invités doivent obligatoirement avoir un temps d'accès à la création
+            $inviteRequiresDates = ($codeRole === ROLE_INVITE && (empty($startDate) || empty($endDate)));
+
+            $userDAO = new UserDAO();
+
             if ($codeRole === ROLE_ADMIN) {
                 $error = 'Impossible de créer un compte administrateur.';
             } elseif (empty($name) || empty($surname) || empty($mail)) {
                 $error = 'Tous les champs obligatoires doivent être remplis.';
-            } elseif ($codeRole === ROLE_ADHERENT && $hasDates && (empty($startDate) || empty($endDate))) {
-                $error = 'Les deux dates de la période d\'accès sont obligatoires.';
-            } elseif ($codeRole === ROLE_ADHERENT && $hasDates && $endDate <= $startDate) {
+            } elseif ($userDAO->getUserByEmail($mail)) {
+                $error = 'Cette adresse email est déjà utilisée.';
+            } elseif ($inviteRequiresDates) {
+                $error = 'Un temps d\'accès est obligatoire pour un compte invité.';
+            } elseif ($hasDates && (empty($startDate) || empty($endDate))) {
+                $error = 'Les deux dates du temps d\'accès sont obligatoires.';
+            } elseif ($hasDates && $endDate <= $startDate) {
                 $error = 'La date de fin doit être postérieure à la date de début.';
             } else {
                 $user = new User($codeRole, $mail, 0, 'tmp', $name, $surname, 0, $memberNum);
                 $user->setPassword($password);
-
-                $userDAO = new UserDAO();
                 if ($userDAO->create($user)) {
-                    if ($codeRole === ROLE_ADHERENT && !empty($startDate) && !empty($endDate)) {
+                    // Création du temps d'accès si des dates sont fournies (obligatoire pour invité)
+                    if (!empty($startDate) && !empty($endDate)) {
                         $subscriptionDAO = new SubscriptionDAO();
                         $subscriptionDAO->createForUser($user->getId(), $startDate, $endDate);
                     }
@@ -161,7 +203,13 @@ class Users {
                 } else {
                     $subscriptionSuccess = $subscriptionDAO->createForUser($id, $startDate, $endDate);
 
-                    if ($subscriptionSuccess && $user->getCodeRole() === ROLE_INVITE) {
+                    // Promotion explicite en adhérent si la case est cochée et que l'utilisateur est invité
+                    if ($subscriptionSuccess && $user->getCodeRole() === ROLE_INVITE
+                        && !empty($_POST['promoteToAdherent'])) {
+                        // Restitue l'ancien numéro s'il existe, sinon en génère un nouveau
+                        if (empty($user->getMemberNum())) {
+                            $user->setMemberNum('AMI-' . strtoupper(bin2hex(random_bytes(4))));
+                        }
                         $user->setCodeRole(ROLE_ADHERENT);
                         $userDAO->update($user);
                     }
@@ -177,10 +225,19 @@ class Users {
                     ? $user->getCodeRole()
                     : (int)($_POST['codeRole'] ?? $user->getCodeRole());
 
+                $isDowngradeToInvite = $codeRole === ROLE_INVITE && $user->getCodeRole() === ROLE_ADHERENT;
+
+                $existingMail = $userDAO->getUserByEmail($mail);
+                $mailTaken    = $existingMail && (int)$existingMail->id !== $id;
+
                 if (!$isSelf && $codeRole === ROLE_ADMIN) {
                     $error = 'Impossible d\'attribuer le rôle administrateur.';
+                } elseif (!$isSelf && $isDowngradeToInvite) {
+                    $error = 'Un adhérent ne peut pas être rétrogradé manuellement en invité.';
                 } elseif (empty($name) || empty($surname) || empty($mail)) {
                     $error = 'Tous les champs obligatoires doivent être remplis.';
+                } elseif ($mailTaken) {
+                    $error = 'Cette adresse email est déjà utilisée par un autre compte.';
                 } else {
                     $user->setName($name)
                          ->setSurname($surname)
