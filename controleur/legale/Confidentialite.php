@@ -8,6 +8,7 @@ use vue\base\MainTemplate as Vue;
 class Confidentialite {
 
     public function __construct() {
+        Vue::setTitle("Amikiro Live - Confidentialité");    
         Vue::render(
             'legale/Confidentialite',
             []
