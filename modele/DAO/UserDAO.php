@@ -165,5 +165,17 @@ class UserDAO extends Database {
 		);
 	}
 
-	
+	public function findAll(): array {
+        $allUsers = array();
+        $data = (array) $this->getAll();
+        foreach ($data as $elem) {
+            $rowData = (array) $elem;
+            $id = $rowData[$this->primaryKey];
+            unset($rowData[$this->primaryKey], $elem);
+            $user = new User(...$rowData);
+            $user->setId($id);  
+            array_push($allUsers, $user);
+        }
+        return $allUsers;
+    }
 }
