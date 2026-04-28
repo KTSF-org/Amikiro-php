@@ -40,12 +40,13 @@ $userRole = \app\util\SessionLogin::getRole();
                 <?php if (\app\util\SessionLogin::isLogin()): ?>
                 <ul class="nav nav-pills">
                     <li class="nav-item">
-                        <a href="<?= $actual_link ?>live" class="nav-link">Live</a>
+                        <a class="btn btn-danger" href="<?= $actual_link ?>live" role="button">Live</a>
                     </li>
 
                     <?php if ($userRole >= ROLE_ADHERENT): ?>
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Journal</a>
+                            <!-- <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Journal</a> -->
+                             <button class="btn btn-outline-info dropdown-toggle mx-2" type="button" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Journal</a>
                             <ul class="dropdown-menu">
                                 <li>
                                     <h6 class="dropdown-header">Consultation</h6>
@@ -67,7 +68,8 @@ $userRole = \app\util\SessionLogin::getRole();
                     <?php endif; ?>
 
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Paramètres</a>
+                        <!-- <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Paramètres</a> -->
+                        <button class="btn btn-outline-light dropdown-toggle" type="button" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Paramètres</a>
                         <ul class="dropdown-menu dropdown-menu-end">
                             <li>
                                 <h6 class="dropdown-header">Compte</h6>

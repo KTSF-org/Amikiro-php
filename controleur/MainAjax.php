@@ -41,6 +41,7 @@ class MainAjax extends Ajax {
 			'findUsers'   => 'getUserBySearch',
 			'liveLeave'   => 'liveLeave',
 			'viewerCount' => 'getViewerCount',
+			'addSectionColony' => 'addSectionCol'
 		];
 	}
 
@@ -112,6 +113,16 @@ class MainAjax extends Ajax {
 	 */
 	protected function getViewerCount(): int {
 		return (int)((new ConfigDAO())->getURLbyId(1)['viewerCount'] ?? 0);
+	}
+
+	protected function addSectionCol(): bool{
+		$title = req::post('title');
+		$date = req::post('date');
+		$category = req::post('category');
+		$notes = req::post('notes');
+
+		
+
 	}
 
 }

@@ -1,9 +1,6 @@
 <?php
 ?>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <style>
+<style>
         .legal-container {
             font-family: sans-serif;
             line-height: 1.6;
@@ -34,8 +31,7 @@
             border: 1px dashed #2980b9;
         }
         .date-update { font-style: italic; color: #666; }
-    </style>
-</head>
+</style>
 <body>
 
 <div class="legal-container">
