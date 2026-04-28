@@ -15,7 +15,8 @@ class SectionColony
     public function __construct(
         private int $idSection = -1,
         private int $idCategory = -1 
-    ) {
+    ) 
+    {
 
 
         // Gestionnaire d'erreur (pour les requêtes) :
