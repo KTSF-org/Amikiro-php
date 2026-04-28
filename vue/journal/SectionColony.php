@@ -37,6 +37,7 @@
             <label for="colonyObservation" class="form-label">Observations</label>
             <textarea class="form-control" id="observation" rows="3" placeholder="" name="colonyNotes"></textarea>
         </div>
+        <span id="formMessage"></span>
         <div class="mb-3 col-3">
             <button type="submit" class="btn btn-primary">Enregistrer</button>
         </div>  
@@ -51,7 +52,9 @@
         $("#colonyForm").on("submit", function(e){
             e.preventDefault();
 
-            const url = '/controller/SectionColony.php',
+            const spanMessage = $('#formMessage');  
+
+            const url = "<?= $actual_link ?>ajax?addSectionColony",
                 data = {
                     'title': $('#title').val(),
                     'date': $('#date').val(),
@@ -59,7 +62,18 @@
                     'notes' : $('#observation').val(),
                 };
         
-        const request = new AjaxRequest("url, 'POST' ")       
+        const request = new AjaxRequest(url, 'POST', data );
+        request.send(
+            //success
+            (reponse)=> {
+                console.log(response);
+                if(reponse){
+                    spanMessage.text('Rubrique créée avec succès');
+                }else{
+                    spanMessage.text('Erreur lors de la création de la rubrique');
+                }
+            }
+        )      
 
 
         });

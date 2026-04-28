@@ -8,6 +8,7 @@ use vue\base\MainTemplate as Vue;
 class MentionsLegales {
 
     public function __construct() {
+        Vue::setTitle("Amikiro Live - Mentions Légales");
         Vue::render(
             'legale/MentionsLegales',
             []
