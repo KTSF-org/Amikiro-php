@@ -67,7 +67,11 @@ use modele\DAO\journalDAO\SpeciesDAO;
                     </button>
                     <a href="' . $urlModif . '&id=' . $id . '" style="color:black">
                         <i class="bi bi-pencil-square" width="20" height="20"></i>
-                    </a>';
+                    </a>
+                    <a href="' . $urlDelete . '&id=' . $id . '" style="color:black">
+                        <i class="bi bi-trash3" width="20" height="20"></i>
+                    </a>
+                    ';
                         echo "
                     <div class='row'>
                         <div class='col-1 text-center border'>
