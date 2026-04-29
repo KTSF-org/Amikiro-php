@@ -21,10 +21,18 @@ class SectionBat
 
         $urlAdd = url::getBaseUrl() . "sectionBat?page=addition";
         $urlModif = url::getBaseUrl() . "sectionBat?page=modification";
+        $urlDelete = url::getBaseUrl() . "sectionBat?delete=true";
         $bat = null;
 
-        // Page de la création fiche chauve-souris
+        // Page de la création de fiche chauve-souris
         if (!req::has("page")) {
+            
+            if (req::get("delete") == "true") {
+                $batId = req::get("id");
+                $batDAO = new BatDAO();
+                $bat = $batDAO->getBatById((int) $batId);
+                $bat->deleteBat();
+            }
 
             // Tableau associatif, clé : idSpecies, valeur : commonName (de Species).
             $speciesDAO = new SpeciesDAO();
@@ -37,6 +45,7 @@ class SectionBat
             // Tableau correspondant au sexes possible
             $sexList = ["Inconnu", "Femelle", "Mâle"];
 
+            // Liste de toutes les chauve-souris de la BDD
             $batDAO = new BatDAO();
             $batList = $batDAO->getAllBat();
 
@@ -45,6 +54,7 @@ class SectionBat
                 req::has("sectionObservation")
             ) {
                 //TODO Création et stockage de la fiche Bat.
+
             }
 
             Vue::render(
@@ -52,6 +62,7 @@ class SectionBat
                 [
                     "urlAdd" => $urlAdd,
                     "urlModif" => $urlModif,
+                    "urlDelete" => $urlDelete,
                     "batList" => $batList,
                     "speciesList" => $speciesAsso,
                     "sexList" => $sexList
@@ -88,7 +99,7 @@ class SectionBat
                         $sex = 2;
                         break;
                     default:
-                        $sex = -1;
+                        $sex = 0;
                         break;
                 }
 
@@ -100,22 +111,30 @@ class SectionBat
                     req::post("batWeight"),
                     req::post("batNotes")
                 );
-                $bat->addBat();
+
+                if (req::get("page") == "addition") {
+                    $bat->addBat();
+                } else {
+                    $bat->setId(req::get("id"));
+                    $bat->updateBat();
+                }
             }
 
             // Si c'est une modification de la chauve-souris
-            $modif = req::has("id");
+            $modif = req::get("page") == "modification";
             if ($modif) {
                 $batId = req::get("id");
                 $batDAO = new BatDAO();
                 $bat = $batDAO->getBatById((int) $batId);
             }
 
+
             Vue::render(
                 'journal/SectionBatAddition',
                 [
                     "url" => $urlAdd,
                     "urlModif" => $urlModif,
+                    "urlDelete" => $urlDelete,
                     "bat" => $bat,
                     "modif" => $modif,
                     "allSpecies" => $allSpecies

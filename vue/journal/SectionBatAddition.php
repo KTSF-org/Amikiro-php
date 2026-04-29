@@ -13,9 +13,9 @@ use app\util\Helper;
     <a href="sectionBat" role="button" class="btn btn-primary m-1">Retour</a>
 
     <?php if ($modif) { ?>
-        <form method="post" action="sectionBat?page=modification"></form>
+        <form method="post" action="sectionBat?page=modification&id=<?= $bat->getId() ?>">
         <?php } else { ?>
-        <form method="post" action="sectionBat?page=addition"></form>
+        <form method="post" action="sectionBat?page=addition">
         <?php } ?>
     
 
