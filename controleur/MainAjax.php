@@ -7,7 +7,9 @@ use app\util\Request as req;
 use app\util\Guard;
 use modele\DAO\UserDAO as Model;
 use modele\DAO\ConfigDAO;
-
+use modele\journal\SectionColony as SectionColony;
+use modele\journal\Section as Section;
+use app\util\SessionLogin as SessionLogin;
 /**
  *	Classe chargée depuis le routing : route/routing.php
  *	==> $route->add('/ajax', 'controleur\MainAjax'); 
@@ -120,7 +122,18 @@ class MainAjax extends Ajax {
 		$date = req::post('date');
 		$category = req::post('category');
 		$notes = req::post('notes');
+		
+		
+		$section = new Section($title, $notes, $date,SessionLogin::getUserId());
+		if($section->addSection()) {
+			$sectionColony = new SectionColony($section->getId(), (int)$category);
+			return $sectionColony->addSectionColony();
+		}	
+		return false;
+	
 
+	
+				
 		
 
 	}

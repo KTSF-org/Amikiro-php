@@ -8,24 +8,31 @@ use app\util\BaseURL as url;
 use modele\DAO\journalDAO\BatDAO;
 use vue\base\MainTemplate as Vue;
 use app\util\Guard;
-use app\util\Request;
 
 use modele\journal\Bat;
-use modele\Section;
 use modele\DAO\journalDAO\SpeciesDAO;
-use modele\Species;
 
 class SectionBat
 {
 
     public function __construct()
     {
+        $test = "oui";
 
-        $url = url::getBaseUrl() . "sectionBat?page=addition";
+        $urlAdd = url::getBaseUrl() . "sectionBat?page=addition";
+        $urlModif = url::getBaseUrl() . "sectionBat?page=modification";
+        $urlDelete = url::getBaseUrl() . "sectionBat?delete=true";
         $bat = null;
 
-        // Page de la fiche chauve-souris
-        if (!isset($_GET["page"])) {
+        // Page de la création de fiche chauve-souris
+        if (!req::has("page")) {
+            
+            if (req::get("delete") == "true") {
+                $batId = req::get("id");
+                $batDAO = new BatDAO();
+                $bat = $batDAO->getBatById((int) $batId);
+                $bat->deleteBat();
+            }
 
             // Tableau associatif, clé : idSpecies, valeur : commonName (de Species).
             $speciesDAO = new SpeciesDAO();
@@ -35,23 +42,27 @@ class SectionBat
                 $speciesAsso[$spe->getId()] = $spe->getCommonName();
             }
 
-            // Tableau
+            // Tableau correspondant au sexes possible
             $sexList = ["Inconnu", "Femelle", "Mâle"];
- 
+
+            // Liste de toutes les chauve-souris de la BDD
             $batDAO = new BatDAO();
             $batList = $batDAO->getAllBat();
 
             if (
-                !empty($_POST["sectionTitle"]) &&
-                !empty($_POST["sectionObservation"])
+                req::has("sectionTitle") &&
+                req::has("sectionObservation")
             ) {
                 //TODO Création et stockage de la fiche Bat.
+
             }
 
             Vue::render(
                 'journal/SectionBat',
                 [
-                    "url" => $url,
+                    "urlAdd" => $urlAdd,
+                    "urlModif" => $urlModif,
+                    "urlDelete" => $urlDelete,
                     "batList" => $batList,
                     "speciesList" => $speciesAsso,
                     "sexList" => $sexList
@@ -65,11 +76,6 @@ class SectionBat
             // Création du code html pour la liste des espèces présente dans la BDD
             $speciesDAO = new SpeciesDAO();
             $allSpecies = $speciesDAO->getAllSpecies();
-            $speciesList = "";
-            foreach ($allSpecies as $species) {
-                $speciesList .= "<option value='" . $species->getId() . "'>" .
-                    $species->getCommonName() . "</option>";
-            }
 
             // TODO 
             // Controle du formulaire d'ajout de Bat (si le nom existe déjà,
@@ -77,12 +83,12 @@ class SectionBat
 
             // Si le formulaire est remplis
             if (
-                !empty($_POST["batName"]) &&
-                !empty($_POST["batWeight"]) &&
-                !empty($_POST["batNotes"])
+                req::has("batName") &&
+                req::has("batWeight") &&
+                req::has("batNotes")
             ) {
                 // Création de la variable du sexe
-                switch ($_POST["batSex"]) {
+                switch (req::post("batSex")) {
                     case "unknow":
                         $sex = 0;
                         break;
@@ -93,36 +99,45 @@ class SectionBat
                         $sex = 2;
                         break;
                     default:
-                        $sex = -1;
+                        $sex = 0;
                         break;
                 }
 
                 $bat = new Bat(
-                    $_POST["batName"],
-                    (int) $_POST["batSpecies"],
-                    $_POST["batBirthDate"],
+                    req::post("batName"),
+                    (int) req::post("batSpecies"),
+                    req::post("batBirthDate"),
                     $sex,
-                    $_POST["batWeight"],
-                    $_POST["batNotes"]
+                    req::post("batWeight"),
+                    req::post("batNotes")
                 );
-                $bat->addBat();
+
+                if (req::get("page") == "addition") {
+                    $bat->addBat();
+                } else {
+                    $bat->setId(req::get("id"));
+                    $bat->updateBat();
+                }
             }
 
             // Si c'est une modification de la chauve-souris
-            $modif = Request::has("id");
+            $modif = req::get("page") == "modification";
             if ($modif) {
-                $batId = Request::get("id", "");
+                $batId = req::get("id");
                 $batDAO = new BatDAO();
                 $bat = $batDAO->getBatById((int) $batId);
-                //TODO envoyer à la vue et tout
             }
+
 
             Vue::render(
                 'journal/SectionBatAddition',
                 [
-                    "url" => $url,
-                    "speciesList" => $speciesList,
-                    "bat" => $bat
+                    "url" => $urlAdd,
+                    "urlModif" => $urlModif,
+                    "urlDelete" => $urlDelete,
+                    "bat" => $bat,
+                    "modif" => $modif,
+                    "allSpecies" => $allSpecies
                 ]
             );
         }

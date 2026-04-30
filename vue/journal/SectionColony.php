@@ -28,7 +28,7 @@
         </div>
         <div class="mb-3 col-3">
             <label for="colonyCategory" class="form-label">Catégorie</label>
-           <select class="form-select" id="ategory" aria-label="Floating label select example" name="colonyCategory">
+           <select class="form-select" id="category" aria-label="Floating label select example" name="colonyCategory">
                 <option selected>Veuillez choisir une catégorie...</option>
                 <?= $categories?>
             </select>
@@ -65,14 +65,14 @@
         const request = new AjaxRequest(url, 'POST', data );
         request.send(
             //success
-            (reponse)=> {
-                console.log(response);
-                if(reponse){
-                    spanMessage.text('Rubrique créée avec succès');
+            (response)=> {
+                if(response===true){
+                    spanMessage.text('Rubrique créée avec succès').css('color', 'green');
                 }else{
-                    spanMessage.text('Erreur lors de la création de la rubrique');
+                    spanMessage.text('Erreur lors de la création de la rubrique. Veuillez renseigner tout les champs').css('color', 'red');
                 }
-            }
+            },(response) => {
+				}
         )      
 
 

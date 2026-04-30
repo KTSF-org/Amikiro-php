@@ -65,9 +65,13 @@ use modele\DAO\journalDAO\SpeciesDAO;
                     data-bs-toggle="modal" data-bs-target="#modal' . $id . '">
                         <i class="bi bi-eye-fill" width="20px" height="20px"></i>
                     </button>
-                    <a href="' . $url . '&id=' . $id . '" style="color:black">
+                    <a href="' . $urlModif . '&id=' . $id . '" style="color:black">
                         <i class="bi bi-pencil-square" width="20" height="20"></i>
-                    </a>';
+                    </a>
+                    <a href="' . $urlDelete . '&id=' . $id . '" style="color:black">
+                        <i class="bi bi-trash3" width="20" height="20"></i>
+                    </a>
+                    ';
                         echo "
                     <div class='row'>
                         <div class='col-1 text-center border'>
@@ -99,7 +103,7 @@ use modele\DAO\journalDAO\SpeciesDAO;
                     ?>
                 </div>
 
-                <a href="<?= $url ?>" role="button" class="btn btn-primary">
+                <a href="<?= $urlAdd ?>" role="button" class="btn btn-primary">
                     Ajouter une nouvelle chauve-souris
                 </a>
 
