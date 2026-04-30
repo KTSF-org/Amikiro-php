@@ -4,7 +4,7 @@ namespace modele\DAO\journalDAO;
 use modele\DAO\base\Database;
 use app\util\Error;
 use modele\journal\SectionColony;
-
+use PDO;
 
 class SectionColonyDAO extends Database
 {
@@ -80,9 +80,22 @@ class SectionColonyDAO extends Database
     }
 
     // CRUD DELETE : supprime une sectionColony dans la BDD
-    public function delete($sectionColony): bool 
+    public function delete($sectionColony): bool
     {
         return $this->deleteOne($sectionColony->getId());
+    }
+
+    public function findColonySectionByIdSection($idSection): mixed
+    {
+        $stmt = $this->getPdo()->prepare("SELECT * FROM `" . $this->tableName . "` WHERE idSection = :idSection");
+        $stmt->execute([':idSection' => "$idSection"]);
+        $section = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($section!=null){
+            unset($section['id']);
+            return new SectionColony(...$section);
+        }
+        
+        return null;
     }
 }
 
