@@ -17,7 +17,13 @@
                     #
                 </div>
                 <div class="col border">
+                    Type
+                </div>
+                <div class="col border">
                     Titre
+                </div>
+                <div class="col border">
+                    DATE / HEURE
                 </div>
                 <div class="col-2 border">
                     Auteur
@@ -26,8 +32,28 @@
                     -
                 </div>
             </div>
+            <?php foreach($listFiches as $fiche){ ?>
+            <div class="row">
+                <div class="col-1 text-center border">
+                    <?=$fiche->getId()?>
+                </div>
+                <div class="col border">
+                    <?= $typeAsso[$fiche->getId()] ?>
+                </div>
+                <div class="col border">
+                    <?=$fiche->getTitle()?>
+                </div>
+                <div class="col border">
+                    <?=$fiche->getCreationDate()?>
+                </div>
+                <div class="col-2 border">
+                    <?= $usersAsso[$fiche->getIdUser()]?>
+                </div>
+                <div class="col-1 text-center border">
+                    -
+                </div>
+            </div>
+            <?php }?>
         </div>
     </div>
-
-
 </div>

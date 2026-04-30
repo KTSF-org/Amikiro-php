@@ -14,7 +14,8 @@ class Section{
 		private string $title='',
 		private string $content='',
 		private string $creationDate='',
-		private int $idUser=0
+		private int $idUser=0,
+		private int $idLogs=1,
 	) {
 
 		// Gestionnaire d'erreur (pour les requêtes) :
@@ -75,6 +76,10 @@ class Section{
 	public function getIdUser(): int {
 		return $this->idUser;
 	}
+
+	public function getIdLogs(): int {
+		return $this->idLogs;
+	}
 	/**
 	 * SETTERS (mutateurs)
 	 */
@@ -93,6 +98,9 @@ class Section{
 	}
 	public function setIdUser($idUser): void {
 		$this->idUser = $idUser;
+	}
+	public function setIdLogs($idLogs): void {
+		$this->idLogs = $idLogs;
 	}
 }
 	
