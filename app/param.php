@@ -29,10 +29,10 @@ const ROLE_NATURALISTE = 2;
 const ROLE_ADMIN      = 3;
 
 // PHPMailer — Dev : Mailpit localhost:1025 / Prod : remplacer par SMTP hébergeur
-define('MAIL_HOST', getenv('MAIL_HOST') ?? 'mailpit');
-define('MAIL_PORT', getenv('MAIL_PORT') ?? '1025');
-define('MAIL_USER', getenv('MAIL_USER') ?? '');
-define('MAIL_PASS', getenv('MAIL_PASS') ?? '');
-define('MAIL_FROM', getenv('MAIL_FROM') ?? 'noreply@amikiro.fr');
-define('MAIL_FROM_NAME', getenv('MAIL_FROM_NAME') ?? '');
+const MAIL_HOST      = '';
+const MAIL_PORT      = 465; // Port standard pour TLS
+const MAIL_USER      = '';
+const MAIL_PASS      = '';
+const MAIL_FROM      = '';
+const MAIL_FROM_NAME = 'Amikiro';
 

@@ -86,9 +86,9 @@ class Login
                                 date('Y-m-d'),
                                 date('Y-m-d', strtotime("+$days days"))
                             );
-                            $metier = $userDAO->getUsersById($user->id);
-                            $metier->setCodeRole(ROLE_INVITE);
-                            $userDAO->update($metier);
+                            $user = $userDAO->getUsersById($user->id);
+                            $user->setCodeRole(ROLE_INVITE);
+                            $userDAO->update($user);
                             $user->codeRole = ROLE_INVITE;
                         }
                         unset($_SESSION["captchaCode"]);
@@ -124,22 +124,13 @@ class Login
                 }
             }
         }
-
-
-
-
-
         Vue::setTitle('Connexion');
         Vue::addCSS([
             ASSET . '/css/login.css',
         ]);
 
         Vue::render('Login', ['erreur' => $erreur], '', true);
-
-
-
     }
-
 }
 
 ?>

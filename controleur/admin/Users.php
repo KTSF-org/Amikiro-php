@@ -203,7 +203,7 @@ class Users {
                 } else {
                     $subscriptionSuccess = $subscriptionDAO->createForUser($id, $startDate, $endDate);
 
-                    // Promotion explicite en adhérent si la case est cochée et que l'utilisateur est invité
+                    // Promotion explicite en adhérent si la case est cochée, que l'utilisateur est invité et qu'un temps d'accès est donné
                     if ($subscriptionSuccess && $user->getCodeRole() === ROLE_INVITE
                         && !empty($_POST['promoteToAdherent'])) {
                         // Restitue l'ancien numéro s'il existe, sinon en génère un nouveau
