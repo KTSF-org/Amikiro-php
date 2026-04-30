@@ -6,8 +6,11 @@ use app\util\Request as req;
 use app\util\BaseURL as url;
 
 use modele\DAO\journalDAO\BatDAO;
+use modele\journal\Section;
+use modele\journal\SectionSpecimen;
 use vue\base\MainTemplate as Vue;
 use app\util\Guard;
+use app\util\SessionLogin;
 
 use modele\journal\Bat;
 use modele\DAO\journalDAO\SpeciesDAO;
@@ -17,7 +20,6 @@ class SectionBat
 
     public function __construct()
     {
-        $test = "oui";
 
         $urlAdd = url::getBaseUrl() . "sectionBat?page=addition";
         $urlModif = url::getBaseUrl() . "sectionBat?page=modification";
@@ -42,19 +44,27 @@ class SectionBat
                 $speciesAsso[$spe->getId()] = $spe->getCommonName();
             }
 
-            // Tableau correspondant au sexes possible
+            // Tableau correspondant au sexes possibles
             $sexList = ["Inconnu", "Femelle", "Mâle"];
 
             // Liste de toutes les chauve-souris de la BDD
             $batDAO = new BatDAO();
             $batList = $batDAO->getAllBat();
 
+            // Ajoute la fiche individu à la BDD
             if (
                 req::has("sectionTitle") &&
                 req::has("sectionObservation")
             ) {
-                //TODO Création et stockage de la fiche Bat.
-
+                $section = new Section(
+                    req::post("sectionTitle"),
+                    req::post("sectionObservation"),
+                    req::post("date"),
+                    SessionLogin::getUserId()
+                );
+                $section->addSection();
+                $sectionBat = new SectionSpecimen($section->getId(), (int) req::post("batSelected"));
+                $sectionBat->addSectionSpecimen();
             }
 
             Vue::render(
