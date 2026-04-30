@@ -22,7 +22,7 @@ use modele\DAO\journalDAO\SpeciesDAO;
 
                 <div class="mb-3">
                     <label for="Date" class="form-label">Date</label>
-                    <input type="datetime-local" class="" id="date" name="colonyDate">
+                    <input type="datetime-local" class="" id="date" name="date">
                 </div>
 
                 <div class="mb-3">
@@ -60,47 +60,47 @@ use modele\DAO\journalDAO\SpeciesDAO;
                         $name = $bat->getName();
                         $species = $speciesList[$bat->getIdSpecies()];
                         $sex = $sexList[$bat->getSex()];
-                        $details = '
-                    <button type="button" class="btn btn-sm"
-                    data-bs-toggle="modal" data-bs-target="#modal' . $id . '">
-                        <i class="bi bi-eye-fill" width="20px" height="20px"></i>
-                    </button>
-                    <a href="' . $urlModif . '&id=' . $id . '" style="color:black">
-                        <i class="bi bi-pencil-square" width="20" height="20"></i>
-                    </a>
-                    <a href="' . $urlDelete . '&id=' . $id . '" style="color:black">
-                        <i class="bi bi-trash3" width="20" height="20"></i>
-                    </a>
-                    ';
-                        echo "
-                    <div class='row'>
-                        <div class='col-1 text-center border'>
-                            <input type='radio' class='form-check-input' name='batSelected'>
-                         </div>
-                        <div class='col-2 text-center border'>" . $id . "</div>
-                        <div class='col border'>" . $name . "</div>
-                     <div class='col-2 border'>" . $details . "</div>
-                    </div>";
-                        echo '
-                    <div class="modal fade" id="modal' . $id . '" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h1 class="modal-title fs-5">' . $name . '</h1>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body">
-                                    Espece : ' . $species . '<br/>
-                                    Date de naissance : ' . $bat->getBirthDate() . '<br/>
-                                    Sexe : ' . $sex . '<br/>
-                                    Poids : ' . $bat->getWeight() . ' grammes<br/><br/>
-                                    Note :<br/> ' . $bat->getNote() . '
+                        ?>
+                        <div class='row'>
+                            <div class='col-1 text-center border'>
+                                <input type='radio' class='form-check-input' name='batSelected' value="<?= $id ?>">
+                            </div>
+                            <div class='col-2 text-center border'><?= $id ?></div>
+                            <div class='col border'><?= $name ?></div>
+                            <div class='col-2 border p-0'>
+                                <button type="button" class="btn btn-sm" data-bs-toggle="modal"
+                                    data-bs-target="#modal<?= $id ?>">
+                                    <i class="bi bi-eye-fill" width="20px" height="20px"></i>
+                                </button>
+                                <a href="<?= $urlModif ?>&id=<?= $id ?>" class="btn btn-sm" style="color:black">
+                                    <i class="bi bi-pencil-square" width="20px" height="20px"></i>
+                                </a>
+                                <a href="<?= $urlDelete ?>&id=<?= $id ?>" class="btn btn-sm" style="color:black">
+                                    <i class="bi bi-trash3" width="20px" height="20px"></i>
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="modal fade" id="modal<?= $id ?>" tabindex="-1" aria-labelledby="exampleModalLabel"
+                            aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h1 class="modal-title fs-5"><?= $name ?></h1>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        Espece : <?= $species ?><br />
+                                        Date de naissance : <?= $bat->getBirthDate() ?><br />
+                                        Sexe : <?= $sex ?><br />
+                                        Poids :<?= $bat->getWeight() ?> grammes<br /><br />
+                                        Note : <br /> <?= $bat->getNote() ?>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>';
-                    }
-                    ?>
+                    <?php } ?>
                 </div>
 
                 <a href="<?= $urlAdd ?>" role="button" class="btn btn-primary">
