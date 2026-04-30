@@ -71,7 +71,7 @@ class Login
                         unset($_SESSION["captchaCode"]);
                         $userDAO->incrementConnectCount($user->id);
                         UserSession::loginWithRole($user->codeRole, $user->id);
-                        header('Location:  accueil');
+                        header('Location:  live');
                         exit;
 
                     } elseif ($role === ROLE_ADHERENT) {
@@ -96,7 +96,7 @@ class Login
                         // Si user est good on enregistre le role et l'objet entier en session
                         UserSession::loginWithRole($user->codeRole, $user->id);
                         // REDIRECTION
-                        header('Location:  accueil');
+                        header('Location:  live');
                         exit;
 
                     } elseif ($role === ROLE_INVITE) {
@@ -110,7 +110,7 @@ class Login
                             // Si user est good on enregistre le role et l'objet entier en session
                             UserSession::loginWithRole($user->codeRole, $user->id);
                             // REDIRECTION
-                            header('Location:  accueil');
+                            header('Location:  live');
                             exit;
                         }
 
