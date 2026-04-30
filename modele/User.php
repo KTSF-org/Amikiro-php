@@ -40,7 +40,10 @@ class User
 		// Gestionnaire d'erreur (pour les requêtes) :
 		try {
 			$this->param = $this->getKey(get_object_vars($this));
-			Error::checkModelArgs(get_object_vars($this), __CLASS__, func_get_args());
+			// memberNum est optionnel pour les comptes invités (null en BDD)
+			$checkVars = get_object_vars($this);
+			unset($checkVars['memberNum']);
+			Error::checkModelArgs($checkVars, __CLASS__, func_get_args());
 		} catch (\InvalidArgumentException $e) {
 			$err = "<pre>Erreur : " . $e->getMessage();
 			$err .= Error::print($e->getTrace(), 1);

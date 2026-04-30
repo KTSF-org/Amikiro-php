@@ -114,13 +114,13 @@ function accessCell(int $userId, array $activeByUser): string {
         <table class="table table-striped align-middle">
             <thead class="table-dark">
                 <tr>
-                    <th>ID</th>
-                    <th>Prénom</th>
                     <th>Nom</th>
+                    <th>Prénom</th>
                     <th>Email</th>
                     <th>Rôle</th>
                     <th>N° adhérent</th>
                     <th>Temps d'accès</th>
+                    <th>Connexions</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -131,13 +131,13 @@ function accessCell(int $userId, array $activeByUser): string {
                 </tr>
                 <?php else: foreach ($users as $u): ?>
                 <tr>
-                    <td><?= (int)$u->id ?></td>
-                    <td><?= htmlspecialchars($u->name) ?></td>
                     <td><?= htmlspecialchars($u->surname) ?></td>
+                    <td><?= htmlspecialchars($u->name) ?></td>
                     <td><?= htmlspecialchars($u->mail) ?></td>
                     <td><?= roleLabel((int)$u->codeRole) ?></td>
                     <td><?= memberNumCell($u) ?></td>
                     <td><?= accessCell((int)$u->id, $activeByUser) ?></td>
+                    <td><?= (int)$u->countConnect ?></td>
                     <td>
                         <a href="<?= $actual_link ?>parametres/utilisateurs?page=edit&id=<?= (int)$u->id ?>"
                            class="btn btn-sm btn-primary">Éditer</a>

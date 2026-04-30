@@ -56,12 +56,12 @@ class Mailer {
     /**
      * Génère le corps HTML de l'email de bienvenue.
      */
-    private static function welcomeTemplate(string $firstName, string $mail, string $password, string $memberNum): string {
+    private static function welcomeTemplate(string $firstName, string $to, string $password, string $memberNum): string {
         return '
         <p>Bonjour <strong>' . htmlspecialchars($firstName) . '</strong>,</p>
         <p>Votre compte sur <strong>' . APP_NAME . '</strong> vient d\'être créé.</p>
         <table cellpadding="6" style="border-collapse:collapse;">
-            <tr><td><strong>Email</strong></td><td>' . htmlspecialchars($mail) . '</td></tr>
+            <tr><td><strong>Email</strong></td><td>' . htmlspecialchars($to) . '</td></tr>
             <tr><td><strong>Mot de passe</strong></td><td>' . htmlspecialchars($password) . '</td></tr>
             ' . (!empty($memberNum) ? '<tr><td><strong>N° adhérent</strong></td><td>' . htmlspecialchars($memberNum) . '</td></tr>' : '') . '
         </table>

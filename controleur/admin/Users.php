@@ -225,7 +225,8 @@ class Users {
                     ? $user->getCodeRole()
                     : (int)($_POST['codeRole'] ?? $user->getCodeRole());
 
-                $isDowngradeToInvite = $codeRole === ROLE_INVITE && $user->getCodeRole() === ROLE_ADHERENT;
+                $isDowngradeToInvite = $codeRole === ROLE_INVITE
+                    && in_array($user->getCodeRole(), [ROLE_ADHERENT, ROLE_NATURALISTE]);
 
                 $existingMail = $userDAO->getUserByEmail($mail);
                 $mailTaken    = $existingMail && (int)$existingMail->id !== $id;
@@ -233,12 +234,17 @@ class Users {
                 if (!$isSelf && $codeRole === ROLE_ADMIN) {
                     $error = 'Impossible d\'attribuer le rôle administrateur.';
                 } elseif (!$isSelf && $isDowngradeToInvite) {
-                    $error = 'Un adhérent ne peut pas être rétrogradé manuellement en invité.';
+                    $error = 'Un adhérent ou naturaliste ne peut pas être rétrogradé manuellement en invité.';
                 } elseif (empty($name) || empty($surname) || empty($mail)) {
                     $error = 'Tous les champs obligatoires doivent être remplis.';
                 } elseif ($mailTaken) {
                     $error = 'Cette adresse email est déjà utilisée par un autre compte.';
                 } else {
+                    // Génère un memberNum si l'utilisateur devient adhérent sans en avoir un
+                    if ($codeRole === ROLE_ADHERENT && empty($memberNum)) {
+                        $memberNum = 'AMI-' . strtoupper(bin2hex(random_bytes(4)));
+                    }
+
                     $user->setName($name)
                          ->setSurname($surname)
                          ->setMail($mail)
