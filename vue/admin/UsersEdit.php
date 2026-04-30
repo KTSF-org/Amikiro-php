@@ -63,11 +63,8 @@
                                 </p>
                             <?php else: ?>
                             <select class="form-select" id="codeRole" name="codeRole">
-                                <?php if ($user->getCodeRole() !== ROLE_ADHERENT): ?>
-                                <option value="<?= ROLE_INVITE ?>"
-                                    <?= $user->getCodeRole() === ROLE_INVITE ? 'selected' : '' ?>>
-                                    Invité
-                                </option>
+                                <?php if ($user->getCodeRole() === ROLE_INVITE): ?>
+                                <option value="<?= ROLE_INVITE ?>" selected>Invité</option>
                                 <?php endif; ?>
                                 <option value="<?= ROLE_ADHERENT ?>"
                                     <?= $user->getCodeRole() === ROLE_ADHERENT ? 'selected' : '' ?>>
