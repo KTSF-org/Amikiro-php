@@ -17,6 +17,9 @@
                     #
                 </div>
                 <div class="col border">
+                    Type
+                </div>
+                <div class="col border">
                     Titre
                 </div>
                 <div class="col border">
@@ -33,6 +36,9 @@
             <div class="row">
                 <div class="col-1 text-center border">
                     <?=$fiche->getId()?>
+                </div>
+                <div class="col border">
+                    <?= $typeAsso[$fiche->getId()] ?>
                 </div>
                 <div class="col border">
                     <?=$fiche->getTitle()?>
