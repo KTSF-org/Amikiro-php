@@ -28,11 +28,11 @@ const ROLE_ADHERENT   = 1;
 const ROLE_NATURALISTE = 2;
 const ROLE_ADMIN      = 3;
 
-// PHPMailer — Dev : Mailpit localhost:1025 / Prod : remplacer par SMTP hébergeur
-const MAIL_HOST      = '';
-const MAIL_PORT      = 465; // Port standard pour TLS
+// PHPMailer — Postfix sur l'hôte (host.docker.internal:25, pas d'auth)
+const MAIL_HOST      = 'postfix';
+const MAIL_PORT      = 25;
 const MAIL_USER      = '';
 const MAIL_PASS      = '';
-const MAIL_FROM      = '';
+const MAIL_FROM      = 'noreply@amikiro.fr';
 const MAIL_FROM_NAME = 'Amikiro';
 

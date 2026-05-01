@@ -114,7 +114,12 @@
             <?php if (!$isSelf): ?>
             <div class="card mb-4">
                 <div class="card-body">
-                    <h5 class="card-title mb-3">Temps d'accès</h5>
+                    <h5 class="card-title mb-3">
+                        Adhésion
+                        <?php if ($user->getCodeRole() === ROLE_NATURALISTE): ?>
+                            <small class="text-muted fw-normal fs-6">— informatif, n'affecte pas la connexion</small>
+                        <?php endif; ?>
+                    </h5>
 
                     <?php if ($activeSubscription): ?>
                         <div class="alert alert-success py-2 mb-3">
@@ -186,12 +191,6 @@
                             <?php endforeach; ?>
                         </tbody>
                     </table>
-                    <?php endif; ?>
-                    <?php if ($user->getCodeRole() === ROLE_NATURALISTE): ?>
-                    <p class="text-muted small mt-3 mb-0">
-                        Le temps d'accès est purement informatif pour un naturaliste,
-                        il n'affecte pas sa capacité à se connecter.
-                    </p>
                     <?php endif; ?>
                 </div>
             </div>

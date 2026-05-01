@@ -29,8 +29,6 @@ class Routing {
 		$route->add('/img', 'controleur\util\Image');
 		//charge la classe MainAjax($message), 'Hello AJAX' un message de sortie par défaut :
 		$route->add('/ajax', 'controleur\MainAjax', 'Hello AJAX');
-		//si l'on souhaite passer plusieurs paramètres, il faut ajouter un tableau :
-		$route->add('/admin/test', 'controleur\admin\Test', ['hello', 'world']);
 		//méthode / fonction personalisée :
 		$route->add('/phpinfo', function () { phpinfo(); });
 		//login automatique en dev — à retirer avant mise en production :

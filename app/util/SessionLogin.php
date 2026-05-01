@@ -31,7 +31,7 @@ class SessionLogin {
 	}
 
 	public static function getUserId(): int {
-		return $_SESSION[self::$idKey] ?? null;
+		return $_SESSION[self::$idKey] ?? 0;
 	}
 
 	

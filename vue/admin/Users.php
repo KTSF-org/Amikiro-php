@@ -14,6 +14,7 @@ function memberNumCell(object $u): string {
     $num  = $u->memberNum ?? '';
 
     if ($role === ROLE_INVITE) {
+        // Un invité avec un numéro est un ex-adhérent rétrogradé (adhésion expirée au login) — affiché en rouge.
         return empty($num)
             ? '<span class="text-muted">INVITE</span>'
             : '<span class="text-danger fw-semibold">' . htmlspecialchars($num) . '</span>';
@@ -34,6 +35,9 @@ function accessCell(int $userId, array $activeByUser): string {
     $daysLeft = (int)$today->diff($end)->days;
     $label   = date('d/m/Y', strtotime($sub->endDate));
 
+    if ($daysLeft === 0) {
+        return '<span class="badge bg-warning text-dark">Expire aujourd\'hui</span>';
+    }
     if ($daysLeft <= 7) {
         return '<span class="badge bg-warning text-dark" title="Expire le ' . $label . '">Expire dans ' . $daysLeft . 'j</span>';
     }
@@ -119,7 +123,7 @@ function accessCell(int $userId, array $activeByUser): string {
                     <th>Email</th>
                     <th>Rôle</th>
                     <th>N° adhérent</th>
-                    <th>Temps d'accès</th>
+                    <th>Adhésion</th>
                     <th>Connexions</th>
                     <th>Actions</th>
                 </tr>

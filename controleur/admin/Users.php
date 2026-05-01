@@ -7,6 +7,7 @@ use app\util\Guard;
 use app\util\BaseURL;
 use app\util\Request;
 use app\util\Mailer;
+use app\util\SessionLogin;
 use modele\User;
 use modele\DAO\UserDAO;
 use modele\DAO\SubscriptionDAO;
@@ -49,7 +50,7 @@ class Users {
 
             if ($action === 'delete') {
                 $id        = (int)($_POST['id'] ?? 0);
-                $currentId = (int)($_SESSION['user']->id ?? 0);
+                $currentId = SessionLogin::getUserId();
                 if ($id > 0 && $id !== $currentId) {
                     // Nettoie les abonnements avant la suppression du compte
                     $subscriptionDAO->deleteByUser($id);
@@ -75,7 +76,7 @@ class Users {
         $totalPages  = max(1, (int)ceil($totalUsers / self::PER_PAGE));
         $currentPage = min($currentPage, $totalPages);
         $users       = $userDAO->getAllFiltered($roleFilter, $offset, self::PER_PAGE);
-        $currentId   = (int)($_SESSION['user']->id ?? 0);
+        $currentId   = SessionLogin::getUserId();
         $config      = $configDAO->getConfig();
         $guestDefaultAccessDays = (int)($config->guestDefaultAccessDays ?? 7);
 
@@ -99,32 +100,41 @@ class Users {
      *
      * Le mot de passe (8 caractères aléatoires) et le numéro adhérent
      * sont générés automatiquement côté serveur, jamais saisis dans le formulaire.
-     * Si le rôle est ROLE_ADHERENT et que des dates sont fournies,
-     * une période d'accès est créée immédiatement.
-     * Un email de bienvenue avec les identifiants est envoyés après création.
+     * - ROLE_INVITE     : adhésion auto-calculée (today + guestDefaultAccessDays).
+     * - ROLE_ADHERENT   : période d'adhésion obligatoire.
+     * - ROLE_NATURALISTE: période d'adhésion facultative, purement informative.
+     * Un email de bienvenue avec les identifiants est envoyé après création.
      */
     private function create(): void {
-        $error = null;
+        $error     = null;
+        $configDAO = new ConfigDAO();
+        $config    = $configDAO->getConfig();
+        $guestDefaultAccessDays = (int)($config->guestDefaultAccessDays ?? 7);
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $name      = Request::post('name');
-            $surname   = Request::post('surname');
-            $mail      = Request::post('mail');
-            $codeRole  = (int)($_POST['codeRole'] ?? ROLE_ADHERENT);
-            // Les invités n'ont pas de numéro adhérent ; généré pour les autres rôles
-            $memberNum = ($codeRole !== ROLE_INVITE)
+            $name     = Request::post('name');
+            $surname  = Request::post('surname');
+            $mail     = Request::post('mail');
+            $codeRole = (int)($_POST['codeRole'] ?? ROLE_ADHERENT);
+            // Seul ROLE_ADHERENT reçoit un numéro à la création.
+            // ROLE_NATURALISTE n'en a pas par défaut ; il peut en hériter s'il est promu depuis adhérent.
+            $memberNum = ($codeRole === ROLE_ADHERENT)
                 ? 'AMI-' . strtoupper(bin2hex(random_bytes(4)))
                 : '';
-            $startDate = $_POST['startDate'] ?? '';
-            $endDate   = $_POST['endDate']   ?? '';
-            // Vrai si l'admin a rempli au moins une des deux dates
-            $hasDates  = !empty($startDate) || !empty($endDate);
-            $chars     = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-            // random_int est cryptographiquement sûr, contrairement à rand()
-            $password  = implode('', array_map(fn() => $chars[random_int(0, strlen($chars) - 1)], range(1, 8)));
+            $chars    = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            $password = implode('', array_map(fn() => $chars[random_int(0, strlen($chars) - 1)], range(1, 8)));
 
-            // Les invités doivent obligatoirement avoir un temps d'accès à la création
-            $inviteRequiresDates = ($codeRole === ROLE_INVITE && (empty($startDate) || empty($endDate)));
+            // ROLE_INVITE : durée assignée depuis Config.guestDefaultAccessDays plutôt que saisie manuellement,
+            // pour rester cohérent avec la rétrogradation automatique adhérent → invité au login.
+            if ($codeRole === ROLE_INVITE) {
+                $startDate = date('Y-m-d');
+                $endDate   = date('Y-m-d', strtotime("+{$guestDefaultAccessDays} days"));
+                $hasDates  = true;
+            } else {
+                $startDate = $_POST['startDate'] ?? '';
+                $endDate   = $_POST['endDate']   ?? '';
+                $hasDates  = !empty($startDate) || !empty($endDate);
+            }
 
             $userDAO = new UserDAO();
 
@@ -134,22 +144,21 @@ class Users {
                 $error = 'Tous les champs obligatoires doivent être remplis.';
             } elseif ($userDAO->getUserByEmail($mail)) {
                 $error = 'Cette adresse email est déjà utilisée.';
-            } elseif ($inviteRequiresDates) {
-                $error = 'Un temps d\'accès est obligatoire pour un compte invité.';
+            } elseif ($codeRole === ROLE_ADHERENT && !$hasDates) {
+                $error = 'La période d\'adhésion est obligatoire pour un adhérent.';
             } elseif ($hasDates && (empty($startDate) || empty($endDate))) {
-                $error = 'Les deux dates du temps d\'accès sont obligatoires.';
+                $error = 'Les deux dates de l\'adhésion sont obligatoires.';
             } elseif ($hasDates && $endDate <= $startDate) {
                 $error = 'La date de fin doit être postérieure à la date de début.';
             } else {
+                // 'tmp' est un placeholder : setPassword() ci-dessous l'écrase immédiatement avec le hash bcrypt.
                 $user = new User($codeRole, $mail, 0, 'tmp', $name, $surname, 0, $memberNum);
                 $user->setPassword($password);
                 if ($userDAO->create($user)) {
-                    // Création du temps d'accès si des dates sont fournies (obligatoire pour invité)
-                    if (!empty($startDate) && !empty($endDate)) {
+                    if ($hasDates) {
                         $subscriptionDAO = new SubscriptionDAO();
                         $subscriptionDAO->createForUser($user->getId(), $startDate, $endDate);
                     }
-                    // L'échec du mail ne bloque pas la création du compte
                     Mailer::sendWelcome($mail, $name, $password, $memberNum);
                     header('Location: ' . BaseURL::getBaseUrl() . 'parametres/utilisateurs');
                     exit;
@@ -159,7 +168,10 @@ class Users {
         }
 
         Vue::setTitle('Créer un compte');
-        Vue::render('admin/UsersCreate', ['error' => $error]);
+        Vue::render('admin/UsersCreate', [
+            'error'                  => $error,
+            'guestDefaultAccessDays' => $guestDefaultAccessDays,
+        ]);
     }
 
     /**
@@ -183,7 +195,7 @@ class Users {
         $userDAO             = new UserDAO();
         $subscriptionDAO     = new SubscriptionDAO();
         $user                = $userDAO->getUsersById($id);
-        $currentId           = (int)($_SESSION['user']->id ?? 0);
+        $currentId           = SessionLogin::getUserId();
         $isSelf              = ($id === $currentId);
         $error               = null;
         $subscriptionError   = null;
@@ -201,12 +213,17 @@ class Users {
                 } elseif ($endDate <= $startDate) {
                     $subscriptionError = 'La date de fin doit être postérieure à la date de début.';
                 } else {
+                    $isPromotion = $user->getCodeRole() === ROLE_INVITE && !empty($_POST['promoteToAdherent']);
+
+                    // À la promotion, l'historique invité est effacé volontairement :
+                    // les périodes d'accès invité n'ont pas de valeur une fois le compte passé adhérent.
+                    if ($isPromotion) {
+                        $subscriptionDAO->deleteByUser($id);
+                    }
+
                     $subscriptionSuccess = $subscriptionDAO->createForUser($id, $startDate, $endDate);
 
-                    // Promotion explicite en adhérent si la case est cochée, que l'utilisateur est invité et qu'un temps d'accès est donné
-                    if ($subscriptionSuccess && $user->getCodeRole() === ROLE_INVITE
-                        && !empty($_POST['promoteToAdherent'])) {
-                        // Restitue l'ancien numéro s'il existe, sinon en génère un nouveau
+                    if ($subscriptionSuccess && $isPromotion) {
                         if (empty($user->getMemberNum())) {
                             $user->setMemberNum('AMI-' . strtoupper(bin2hex(random_bytes(4))));
                         }
@@ -225,6 +242,8 @@ class Users {
                     ? $user->getCodeRole()
                     : (int)($_POST['codeRole'] ?? $user->getCodeRole());
 
+                // La rétrogradation manuelle vers ROLE_INVITE est bloquée :
+                // elle ne peut se produire qu'automatiquement au login quand l'adhésion expire.
                 $isDowngradeToInvite = $codeRole === ROLE_INVITE
                     && in_array($user->getCodeRole(), [ROLE_ADHERENT, ROLE_NATURALISTE]);
 
