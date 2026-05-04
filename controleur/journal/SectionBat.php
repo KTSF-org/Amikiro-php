@@ -6,6 +6,8 @@ use app\util\Request as req;
 use app\util\BaseURL as url;
 
 use modele\DAO\journalDAO\BatDAO;
+use modele\DAO\journalDAO\SectionDAO;
+use modele\DAO\journalDAO\SectionSpecimenDAO;
 use modele\journal\Section;
 use modele\journal\SectionSpecimen;
 use vue\base\MainTemplate as Vue;
@@ -28,13 +30,25 @@ class SectionBat
 
         // Page de la création de fiche chauve-souris
         if (!req::has("page")) {
-            
+
+            $edit = req::get("edition") == "true";
+            $section = null;
+            $sectionSpecimen = null;
+
             if (req::get("delete") == "true") {
                 $batId = req::get("id");
                 $batDAO = new BatDAO();
                 $bat = $batDAO->getBatById((int) $batId);
                 $bat->deleteBat();
             }
+            // Si modification de la fiche chauve-souris
+            else if ($edit) {
+                $sectionDAO = new SectionDAO();
+                $sectionSpecimenDAO = new SectionSpecimenDAO();
+                $section = $sectionDAO->find(req::get("id"));
+                $sectionSpecimen = $sectionSpecimenDAO->findSpecimenSectionByIdSection(req::get("id"));
+            }
+
 
             // Tableau associatif, clé : idSpecies, valeur : commonName (de Species).
             $speciesDAO = new SpeciesDAO();
@@ -75,11 +89,15 @@ class SectionBat
                     "urlDelete" => $urlDelete,
                     "batList" => $batList,
                     "speciesList" => $speciesAsso,
-                    "sexList" => $sexList
+                    "sexList" => $sexList,
+                    "edit" => $edit,
+                    "section" => $section,
+                    "sectionSpecimen" => $sectionSpecimen,
                 ]
             );
 
         }
+
         // Page de l'ajout ou modification d'une chauve-souris
         else {
 
@@ -87,7 +105,7 @@ class SectionBat
             $speciesDAO = new SpeciesDAO();
             $allSpecies = $speciesDAO->getAllSpecies();
 
-            // TODO 
+            // TODO
             // Controle du formulaire d'ajout de Bat (si le nom existe déjà,
             // remplir tout le formulaire pour enregistrer dans la bdd ? ect)
 

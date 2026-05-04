@@ -7,7 +7,7 @@ use app\util\Helper;
  */
 
 ?>
-
+<script src="asset/js/formulaire.js" defer></script>
 <div class="container-fluid">
 
     <a href="sectionBat" role="button" class="btn btn-primary m-1">Retour</a>
@@ -17,7 +17,7 @@ use app\util\Helper;
         <?php } else { ?>
         <form method="post" action="sectionBat?page=addition">
         <?php } ?>
-    
+
 
         <div class="mb-3">
             <label for="name" class="form-label">Nom de la chauve-souris</label>
@@ -86,10 +86,7 @@ use app\util\Helper;
             } ?></textarea>
         </div>
 
-        <?php if ($modif) { ?>
-        <button type="submit" class="btn btn-primary">Modifier la chauve-souris</button>
-        <?php } else { ?>
-        <button type="submit" class="btn btn-primary">Enregistrer la chauve-souris</button>
-        <?php } ?>
+        <button type="submit" class="btn btn-primary" id="envoyer">
+             <?php if ($modif) echo "Modifier"; else echo "Enregistrer"; ?> la chauve-souris</button>
     </form>
 </div>
