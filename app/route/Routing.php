@@ -49,7 +49,7 @@ class Routing {
 
 		$route->add('/sectionBat', 'controleur\journal\SectionBat');
 		$route->add('/sectionColony', 'controleur\journal\SectionColony');
-
+		$route->add('/sectionRead', 'controleur\journal\SectionRead');
 		// Paramètres utilisateur
 		$route->add('/parametres/profil', 'controleur\Profil');
 
