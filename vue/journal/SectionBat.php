@@ -13,6 +13,8 @@ use app\util\Helper;
 
 <div class="container">
 
+    <a href="journal" role="button" class="btn btn-primary m-1">Retour</a>
+
     <?php if ($edit) { ?>
         <form method="post" id="formulaire" action="sectionBat?section=edited&id=<?= $section->getId() ?>">
     <?php } else { ?>
@@ -94,7 +96,7 @@ use app\util\Helper;
                                         data-bs-target="#modal<?= $id ?>" style="color:DodgerBlue">
                                         <i class="bi bi-eye-fill" width="20px" height="20px"></i>
                                     </button>
-                                    <a href="<?= $urlModif ?>&id=<?= $id ?>" class="btn btn-sm" style="color:LimeGreen">
+                                    <a href="<?= $urlModif ?>&id=<?= $id ?>" class="btn btn-sm" style="color:black">
                                         <i class="bi bi-pencil-square" width="20px" height="20px"></i>
                                     </a>
                                     <a href="<?= $urlDelete ?>&id=<?= $id ?>" class="btn btn-sm" style="color:red"
