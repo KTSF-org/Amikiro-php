@@ -22,6 +22,8 @@ class Journal
         $urlEditionBat = url::getBaseUrl() . "sectionBat?edition=true";
         $urlEditionColonie = url::getBaseUrl() . "ouioui";
         $urlDelete = url::getBaseUrl() . "/journal";
+        $urlSectionRead = url::getBaseUrl() . "/sectionRead";
+
         $sectionDAO = new SectionDAO();
         $listFiches = $sectionDAO->findAll();
         $userDAO = new UserDAO();
@@ -77,6 +79,7 @@ class Journal
                 'urlEditionColonie' => $urlEditionColonie,
                 'idUserSession' => $idUserSession,
                 'urlDelete' => $urlDelete,
+                'urlSectionRead'=> $urlSectionRead,
             ]
         );
 
