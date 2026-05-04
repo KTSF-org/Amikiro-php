@@ -9,6 +9,8 @@ use app\util\Guard;
 use modele\DAO\journalDAO\SectionDAO;
 use modele\DAO\journalDAO\SectionSpecimenDAO;
 use app\util\BaseURL as url;
+use app\util\SessionLogin;
+use app\util\Request as req;
 
 class Journal
 {
@@ -19,12 +21,12 @@ class Journal
 
         $urlEditionBat = url::getBaseUrl() . "sectionBat?edition=true";
         $urlEditionColonie = url::getBaseUrl() . "ouioui";
+        $urlDelete = url::getBaseUrl() . "/journal";
         $sectionDAO = new SectionDAO();
         $listFiches = $sectionDAO->findAll();
         $userDAO = new UserDAO();
         $users = $userDAO->findAll();
-
-
+        $idUserSession = SessionLogin::getUserId();
         $sectionColonyDAO = new SectionColonyDAO();
 
         // Tableau associatif pour récuperér les noms et prénoms des users
@@ -51,6 +53,19 @@ class Journal
         }
 
 
+        if (req::get("delete") == true){
+            $ficheId = req::get("id");
+            $fiche = $sectionDAO -> find($ficheId);
+
+            // Vérification si l'utilisateur est bien le créateur de la fiche avant de supprimer
+            if ($fiche && $fiche->getIdUser() === $idUserSession){
+                $fiche->deleteSection();
+                header("Location: " . url::getBaseUrl() . "journal");
+                exit();
+            }
+        }
+
+
         Vue::setTitle('Journal');
         Vue::render(
             'journal/Journal',
@@ -60,6 +75,8 @@ class Journal
                 'typeAsso' => $typeAsso,
                 'urlEditionBat' => $urlEditionBat,
                 'urlEditionColonie' => $urlEditionColonie,
+                'idUserSession' => $idUserSession,
+                'urlDelete' => $urlDelete,
             ]
         );
 
