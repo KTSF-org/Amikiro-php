@@ -6,14 +6,28 @@ namespace Composer\Autoload;
 
 class ComposerStaticInit5c0a388dd5f5735c3004166ebc555614
 {
+    public static $prefixLengthsPsr4 = array (
+        'P' =>
+        array (
+            'PHPMailer\\PHPMailer\\' => 20,
+        ),
+    );
+
+    public static $prefixDirsPsr4 = array (
+        'PHPMailer\\PHPMailer\\' =>
+        array (
+            0 => __DIR__ . '/..' . '/phpmailer/phpmailer/src',
+        ),
+    );
+
     public static $fallbackDirsPsr4 = array (
         0 => __DIR__ . '/..' . '/league/color-extractor/src',
     );
 
     public static $prefixesPsr0 = array (
-        'c' => 
+        'c' =>
         array (
-            'claviska' => 
+            'claviska' =>
             array (
                 0 => __DIR__ . '/..' . '/claviska/simpleimage/src',
             ),
@@ -27,6 +41,8 @@ class ComposerStaticInit5c0a388dd5f5735c3004166ebc555614
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
+            $loader->prefixLengthsPsr4 = ComposerStaticInit5c0a388dd5f5735c3004166ebc555614::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit5c0a388dd5f5735c3004166ebc555614::$prefixDirsPsr4;
             $loader->fallbackDirsPsr4 = ComposerStaticInit5c0a388dd5f5735c3004166ebc555614::$fallbackDirsPsr4;
             $loader->prefixesPsr0 = ComposerStaticInit5c0a388dd5f5735c3004166ebc555614::$prefixesPsr0;
             $loader->classMap = ComposerStaticInit5c0a388dd5f5735c3004166ebc555614::$classMap;
