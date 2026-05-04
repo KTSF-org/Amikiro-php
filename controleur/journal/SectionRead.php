@@ -10,11 +10,13 @@ use modele\DAO\journalDAO\SectionDAO;
 use modele\DAO\journalDAO\BatDAO;
 use modele\journal\Section;
 use app\util\Request as req;
+use app\util\BaseURL as url;
 
 class SectionRead
 {
 	public function __construct()
 	{
+		$urlRetour = url::getBaseUrl() . '/journal';
 		$idFiche = req::get("id");
 		$sectionDAO = new SectionDAO();
 		$fiche = $sectionDAO->find($idFiche);
@@ -39,7 +41,7 @@ class SectionRead
 		}else{
 			$batDAO = new BatDAO();
 			$idBat = $ficheBat->getIdBat();
-			$bat = $batDAO->getSectionSpecimenById($idBat);
+			$bat = $batDAO->getBatById($idBat);
 			$nameBat = $bat->getName();
 		}
 
@@ -59,6 +61,7 @@ class SectionRead
 				"creationDate" => $creationDate,
 				"nameCategory" => $nameCategory,
 				"nameBat" => $nameBat,
+				"urlRetour" => $urlRetour,
 			]
 		);
 	}
