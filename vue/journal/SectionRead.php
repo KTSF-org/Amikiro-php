@@ -7,7 +7,9 @@
 ?>
 
 <div class="container">
-	<p>OUIOUIOUIOUIUOUOI</p>
+	<?=$sectionTitle?>
+	<?=$sectionContent?>
+	<?=$creationDate?>
 
 
 </div>

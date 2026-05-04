@@ -51,9 +51,9 @@
                     </div>
                     <div class="col-1 border d-flex justify-content-around align-items-center p-0">
 
-                        <button type="button" class="btn btn-sm" data-bs-toggle="modal" data-bs-target="#modal<?= $id ?>">
+                        <a href="<?=$urlSectionRead?>?id=<?=$fiche->getId()?>" class="btn btn-sm" >
                             <i class="bi bi-eye-fill" width="20px" height="20px" style="color:DodgerBlue;" title="Consulter"></i>
-                        </button>
+                        </a>
 
                         <a href="<?=($typeAsso[$fiche->getId()] === "Chauve souris") ? $urlEditionBat : $urlEditionColonie?>&id=<?= $fiche->getId() ?>" class="btn btn-sm" style="color:black">
                             <i class="bi bi-pencil-square" width="20px" height="20px" title="Modifier"></i>
