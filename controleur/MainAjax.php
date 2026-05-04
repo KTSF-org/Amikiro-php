@@ -95,7 +95,8 @@ class MainAjax extends Ajax {
 	 * Décrémente le compteur de viewers actifs quand l'utilisateur quitte la page Live.
 	 * Appelé via navigator.sendBeacon() au beforeunload.
 	 */
-	protected function liveLeave(): bool {
+	protected function liveLeave(): bool
+	{
 		if (isset($_SESSION['in_live'])) {
 			(new ConfigDAO())->decrementViewers();
 			unset($_SESSION['in_live']);
@@ -107,23 +108,35 @@ class MainAjax extends Ajax {
 	 * Retourne le nombre de viewers actifs en temps réel.
 	 * Interrogé périodiquement par la vue Live via setInterval.
 	 */
-	protected function getViewerCount(): int {
-		return (int)((new ConfigDAO())->getURLbyId(1)['viewerCount'] ?? 0);
+	protected function getViewerCount(): int
+	{
+		return (int) ((new ConfigDAO())->getURLbyId(1)['viewerCount'] ?? 0);
 	}
 
-	protected function addSectionCol(): bool{
+	protected function addSectionCol():string
+	{
+		$message = "Les champs ne sont pas rempli";
+		if (req::has('title')) {
 		$title = req::post('title');
 		$date = req::post('date');
 		$category = req::post('category');
 		$notes = req::post('notes');
 		
 		
-		$section = new Section($title, $notes, $date,SessionLogin::getUserId());
-		if($section->addSection()) {
-			$sectionColony = new SectionColony($section->getId(), (int)$category);
-			return $sectionColony->addSectionColony();
+			$section = new Section($title, $notes, $date, SessionLogin::getUserId()); //création de la rubrique
+
+			if ($section->addSection()) {  //création de la rubrique en bdd
+				$sectionColony = new SectionColony($section->getId(), (int) $category); //création de la section Colony
+				$sectionColony->addSectionColony(); //création de la section colony en bdd
+				return "Success";
 		}	
-		return false;
+			return "Successsss";
+
+		}else{
+			return "No success";
+		}
+
+
 	
 
 	

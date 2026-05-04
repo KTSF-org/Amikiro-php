@@ -54,10 +54,12 @@
                         <button type="button" class="btn btn-sm" data-bs-toggle="modal" data-bs-target="#modal<?= $id ?>">
                             <i class="bi bi-eye-fill" width="20px" height="20px" style="color:DodgerBlue;" title="Consulter"></i>
                         </button>
-                        <a href="<?= $urlModif ?>&id=<?= $id ?>" class="btn btn-sm" style="color:black">
+
+                        <a href="<?=($typeAsso[$fiche->getId()] === "Chauve souris") ? $urlEditionBat : $urlEditionColonie?>&id=<?= $fiche->getId() ?>" class="btn btn-sm" style="color:black">
                             <i class="bi bi-pencil-square" width="20px" height="20px" title="Modifier"></i>
                         </a>
-                        <a href="<?= $urlDelete ?>&id=<?= $id ?>" class="btn btn-sm" style="color:red">
+
+                        <a href="<?= $urlDelete ?>&id=<?= $fiche->getId() ?>" class="btn btn-sm" style="color:red">
                             <i class="bi bi-trash3" width="20px" height="20px" title="Supprimer"></i>
                         </a>
 
