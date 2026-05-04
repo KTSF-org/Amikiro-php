@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : localhost
--- Généré le : lun. 04 mai 2026 à 11:45
+-- Généré le : lun. 04 mai 2026 à 15:52
 -- Version du serveur :  10.3.29-MariaDB
 -- Version de PHP : 7.4.30
 
@@ -41,7 +41,8 @@ CREATE TABLE `Abonnement` (
 
 INSERT INTO `Abonnement` (`id`, `idUser`, `startDate`, `endDate`) VALUES
 (1, 9, '2026-05-04', '2026-05-05'),
-(3, 12, '2026-05-04', '2026-05-05');
+(6, 8, '2026-05-04', '2026-05-05'),
+(7, 8, '2026-05-04', '2026-05-31');
 
 -- --------------------------------------------------------
 
@@ -64,9 +65,8 @@ CREATE TABLE `Bat` (
 --
 
 INSERT INTO `Bat` (`id`, `name`, `idSpecies`, `birthDate`, `sex`, `weight`, `note`) VALUES
-(2, 'Batman', 1, '2026-04-01 12:00:00', 2, 250, 'ATTENTION VOILA BATMAN !!!!'),
-(6, 'BatGirl', 1, '2026-04-01 18:00:00', 1, 300, 'Batgirl is in the place'),
-(32, 'BatBoy', 1, '2026-04-30 16:26:00', 0, 2, 'Il é tou petit');
+(2, 'Batman', 1, '2026-04-01 12:00:00', 2, 250, 'ATTENTION VOILA BATMAN??????'),
+(6, 'BatGirl', 1, '2026-04-01 18:00:00', 1, 300, 'Batgirl is in the place');
 
 -- --------------------------------------------------------
 
@@ -126,7 +126,7 @@ CREATE TABLE `Config` (
 --
 
 INSERT INTO `Config` (`id`, `streamUrl`, `sessionDuration`, `viewerLimit`, `viewerCount`, `guestDefaultAccessDays`) VALUES
-(1, 'https://ds1-cache.quanteec.com/contents/encodings/live/112fd325-c7cf-42fa-3032-3730-6d61-63-9dcb-e991fc0db4a4d/master.m3u8', 3600, 10, 0, 7);
+(1, 'https://s40.ipcamlive.com/streams/28gra6mohj2ruybvy/stream.m3u8', 3600, 10, 0, 7);
 
 -- --------------------------------------------------------
 
@@ -166,16 +166,15 @@ CREATE TABLE `Section` (
 
 INSERT INTO `Section` (`id`, `title`, `content`, `creationDate`, `idUser`, `idLogs`) VALUES
 (3, 'baguettee', 'frzerzere', '2026-04-08 15:34:41', 7, 1),
-(4, 'bidoof', 'bidoof est le goat de cette génération i swear', '2026-04-15 14:22:59', 7, 1),
-(5, 'test65247', 'coucou', '2026-04-04 14:25:00', 9, 1),
-(6, 'test65247', 'coucou', '2026-04-04 14:25:00', 9, 1),
+(4, 'bidoof', 'bfqhgipugouydystsresr', '2026-04-15 14:22:00', 9, 1),
 (7, 'SALUT', 'bite', '2026-04-04 14:25:00', 9, 1),
 (8, 'SALUT', 'bite', '2026-04-04 14:25:00', 9, 1),
 (9, 'SALUT', 'bite', '2026-04-04 14:25:00', 9, 1),
-(10, 'TEST HZHAHAHAH', 'drole', '2026-04-15 16:28:00', 9, 1),
 (11, 'BATGIRL LA FOLLASSE', 'elle a tapé batman', '2026-04-30 15:36:00', 9, 1),
 (12, 'Flo la déglingue', 'miaou', '2026-04-30 15:52:00', 9, 1),
-(13, 'BATGIRL OUAIS', 'elle a tapé batman', '2026-04-30 15:36:00', 9, 1);
+(13, 'BATGIRL OUAIS', 'elle a tapé batman', '2026-04-30 15:36:00', 9, 1),
+(17, 'TEST 0000006', 'hgjfhgurdhgsmjkvhreuhvdsithc gh riehfsjd lo', '2026-05-20 17:09:00', 9, 1),
+(18, 'toi tu vire', 'adieu', '2026-05-07 14:16:00', 9, 1);
 
 -- --------------------------------------------------------
 
@@ -216,7 +215,8 @@ CREATE TABLE `SpecimenSection` (
 INSERT INTO `SpecimenSection` (`id`, `idSection`, `idBat`) VALUES
 (2, 4, 2),
 (5, 11, 6),
-(6, 13, 6);
+(6, 13, 6),
+(7, 17, 2);
 
 -- --------------------------------------------------------
 
@@ -241,11 +241,10 @@ CREATE TABLE `User` (
 --
 
 INSERT INTO `User` (`id`, `codeRole`, `mail`, `uptime`, `password`, `name`, `surname`, `countConnect`, `memberNum`) VALUES
-(7, 0, 'kevin@gmail.com', 45, '$2y$12$Hpnzv/jsBxu2OkDuwOrVie6WacUxAJA.mhSjXoTOXXrPkyoe4ls.m', 'Kevin', 'Bidoof', 16, '26'),
-(8, 0, 'simon@gmail.com', 45, '$2y$12$oNA19iVnMymWxR29FzC92e1FoujVCCMJz.bHWmZFVopV0nkFIVbM6', 'Simon', 'Gemini', 20, '29'),
-(9, 2, 'tani@gmail.com', 45, '$2y$12$GWJ1rMAS91C5wUhOjmO9iuci1/eRK0RhYuvenK8CeUUfBRPPAo//a', 'Tani', 'OUI', 43, '6'),
-(10, 3, 'florian@gmail.com', 20, '$2y$12$a9EFeMArbCkmku5q3D6Keuh2286jCl9EgFxG0yrGj.dsX2ttotnZO', 'Florian', 'CS2', 41, '15'),
-(12, 1, 'Invit@gmail.com', 0, '$2y$12$NEidqYQG2q7gh/sfU.GbJebTy/EVJ5r4J8qhpnQPfXY2WJW04640m', 'Invité', 'Invit', 0, 'AMI-4FD6C6CF');
+(7, 0, 'kevin@gmail.com', 45, '$2y$12$/79CKTFEyeNJPalcHbpOK.056ZH3KE6xjxvNkRiNI8dPho6j88Ubu', 'Kevin', 'Bidoof', 16, 'AMI-2026-001'),
+(8, 1, 'simon@gmail.com', 45, '$2y$12$slf5Z6Z6WZzy6msircaMLOakfhDT6W6kHnCg9Au1hrzUbeeOv4/M6', 'Simon', 'Gemini', 20, 'AMI-2026-002'),
+(9, 2, 'tani@gmail.com', 45, '$2y$12$lylhaRrLUjnu9lSZsZ.hxOiXm8T4KGfgXMpk62pkQMXTrLdKwrrRe', 'Tani', 'OUI', 44, 'AMI-2026-003'),
+(10, 3, 'florian@gmail.com', 20, '$2y$12$AjQtWIQ4tUBZztIJ8OOLOe0WK8dCto2CAm829TueyQj/N4SdeKabO', 'Florian', 'CS2', 41, 'AMI-2026-004');
 
 --
 -- Index pour les tables déchargées
@@ -327,13 +326,13 @@ ALTER TABLE `User`
 -- AUTO_INCREMENT pour la table `Abonnement`
 --
 ALTER TABLE `Abonnement`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT pour la table `Bat`
 --
 ALTER TABLE `Bat`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
 
 --
 -- AUTO_INCREMENT pour la table `Category`
@@ -363,7 +362,7 @@ ALTER TABLE `Logs`
 -- AUTO_INCREMENT pour la table `Section`
 --
 ALTER TABLE `Section`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT pour la table `Species`
@@ -375,13 +374,13 @@ ALTER TABLE `Species`
 -- AUTO_INCREMENT pour la table `SpecimenSection`
 --
 ALTER TABLE `SpecimenSection`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT pour la table `User`
 --
 ALTER TABLE `User`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- Contraintes pour les tables déchargées
