@@ -5,13 +5,16 @@
  */
 use app\util\Helper;
 ?>
-<?php var_dump($catSec) ?>
-<?= $catSec->getName() ?>
+
 <div class="container">
 
     <p>Création fiche colonie</p>
 
-    <form id="colonyForm" method="POST" action="<?= $actual_link ?>sectionColony">
+    <?php if ($modif): ?>
+        <form id="colonyFormModif" method="POST" action="<?= $actual_link ?>sectionColony">
+    <?php else: ?>
+        <form id="colonyForm" method="POST" action="<?= $actual_link ?>sectionColony"></form>
+    <?php endif; ?>
 
         <!-- Champs du formulaire -->
         <div class="mb-3 col-3">
@@ -46,7 +49,11 @@ use app\util\Helper;
         </div>
         <div class="mb-3 col-3">
             <label for="colonyObservation" class="form-label">Observations</label>
+            <?php if ($modif): ?>
+            <textarea class="form-control" id="observation" rows="3" placeholder="" name="colonyNotes"><?= $section->getContent() ?></textarea>
+            <?php else: ?>
             <textarea class="form-control" id="observation" rows="3" placeholder="" name="colonyNotes"></textarea>
+            <?php endif; ?>
         </div>
         <span id="formMessage"></span>
         <div class="mb-3 col-3">
@@ -61,10 +68,10 @@ use app\util\Helper;
 <script>
     $(document).ready(function () {
 
-        if (<?php $modif ?>) {
 
-         $("#colonyForm").on("submit", function (e) {
+         $("#colonyFormModif").on("submit", function (e) {
                 e.preventDefault();
+
 
                 const spanMessage = $('#formMessage');
 
@@ -96,7 +103,7 @@ use app\util\Helper;
 
             });
 
-        } else {
+
 
             $("#colonyForm").on("submit", function (e) {
                 e.preventDefault();
@@ -130,7 +137,7 @@ use app\util\Helper;
 
             });
 
-        }
+
 
     })
 </script>

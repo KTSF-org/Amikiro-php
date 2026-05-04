@@ -2,6 +2,7 @@
 
 namespace controleur;
 
+use modele\DAO\journalDAO\SectionDAO;
 use vue\base\Ajax as Ajax;
 use app\util\Request as req;
 use app\util\Guard;
@@ -150,10 +151,18 @@ class MainAjax extends Ajax {
 			$id = req::post('id');
 
 			$section = new Section($title, $notes, $date, SessionLogin::getUserId());
-			
+			$section->setId($id);
+			$sectionDAO = new SectionDAO();
 
+			if($sectionDAO->update($section)){
+				$sectionColony = new SectionColony($section->getId(), (int) $category);
+				$sectionColony->addSectionColony();
+				return "Success";
+			}
+				return "Successsss";
 
-
+		}else{
+			return "No success";
 		}
 	}
 
