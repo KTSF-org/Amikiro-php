@@ -161,11 +161,11 @@
                             <strong><?= date('d/m/Y', strtotime($activeSubscription->endDate)) ?></strong>
                         </div>
                     <?php else: ?>
-                        <div class="alert alert-warning py-2 mb-3">Aucun temps d'accès actif.</div>
+                        <div class="alert alert-warning py-2 mb-3">Aucune adhésion active.</div>
                     <?php endif; ?>
 
                     <?php if ($subscriptionSuccess): ?>
-                        <div class="alert alert-success py-2">Temps d'accès enregistré.</div>
+                        <div class="alert alert-success py-2">Adhésion enregistré.</div>
                     <?php elseif ($subscriptionError): ?>
                         <div class="alert alert-danger py-2"><?= htmlspecialchars($subscriptionError) ?></div>
                     <?php endif; ?>

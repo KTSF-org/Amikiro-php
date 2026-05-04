@@ -33,6 +33,7 @@ class Users {
         };
     }
 
+
     /**
      * Affiche la liste de tous les comptes.
      * Gère aussi la suppression (POST action=delete).
@@ -284,6 +285,7 @@ class Users {
             }
         }
 
+
         $activeSubscription  = $subscriptionDAO->getActiveByUser($id);
         $subscriptionHistory = $subscriptionDAO->getAllByUser($id);
 
@@ -298,4 +300,5 @@ class Users {
             'subscriptionSuccess' => $subscriptionSuccess,
         ]);
     }
+
 }
