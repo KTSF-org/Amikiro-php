@@ -9,12 +9,14 @@ use app\util\Helper;
 
 ?>
 
+<script src="asset/js/formulaire.js" defer></script>
+
 <div class="container">
 
     <?php if ($edit) { ?>
-        <form method="post" action="sectionBat?section=edited&id=<?= $section->getId() ?>">
+        <form method="post" id="formulaire" action="sectionBat?section=edited&id=<?= $section->getId() ?>">
     <?php } else { ?>
-        <form method="post" action="sectionBat">
+        <form method="post" id="formulaire" action="sectionBat">
     <?php } ?>
 
             <div class="row align-items-start mt-5">
@@ -23,7 +25,7 @@ use app\util\Helper;
 
                     <div class="mb-3">
                         <label for="title" class="form-label">Titre de la rubrique</label>
-                        <input type="text" class="form-control" id="sectionTitle" placeholder="Titre"
+                        <input type="text" class="form-control mandatory" id="sectionTitle" placeholder="Titre"
                             name="sectionTitle" <?php if ($edit) {
                                 echo 'value="' . $section->getTitle() . '"';
                             } ?>>
@@ -31,14 +33,14 @@ use app\util\Helper;
 
                     <div class="mb-3">
                         <label for="Date" class="form-label">Date</label>
-                        <input type="datetime-local" class="" id="date" name="date"<?php if ($edit) {
+                        <input type="datetime-local" class="mandatory" id="date" name="date"<?php if ($edit) {
                             echo "value='" . Helper::dateToDatetimelocal($section->getCreationDate()) . "'";
                         } ?> >
                     </div>
 
                     <div class="mb-3">
                         <label for="observation" class="form-label">Observations</label>
-                        <textarea class="form-control" id="sectionObservation" rows="6" placeholder=""
+                        <textarea class="form-control mandatory" id="sectionObservation" rows="6" placeholder=""
                             name="sectionObservation"><?php if ($edit) {
                                 echo $section->getContent();
                             } ?></textarea>

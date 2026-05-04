@@ -1,13 +1,13 @@
 function verifierChamps() {
     let estValide = true;
-    const inputs = document.querySelectorAll('mandatory');
+    const inputs = document.querySelectorAll('.mandatory');
 
     inputs.forEach(input => {
         if (input.value.trim() === "") {
-            input.classList.add('border border-danger-subtle');
+            input.classList.add('border', 'border-danger');
             estValide = false;
         } else {
-            input.classList.remove('border', 'border-danger-subtle');
+            input.classList.remove('border', 'border-danger');
         }
     });
     return estValide;
