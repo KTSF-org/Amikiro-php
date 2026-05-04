@@ -55,14 +55,7 @@ $userRole = \app\util\SessionLogin::getRole();
                                 <li><a class="dropdown-item" href="<?= $actual_link ?>journal">Consulter le journal</a></li>
 
                                 <?php if ($userRole >= ROLE_NATURALISTE): ?>
-                                    <li>
-                                        <hr class="dropdown-divider">
-                                    </li>
-                                    <li>
-                                        <h6 class="dropdown-header">Gestion des données</h6>
-                                    </li>
-                                    <li><a class="dropdown-item" href="<?= $actual_link ?>journal/categorie">Édition Catégories</a></li>
-                                    <li><a class="dropdown-item" href="<?= $actual_link ?>journal/fiche">Édition Fiches Chauve-Souris</a></li>
+
                                 <?php endif; ?>
                             </ul>
                         </li>
