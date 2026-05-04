@@ -59,7 +59,7 @@
                             <i class="bi bi-pencil-square" width="20px" height="20px" title="Modifier"></i>
                         </a>
 
-                        <a href="<?= $urlDelete ?>&id=<?= $fiche->getId() ?>" class="btn btn-sm" style="color:red">
+                         <a href="<?= $urlDelete ?>?delete=true&id=<?= $fiche->getId() ?>" class="btn btn-sm <?php if ($fiche->getIdUser()!= $idUserSession) echo "disabled border-0" ?> " style="color: <?= ($fiche->getIdUser() == $idUserSession) ? 'red' : 'black' ?>" onclick="return confirm ('Etes-vous sûr de vouloir supprimer cette fiche ?');">
                             <i class="bi bi-trash3" width="20px" height="20px" title="Supprimer"></i>
                         </a>
 
