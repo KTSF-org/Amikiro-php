@@ -12,7 +12,7 @@
 
             <!-- Fil d'ariane / Bouton Retour -->
             <nav aria-label="breadcrumb" class="mb-4">
-                <a href="<?= app\util\BaseURL::getBaseUrl() ?>journal" class="btn btn-link text-decoration-none p-0 text-secondary">
+                <a href="<?=$urlRetour?>" class="btn btn-link text-decoration-none p-0 text-secondary">
                     <i class="bi bi-chevron-left"></i> Retour au journal
                 </a>
             </nav>
