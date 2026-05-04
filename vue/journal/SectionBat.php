@@ -12,7 +12,7 @@ use app\util\Helper;
 <div class="container">
 
     <?php if ($edit) { ?>
-        <form method="post" action="sectionBat?section=edition&id=<?= $section->getId() ?>">
+        <form method="post" action="sectionBat?section=edited&id=<?= $section->getId() ?>">
     <?php } else { ?>
         <form method="post" action="sectionBat">
     <?php } ?>
@@ -39,9 +39,8 @@ use app\util\Helper;
                     <div class="mb-3">
                         <label for="observation" class="form-label">Observations</label>
                         <textarea class="form-control" id="sectionObservation" rows="6" placeholder=""
-                            name="sectionObservation">
-                         <?php if ($edit) {
-                                $section->getContent();
+                            name="sectionObservation"><?php if ($edit) {
+                                echo $section->getContent();
                             } ?></textarea>
                     </div>
 
@@ -73,8 +72,9 @@ use app\util\Helper;
                         </div>
                         <?php
                         foreach ($batList as $bat) {
+
                             if ($edit)
-                                $currentBatId = $sectionSpecimen->getIdBat;
+                                $currentBatId = $sectionSpecimen->getIdBat();
                             $id = $bat->getId();
                             $name = $bat->getName();
                             $species = $speciesList[$bat->getIdSpecies()];

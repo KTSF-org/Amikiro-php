@@ -13,9 +13,9 @@ use app\util\Helper;
     <a href="sectionBat" role="button" class="btn btn-primary m-1">Retour</a>
 
     <?php if ($modif) { ?>
-        <form method="post" action="sectionBat?page=modification&id=<?= $bat->getId() ?>">
+        <form method="post" action="sectionBatAddition?bat=mod&id=<?= $bat->getId() ?>">
         <?php } else { ?>
-        <form method="post" action="sectionBat?page=addition">
+        <form method="post" action="sectionBatAddition?bat=add">
         <?php } ?>
 
 
@@ -58,15 +58,15 @@ use app\util\Helper;
             <label for="sex" class="form-label">Sexe de la chauve-souris</label>
             </br>
             <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
-                <input type="radio" class="btn-check" id="btnradio1" autocomplete="off" name="batSex" value="female"
+                <input type="radio" class="btn-check" id="btnradio1" autocomplete="off" name="batSex" value="1"
                 <?php if ($modif && $bat->getSex() == 1) echo "checked";?>>
                 <label class="btn btn-outline-primary" for="btnradio1">Femelle</label>
 
-                <input type="radio" class="btn-check" id="btnradio2" autocomplete="off" name="batSex" value="male"
+                <input type="radio" class="btn-check" id="btnradio2" autocomplete="off" name="batSex" value="2"
                 <?php if ($modif && $bat->getSex() == 2) echo "checked";?>>
                 <label class="btn btn-outline-primary" for="btnradio2">Mâle</label>
 
-                <input type="radio" class="btn-check" id="btnradio3" autocomplete="off" name="batSex" value="unknow"
+                <input type="radio" class="btn-check" id="btnradio3" autocomplete="off" name="batSex" value="0"
                 <?php if ($modif && $bat->getSex() == 0) echo "checked";?>>
                 <label class="btn btn-outline-primary" for="btnradio3">Inconnu</label>
             </div>
