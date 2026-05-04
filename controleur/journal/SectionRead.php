@@ -39,7 +39,7 @@ class SectionRead
 		}else{
 			$batDAO = new BatDAO();
 			$idBat = $ficheBat->getIdBat();
-			$bat = $batDAO->getSectionSpecimenById($idBat);
+			$bat = $batDAO->getBatById($idBat);
 			$nameBat = $bat->getName();
 		}
 
