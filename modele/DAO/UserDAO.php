@@ -7,35 +7,38 @@ use app\util\Error;
 use modele\User;
 use PDO;
 
-/** 
-*	User DAO
-*	Implémente l'ensemble des traitements en données pour les utilisateurs.
-*	Associé à la logique métier de la classe User (modele/User.php).
-*/
+/**
+ *	User DAO
+ *	Implémente l'ensemble des traitements en données pour les utilisateurs.
+ *	Associé à la logique métier de la classe User (modele/User.php).
+ */
 
-class UserDAO extends Database {
+class UserDAO extends Database
+{
 
-	/** 
-	*	Deux paramètres pour le constructeur du DAO :
-	*	1/ nom de la table
-	*	2/ nom de la clé primaire
-	*	Voir les méthodes du CRUD dans le DAO (modele/DAO/base/Database.php).
-	*/
+	/**
+	 *	Deux paramètres pour le constructeur du DAO :
+	 *	1/ nom de la table
+	 *	2/ nom de la clé primaire
+	 *	Voir les méthodes du CRUD dans le DAO (modele/DAO/base/Database.php).
+	 */
 
-	public function __construct() {
+	public function __construct()
+	{
 		//-------------------------------------------
 		$tableName = 'User';
 		$primaryKey = 'id';
 		//-------------------------------------------
 		parent::__construct($tableName, $primaryKey);
 	}
-	
-	/** 
-	*	Besoins en données issues du métier User (modele/User.php)
-	*	@param object:metier Instance de l'objet métier
-	*	@return array
-	*/
-	private function getAllData($metier): array {
+
+	/**
+	 *	Besoins en données issues du métier User (modele/User.php)
+	 *	@param object:metier Instance de l'objet métier
+	 *	@return array
+	 */
+	private function getAllData($metier): array
+	{
 		$data = [];
 		$keys = $metier->getParam();
 
@@ -44,7 +47,7 @@ class UserDAO extends Database {
 			if (method_exists($metier, $methodName)) {
 				$data[$key] = $metier->$methodName();
 			} else {
-				$data[$key] = null; 
+				$data[$key] = null;
 			}
 		}
 
@@ -53,80 +56,86 @@ class UserDAO extends Database {
 
 	//Equivalent pour comprendre :
 	// private function getAllData($metier): array {
-		// return [
-			// 'nom' => $metier->getNom(),
-			// 'prenom' => $metier->getPrenom(),
-			// 'email' => $metier->getEmail(),
-			// 'ne_le' => $metier->getDateNaissance(),
-			// 'ville' => $metier->getVille(),
-			// 'enfants' => $metier->getEnfants(),
-			// 'tel' => $metier->getTel(),
-			// 'avatar' => $metier->getAvatar(),
-		// ];
+	// return [
+	// 'nom' => $metier->getNom(),
+	// 'prenom' => $metier->getPrenom(),
+	// 'email' => $metier->getEmail(),
+	// 'ne_le' => $metier->getDateNaissance(),
+	// 'ville' => $metier->getVille(),
+	// 'enfants' => $metier->getEnfants(),
+	// 'tel' => $metier->getTel(),
+	// 'avatar' => $metier->getAvatar(),
+	// ];
 	// }
 
 
-	/** 
-	*	CRUD : create
-	*	@param object:metier Instance de l'objet métier
-	*	@return bool
-	*/
-	public function create($metier): bool {
+	/**
+	 *	CRUD : create
+	 *	@param object:metier Instance de l'objet métier
+	 *	@return bool
+	 */
+	public function create($metier): bool
+	{
 		$data = $this->getAllData($metier);
 		//createOne() et getLastKey() sont des méthodes du DAO (modele/DAO/base/Database.php)
 		$bool = $this->createOne($data);
-		$metier->setId( $this->getLastKey() );
+		$metier->setId($this->getLastKey());
 		return $bool;
 	}
 
-	/** 
-	*	CRUD : read
-	*	@param integer Numéro de la clé primaire
-	*	@return mixed object|string|bool
-	*/
-	public function getUsersById(int $id): mixed {
+	/**
+	 *	CRUD : read
+	 *	@param integer Numéro de la clé primaire
+	 *	@return mixed object|string|bool
+	 */
+	public function getUsersById(int $id): mixed
+	{
 		$row = false;
-		if($id>0)$row = $this->getOne($id); //on récupère la ligne/tuple concernée
+		if ($id > 0)
+			$row = $this->getOne($id); //on récupère la ligne/tuple concernée
 		//gestion de l'index en cas d'erreur :
-		if(!$row) {
-			Error::setException( "l'indentifiant fourni (<b>$id</b>) est invalide !" );
+		if (!$row) {
+			Error::setException("l'indentifiant fourni (<b>$id</b>) est invalide !");
 		}
-		$rowData = (array)$row; //conversion objet --> array
+		$rowData = (array) $row; //conversion objet --> array
 		unset($rowData[$this->primaryKey], $row); //retire la clé primaire du tableau et $row qui ne sert plus
-		$rowData['memberNum'] = (string)($rowData['memberNum'] ?? '');
+		$rowData['memberNum'] = (string) ($rowData['memberNum'] ?? '');
 		$metier = new User(...$rowData); //crée l'objet User(->User.php) avec toutes les clés du tableau $rowData
 		$metier->setId($id); //ajoute $id dans l'objet métier (User)
 		return $metier; //retourne l'objet crée
 	}
-	
-	/** 
-	*	CRUD : update
-	*	@param object:metier Instance de l'objet métier
-	*	@return bool
-	*/
-	public function update($metier): bool {
+
+	/**
+	 *	CRUD : update
+	 *	@param object:metier Instance de l'objet métier
+	 *	@return bool
+	 */
+	public function update($metier): bool
+	{
 		$data = $this->getAllData($metier);
 		//updateOne() est une méthode du DAO (modele/DAO/base/Database.php)
 		return $this->updateOne($metier->getId(), $data);
 	}
-	
-	/** 
-	*	CRUD : delete
-	*	@param object:metier Instance de l'objet métier
-	*	@return bool
-	*/
-	public function delete($metier): bool {
+
+	/**
+	 *	CRUD : delete
+	 *	@param object:metier Instance de l'objet métier
+	 *	@return bool
+	 */
+	public function delete($metier): bool
+	{
 		//deleteOne() est une méthode du DAO (modele/DAO/base/Database.php)
-		return $this->deleteOne( $metier->getId() );
+		return $this->deleteOne($metier->getId());
 	}
 
 	/**
-	*	Méthode permettant l'accès aux données filtrées pour une recherche du prénom ou du nom, 
-	*	avec une requête préparée.
-	* 	@param string $name Nom ou prénom de l'utilisateur
-	* 	@return array
-	*/
-	public function getUsersByName(string $name): array {
+	 *	Méthode permettant l'accès aux données filtrées pour une recherche du prénom ou du nom,
+	 *	avec une requête préparée.
+	 * 	@param string $name Nom ou prénom de l'utilisateur
+	 * 	@return array
+	 */
+	public function getUsersByName(string $name): array
+	{
 		$stmt = $this->getPdo()->prepare("SELECT * FROM `" . $this->tableName . "` WHERE name LIKE :name OR surname LIKE :surname ORDER BY surname, name LIMIT 10");
 		$stmt->execute([':surname' => "%$name%", ':name' => "%$name%"]);
 		return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -134,47 +143,51 @@ class UserDAO extends Database {
 
 
 	/**
-	*	Méthode sendSQL() implémentée dans le DAO (modele/DAO/base/Database.php)
-	*	Prend en compte la commande SQL et son filtre issue du prepared statement [?]
-	*	Le filtre (ici $name) est obligatoirement un tableau !
-	* 	@param string $name Prénom de l'utilisateur
-	* 	@return object
-	*/
-	public function getLineFrom(string $name): \stdClass {
+	 *	Méthode sendSQL() implémentée dans le DAO (modele/DAO/base/Database.php)
+	 *	Prend en compte la commande SQL et son filtre issue du prepared statement [?]
+	 *	Le filtre (ici $name) est obligatoirement un tableau !
+	 * 	@param string $name Prénom de l'utilisateur
+	 * 	@return object
+	 */
+	public function getLineFrom(string $name): \stdClass
+	{
 		//sendSQL() est une méthode du DAO (modele/DAO/base/Database.php)
 		return $this->sendSQL("SELECT * from `" . $this->tableName . "` WHERE name = ?", [$name]);
 	}
-	
+
 	/**
-	* Utils infos
-	*/
-	
-	public function getTableName(): string {
+	 * Utils infos
+	 */
+
+	public function getTableName(): string
+	{
 		return $this->tableName;
 	}
-	
-	public function getPrimaryKey(): string {
+
+	public function getPrimaryKey(): string
+	{
 		return $this->primaryKey;
 	}
-	
+
 
 	/**
 	 * Retourne les utilisateurs filtrés par rôle avec pagination.
 	 * @param int $role  -1 = tous les rôles
 	 */
-	public function getAllFiltered(int $role = -1, int $offset = 0, int $limit = 20): array {
+	public function getAllFiltered(int $role = -1, int $offset = 0, int $limit = 20): array
+	{
 		if ($role >= 0) {
 			$stmt = $this->getPdo()->prepare(
 				"SELECT * FROM `{$this->tableName}` WHERE codeRole = ? ORDER BY surname, name LIMIT ? OFFSET ?"
 			);
-			$stmt->bindValue(1, $role,   PDO::PARAM_INT);
-			$stmt->bindValue(2, $limit,  PDO::PARAM_INT);
+			$stmt->bindValue(1, $role, PDO::PARAM_INT);
+			$stmt->bindValue(2, $limit, PDO::PARAM_INT);
 			$stmt->bindValue(3, $offset, PDO::PARAM_INT);
 		} else {
 			$stmt = $this->getPdo()->prepare(
 				"SELECT * FROM `{$this->tableName}` ORDER BY surname, name LIMIT ? OFFSET ?"
 			);
-			$stmt->bindValue(1, $limit,  PDO::PARAM_INT);
+			$stmt->bindValue(1, $limit, PDO::PARAM_INT);
 			$stmt->bindValue(2, $offset, PDO::PARAM_INT);
 		}
 		$stmt->execute();
@@ -185,7 +198,8 @@ class UserDAO extends Database {
 	 * Compte le nombre d'utilisateurs (optionnellement filtrés par rôle).
 	 * @param int $role  -1 = tous les rôles
 	 */
-	public function countFiltered(int $role = -1): int {
+	public function countFiltered(int $role = -1): int
+	{
 		if ($role >= 0) {
 			$stmt = $this->getPdo()->prepare(
 				"SELECT COUNT(*) FROM `{$this->tableName}` WHERE codeRole = ?"
@@ -194,36 +208,76 @@ class UserDAO extends Database {
 		} else {
 			$stmt = $this->getPdo()->query("SELECT COUNT(*) FROM `{$this->tableName}`");
 		}
-		return (int)$stmt->fetchColumn();
+		return (int) $stmt->fetchColumn();
 	}
 
 	/**
 	 * Incrémente le compteur de connexions de l'utilisateur.
 	 */
-	public function incrementConnectCount(int $id): void {
+	public function incrementConnectCount(int $id): void
+	{
 		$this->getPdo()->prepare(
 			"UPDATE `" . $this->tableName . "` SET countConnect = countConnect + 1 WHERE id = ?"
 		)->execute([$id]);
 	}
 
 	//Fonction pour récuperer l'email de l'utilisateur
-	public function getUserByEmail(string $mail): mixed{
+	public function getUserByEmail(string $mail): mixed
+	{
 		return $this->sendSQL(
-			"SELECT * FROM `" . $this->tableName . "` WHERE mail = ?", [$mail]
+			"SELECT * FROM `" . $this->tableName . "` WHERE mail = ?",
+			[$mail]
 		);
 	}
 
-	public function findAll(): array {
-        $allUsers = array();
-        $data = (array) $this->getAll();
-        foreach ($data as $elem) {
-            $rowData = (array) $elem;
-            $id = $rowData[$this->primaryKey];
-            unset($rowData[$this->primaryKey], $elem);
-            $user = new User(...$rowData);
-            $user->setId($id);  
-            array_push($allUsers, $user);
+	public function getLastAdherentNumber()
+	{
+		// On cherche le numéro de l'adhérent ayant l'ID le plus élevé
+		// ou on trie par le numéro lui-même s'il est bien formaté.
+		$sql = "SELECT memberNum
+                FROM User
+                WHERE memberNum IS NOT NULL
+                ORDER BY id DESC
+                LIMIT 1";
+
+		$stmt = $this->getPdo()->prepare($sql);
+		$result = $stmt->fetch(PDO::FETCH_ASSOC);
+		return $result ? $result['numero_adherent'] : null;
+	}
+
+	/**
+     * Génère le prochain numéro séquentiel
+     */
+    public function generateNextNumber() {
+        $lastNumber = $this->getLastAdherentNumber();
+
+        if (!$lastNumber) {
+            return "AMI-0001";
         }
-        return $allUsers;
+
+        // On extrait le nombre après le tiret
+        // AMI-0042 -> 0042
+        $parts = explode('-', $lastNumber);
+        $numericPart = (int)end($parts);
+
+        $nextNumericPart = $numericPart + 1;
+
+        // On reformate avec le préfixe et les 4 chiffres (ex: 0043)
+        return 'AMI-' . str_pad($nextNumericPart, 4, '0', STR_PAD_LEFT);
     }
+
+	public function findAll(): array
+	{
+		$allUsers = array();
+		$data = (array) $this->getAll();
+		foreach ($data as $elem) {
+			$rowData = (array) $elem;
+			$id = $rowData[$this->primaryKey];
+			unset($rowData[$this->primaryKey], $elem);
+			$user = new User(...$rowData);
+			$user->setId($id);
+			array_push($allUsers, $user);
+		}
+		return $allUsers;
+	}
 }

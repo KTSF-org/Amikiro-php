@@ -120,7 +120,29 @@ class User
 		return $user; //Email connu / Mot de passe connu
 	}
 
+	/**
+	 * Génère le prochain numéro séquentiel
+	 */
+	public function generateNextNumber()
+	{
+		$userDAO = new UserDAO();
+		$lastNumber = $userDAO->getLastAdherentNumber();
 
+
+		if (!$lastNumber) {
+			return "AMI-0001";
+		}
+
+		// On extrait le nombre après le tiret
+		// AMI-0042 -> 0042
+		$parts = explode('-', $lastNumber);
+		$numericPart = (int) end($parts);
+
+		$nextNumericPart = $numericPart + 1;
+
+		// On reformate avec le préfixe et les 4 chiffres (ex: 0043)
+		return 'AMI-' . str_pad($nextNumericPart, 4, '0', STR_PAD_LEFT);
+	}
 
 
 	/**

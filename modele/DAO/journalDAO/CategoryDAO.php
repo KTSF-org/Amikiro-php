@@ -71,15 +71,27 @@ class CategoryDAO extends Database {
         }
     }
 
-    public function findById(int $id): ?\stdClass {
+    public function findById(int $id): mixed {
         try {
             $row = $this->getOne((string)$id);
-            return $row ?: null;
+			$rowData = (array) $row;
+			unset($rowData[$this->primaryKey], $row);
+			$cat = new Category(...$rowData);
+			$cat->setId($id);
+            return $cat;
         } catch (\PDOException $e) {
             error_log('[CategoryDAO::findById] ' . $e->getMessage());
             return null;
         }
     }
+
+	// public function getCategoryBySection(int $idSection): int {
+	// 	try{
+	// 		$stmt = $this->getPdo()->prepare(
+	// 			"SELECT idCategory From `Category` WHERE id"
+	// 		)
+	// 	}
+	// }
 
 	public function getAllcategories(): array {
 		$allCategories = array();
