@@ -90,4 +90,16 @@ class SectionSpecimenDAO extends Database
     public function delete($sectionSpecimen): bool {
         return $this->deleteOne($sectionSpecimen->getId());
     }
+
+    public function findSpecimenSectionByIdSection($idSection): mixed
+    {
+        $stmt = $this->getPdo()->prepare("SELECT * FROM `" . $this->tableName . "` WHERE idSection = :idSection");
+        $stmt->execute([':idSection' => "$idSection"]);
+        $section = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($section != null){
+            return new SectionSpecimen(...$section);
+        }
+
+        return null;
+    }
 }

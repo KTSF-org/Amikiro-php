@@ -58,16 +58,29 @@ class SectionDAO extends Database {
 		return $this->deleteOne($metier->getId());
 	}
 
-    public function findAll(): array {
-        try {
-            $stmt = $this->getPdo()->prepare(
-                "SELECT id, title FROM `Section` ORDER BY creationDate DESC"
-            );
-            $stmt->execute();
-            return $stmt->fetchAll(PDO::FETCH_OBJ) ?: [];
-        } catch (\PDOException $e) {
-            error_log('[SectionDAO::findAll] ' . $e->getMessage());
-            return [];
+    // public function findAll(): array {
+    //     try {
+    //         $stmt = $this->getPdo()->prepare(
+    //             "SELECT id, title FROM `Section` ORDER BY creationDate DESC"
+    //         );
+    //         $stmt->execute();
+    //         return $stmt->fetchAll(PDO::FETCH_OBJ) ?: [];
+    //     } catch (\PDOException $e) {
+    //         error_log('[SectionDAO::findAll] ' . $e->getMessage());
+    //         return [];
+    //     }
+    // }
+	public function findAll(): array {
+        $allSection = array();
+        $data = (array) $this->getAll();
+        foreach ($data as $elem) {
+            $rowData = (array) $elem;
+            $id = $rowData[$this->primaryKey];
+            unset($rowData[$this->primaryKey], $elem);
+            $section = new Section(...$rowData);
+            $section->setId($id);  
+            array_push($allSection, $section);
         }
+        return $allSection;
     }
 }

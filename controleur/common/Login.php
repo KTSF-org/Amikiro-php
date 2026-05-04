@@ -6,7 +6,8 @@ namespace controleur\common;
 use vue\base\MainTemplate as Vue;
 use modele\User;
 use modele\DAO\UserDAO;
-use modele\DAO\AbonnementDAO;
+use modele\DAO\SubscriptionDAO;
+use modele\DAO\ConfigDAO;
 use app\util\Request as req;
 use app\util\SessionLogin as UserSession;
 
@@ -20,12 +21,12 @@ use app\util\SessionLogin as UserSession;
  *   puis redirige vers /accueil.
  * Sur GET (ou POST invalide) : affiche le formulaire avec un éventuel message d'erreur.
  *
- * Logique d'abonnement à la connexion :
- *   - Applicable uniquement aux comptes dont le rôle est ROLE_ADHERENT.
- *   - Si aucun abonnement actif n'est trouvé en base, le rôle est rétrogradé
- *     à ROLE_INVITE en BDD et dans la session courante.
- *   - ROLE_NATURALISTE n'est pas affecté : son abonnement est administratif,
- *     non lié au contrôle d'accès.
+ * Logique de temps d'accès à la connexion :
+ *   - ROLE_ADHERENT sans temps d'accès actif : rétrogradé en ROLE_INVITE avec un temps
+ *     d'accès par défaut (guestDefaultAccessDays depuis Config), puis connecté.
+ *   - ROLE_INVITE sans temps d'accès actif : connexion refusée.
+ *   - ROLE_NATURALISTE : toujours connecté, pas de vérification.
+ *   - ROLE_ADMIN : route séparée en production, bloqué ici intentionnellement.
  */
 
 
@@ -62,35 +63,62 @@ class Login
                 // Appel au modèle pour la vérification
                 $user = User::verifIdentifiant($userMail, $userPassword);
                 if ($user) {
-                    // Vérification abonnement expiré uniquement pour ROLE_ADHERENT
-                    if ((int) $user->codeRole === ROLE_ADHERENT) {
-                        $abonnementDAO = new AbonnementDAO();
-                        if (!$abonnementDAO->getActiveByUser($user->id)) {
-                            $userDAO = new UserDAO();
-                            $metier = $userDAO->getUsersById($user->id);
-                            $metier->setCodeRole(ROLE_INVITE);
-                            $userDAO->update($metier);
-                            $user->codeRole = ROLE_INVITE;
-                            unset($_SESSION["captchaCode"]);
+                    $role    = (int) $user->codeRole;
+                    $userDAO = new UserDAO();
 
+                    if ($role === ROLE_NATURALISTE) {
+                        // Naturaliste : accès permanent, pas de vérification de temps d'accès
+                        unset($_SESSION["captchaCode"]);
+                        $userDAO->incrementConnectCount($user->id);
+                        UserSession::loginWithRole($user->codeRole, $user->id);
+                        header('Location:  live');
+                        exit;
+
+                    } elseif ($role === ROLE_ADHERENT) {
+                        $subscriptionDAO = new SubscriptionDAO();
+                        // $userId et $effectiveRole sont extraits avant toute réassignation de $user
+                        // car getUsersById() retourne un objet User (propriétés privées, pas de ->id direct)
+                        $userId        = (int)$user->id;
+                        $effectiveRole = ROLE_ADHERENT;
+                        if (!$subscriptionDAO->getActiveByUser($userId)) {
+                            // Adhésion expirée : on crée une période invité par défaut et on rétrograde le compte.
+                            // La prochaine connexion passera par le flux ROLE_INVITE.
+                            $config = (new ConfigDAO())->getConfig();
+                            $days   = (int)($config->guestDefaultAccessDays ?? 7);
+                            $subscriptionDAO->createForUser(
+                                $userId,
+                                date('Y-m-d'),
+                                date('Y-m-d', strtotime("+$days days"))
+                            );
+                            $userObj = $userDAO->getUsersById($userId);
+                            $userObj->setCodeRole(ROLE_INVITE);
+                            $userDAO->update($userObj);
+                            $effectiveRole = ROLE_INVITE;
+                        }
+                        unset($_SESSION["captchaCode"]);
+                        $userDAO->incrementConnectCount($userId);
+                        UserSession::loginWithRole($effectiveRole, $userId);
+                        header('Location:  live');
+                        exit;
+
+                    } elseif ($role === ROLE_INVITE) {
+                        // Vérification du temps d'accès pour les invités
+                        $subscriptionDAO = new SubscriptionDAO();
+                        if (!$subscriptionDAO->getActiveByUser($user->id)) {
+                            $erreur = "Votre temps d'accès a expiré. Contactez un administrateur.";
+                        } else {
+                            unset($_SESSION["captchaCode"]);
+                            $userDAO->incrementConnectCount($user->id);
                             // Si user est good on enregistre le role et l'objet entier en session
                             UserSession::loginWithRole($user->codeRole, $user->id);
                             // REDIRECTION
-                            header('Location:  accueil');
+                            header('Location:  live');
                             exit;
                         }
-                    } elseif ((int) $user->codeRole === ROLE_ADMIN) {
-                        $erreur = "Email ou mot de passe incorrect";
+
                     } else {
-                        // Enleve la session captcha
-                        unset($_SESSION["captchaCode"]);
-
-                        // Si user est good on enregistre le role et l'objet entier en session
-                        UserSession::loginWithRole($user->codeRole, $user->id);
-                        // REDIRECTION
-                        header('Location:  accueil');
-                        exit;
-
+                        // ROLE_ADMIN : route séparée en production, bloqué ici intentionnellement
+                        $erreur = "Email ou mot de passe incorrect";
                     }
                 } else {
                     // Dernier cas d'echec : soit mail inconnu ou password
@@ -98,22 +126,13 @@ class Login
                 }
             }
         }
-
-
-
-
-
         Vue::setTitle('Connexion');
         Vue::addCSS([
             ASSET . '/css/login.css',
         ]);
 
         Vue::render('Login', ['erreur' => $erreur], '', true);
-
-
-
     }
-
 }
 
 ?>
