@@ -97,6 +97,7 @@ class SectionSpecimenDAO extends Database
         $stmt->execute([':idSection' => "$idSection"]);
         $section = $stmt->fetch(PDO::FETCH_ASSOC);
         if ($section != null){
+            unset($section['id']);
             return new SectionSpecimen(...$section);
         }
 

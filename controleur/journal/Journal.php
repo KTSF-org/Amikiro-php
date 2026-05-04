@@ -8,6 +8,7 @@ use vue\base\MainTemplate as Vue;
 use app\util\Guard;
 use modele\DAO\journalDAO\SectionDAO;
 use modele\DAO\journalDAO\SectionSpecimenDAO;
+use app\util\BaseURL as url;
 
 class Journal
 {
@@ -16,11 +17,13 @@ class Journal
     {
         Guard::requireRole(ROLE_ADHERENT);
 
+        $urlEditionBat = url::getBaseUrl() . "sectionBat?edition=true";
+        $urlEditionColonie = url::getBaseUrl() . "ouioui";
         $sectionDAO = new SectionDAO();
         $listFiches = $sectionDAO->findAll();
-
         $userDAO = new UserDAO();
         $users = $userDAO->findAll();
+
 
         $sectionColonyDAO = new SectionColonyDAO();
 
@@ -54,7 +57,9 @@ class Journal
             [
                 'listFiches' => $listFiches,
                 'usersAsso' => $usersAsso,
-                'typeAsso' => $typeAsso
+                'typeAsso' => $typeAsso,
+                'urlEditionBat' => $urlEditionBat,
+                'urlEditionColonie' => $urlEditionColonie,
             ]
         );
 
