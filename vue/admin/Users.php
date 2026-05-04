@@ -1,11 +1,11 @@
 <?php
-function roleLabel(int $code): string {
+function roleBadge(int $code): string {
     return match($code) {
-        ROLE_INVITE      => 'Invité',
-        ROLE_ADHERENT    => 'Adhérent',
-        ROLE_NATURALISTE => 'Naturaliste',
-        ROLE_ADMIN       => 'Administrateur',
-        default          => 'Inconnu',
+        ROLE_INVITE      => '<span class="badge bg-secondary">Invité</span>',
+        ROLE_ADHERENT    => '<span class="badge bg-primary">Adhérent</span>',
+        ROLE_NATURALISTE => '<span class="badge bg-success">Naturaliste</span>',
+        ROLE_ADMIN       => '<span class="badge bg-dark">Admin</span>',
+        default          => '<span class="badge bg-light text-dark">—</span>',
     };
 }
 
@@ -16,81 +16,81 @@ function memberNumCell(object $u): string {
     if ($role === ROLE_INVITE) {
         // Un invité avec un numéro est un ex-adhérent rétrogradé (adhésion expirée au login) — affiché en rouge.
         return empty($num)
-            ? '<span class="text-muted">INVITE</span>'
-            : '<span class="text-danger fw-semibold">' . htmlspecialchars($num) . '</span>';
+            ? '<span class="text-muted small">INVITE</span>'
+            : '<span class="badge bg-danger-subtle text-danger border border-danger-subtle">' . htmlspecialchars($num) . '</span>';
     }
     if (empty($num)) {
         return '<span class="text-muted">—</span>';
     }
-    return '<span class="text-success fw-semibold">' . htmlspecialchars($num) . '</span>';
+    return '<span class="badge bg-success-subtle text-success border border-success-subtle">' . htmlspecialchars($num) . '</span>';
 }
 
 function accessCell(int $userId, array $activeByUser): string {
     if (!isset($activeByUser[$userId])) {
-        return '<span class="badge bg-secondary">Aucun</span>';
+        return '<span class="text-muted" title="Aucune adhésion active">✗</span>';
     }
-    $sub     = $activeByUser[$userId];
-    $end     = new \DateTime($sub->endDate);
-    $today   = new \DateTime('today');
-    $daysLeft = (int)$today->diff($end)->days;
-    $label   = date('d/m/Y', strtotime($sub->endDate));
-
-    if ($daysLeft === 0) {
-        return '<span class="badge bg-warning text-dark">Expire aujourd\'hui</span>';
-    }
-    if ($daysLeft <= 7) {
-        return '<span class="badge bg-warning text-dark" title="Expire le ' . $label . '">Expire dans ' . $daysLeft . 'j</span>';
-    }
-    return '<span class="badge bg-success">' . $label . '</span>';
+    return '<span class="text-success" title="Adhésion active">✓</span>';
 }
 ?>
+
 <div class="container py-4">
 
+    <!-- En-tête -->
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1>Gestion des utilisateurs</h1>
-        <a href="<?= $actual_link ?>parametres/utilisateurs?page=create" class="btn btn-success">+ Créer un compte</a>
-    </div>
-
-    <div class="card mb-4">
-        <div class="card-body">
-            <h5 class="card-title mb-3">Paramètres d'accès</h5>
-            <form method="POST" action="<?= $actual_link ?>parametres/utilisateurs"
-                  class="row g-2 align-items-end">
-                <input type="hidden" name="action" value="saveConfig">
-                <div class="col-auto">
-                    <label for="guestDefaultAccessDays" class="form-label mb-1">
-                        Durée d'accès invité par défaut
-                        <small class="text-muted">(après expiration d'une adhésion)</small>
-                    </label>
-                    <div class="input-group">
-                        <input type="number" class="form-control" id="guestDefaultAccessDays"
-                               name="guestDefaultAccessDays" min="1"
-                               value="<?= (int)$guestDefaultAccessDays ?>" style="max-width:100px">
-                        <span class="input-group-text">jours</span>
-                    </div>
-                </div>
-                <div class="col-auto">
-                    <button type="submit" class="btn btn-primary">Enregistrer</button>
-                </div>
-            </form>
+        <div>
+            <h1 class="mb-0 h3">Utilisateurs</h1>
+            <small class="text-muted">Administration · <?= htmlspecialchars(APP_NAME) ?></small>
         </div>
+        <a href="<?= $actual_link ?>parametres/utilisateurs?page=create" class="btn btn-success btn-sm px-3">
+            + Créer un compte
+        </a>
     </div>
 
-    <div class="card mb-4">
-        <div class="card-body">
-            <h5 class="card-title mb-3">Recherche rapide</h5>
-            <div class="input-group mb-3" style="max-width:450px">
-                <input type="text" id="searchUser" class="form-control"
-                       placeholder="Nom ou prénom..." autocomplete="off">
-                <span class="input-group-text">
-                    <span id="ajaxLoader" style="display:none">
-                        <span class="spinner-border spinner-border-sm"></span>
-                    </span>
-                </span>
+    <!-- Barre outils : recherche + config -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-7">
+            <div class="card h-100">
+                <div class="card-header bg-dark text-white py-2">
+                    <span class="fw-semibold small">Recherche rapide</span>
+                </div>
+                <div class="card-body">
+                    <div class="input-group">
+                        <input type="text" id="searchUser" class="form-control"
+                               placeholder="Nom ou prénom..." autocomplete="off">
+                        <span class="input-group-text bg-white">
+                            <span id="ajaxLoader" style="display:none">
+                                <span class="spinner-border spinner-border-sm text-secondary"></span>
+                            </span>
+                        </span>
+                    </div>
+                    <div id="ajaxResults" class="mt-2" style="display:none"></div>
+                    <div id="ajaxNoResult" style="display:none" class="mt-2 text-muted small">Aucun résultat.</div>
+                </div>
             </div>
-            <div id="ajaxResults" style="display:none"></div>
-            <div id="ajaxNoResult" style="display:none" class="text-muted">
-                <small>Aucun résultat.</small>
+        </div>
+        <div class="col-md-5">
+            <div class="card h-100">
+                <div class="card-header bg-dark text-white py-2">
+                    <span class="fw-semibold small">Paramètres d'accès</span>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="<?= $actual_link ?>parametres/utilisateurs"
+                          class="d-flex align-items-end gap-2">
+                        <input type="hidden" name="action" value="saveConfig">
+                        <div class="flex-grow-1">
+                            <label for="guestDefaultAccessDays" class="form-label small mb-1">
+                                Durée accès invité par défaut
+                            </label>
+                            <div class="input-group input-group-sm">
+                                <input type="number" class="form-control" id="guestDefaultAccessDays"
+                                       name="guestDefaultAccessDays" min="1"
+                                       value="<?= (int)$guestDefaultAccessDays ?>" style="max-width:80px">
+                                <span class="input-group-text">jours</span>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-sm">OK</button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
@@ -99,7 +99,7 @@ function accessCell(int $userId, array $activeByUser): string {
     <ul class="nav nav-pills mb-3">
         <?php
         $roles = [
-            -1 => 'Tous',
+            -1               => 'Tous',
             ROLE_INVITE      => 'Invités',
             ROLE_ADHERENT    => 'Adhérents',
             ROLE_NATURALISTE => 'Naturalistes',
@@ -114,50 +114,52 @@ function accessCell(int $userId, array $activeByUser): string {
         <?php endforeach; ?>
     </ul>
 
-    <div class="table-responsive">
-        <table class="table table-striped align-middle">
-            <thead class="table-dark">
-                <tr>
-                    <th>Nom</th>
-                    <th>Prénom</th>
-                    <th>Email</th>
-                    <th>Rôle</th>
-                    <th>N° adhérent</th>
-                    <th>Adhésion</th>
-                    <th>Connexions</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php if (empty($users)): ?>
-                <tr>
-                    <td colspan="8" class="text-center text-muted">Aucun utilisateur.</td>
-                </tr>
-                <?php else: foreach ($users as $u): ?>
-                <tr>
-                    <td><?= htmlspecialchars($u->surname) ?></td>
-                    <td><?= htmlspecialchars($u->name) ?></td>
-                    <td><?= htmlspecialchars($u->mail) ?></td>
-                    <td><?= roleLabel((int)$u->codeRole) ?></td>
-                    <td><?= memberNumCell($u) ?></td>
-                    <td><?= accessCell((int)$u->id, $activeByUser) ?></td>
-                    <td><?= (int)$u->countConnect ?></td>
-                    <td>
-                        <a href="<?= $actual_link ?>parametres/utilisateurs?page=edit&id=<?= (int)$u->id ?>"
-                           class="btn btn-sm btn-primary">Éditer</a>
-                        <?php if ((int)$u->id !== $currentId): ?>
-                        <button type="button" class="btn btn-sm btn-danger"
-                                data-bs-toggle="modal" data-bs-target="#deleteModal"
-                                data-id="<?= (int)$u->id ?>"
-                                data-name="<?= htmlspecialchars($u->name . ' ' . $u->surname) ?>">
-                            Supprimer
-                        </button>
-                        <?php endif; ?>
-                    </td>
-                </tr>
-                <?php endforeach; endif; ?>
-            </tbody>
-        </table>
+    <!-- Tableau -->
+    <div class="card">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Identité</th>
+                        <th>Rôle</th>
+                        <th>N° adhérent</th>
+                        <th class="text-center">Adhésion</th>
+                        <th class="text-center">Connexions</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php if (empty($users)): ?>
+                    <tr>
+                        <td colspan="6" class="text-center text-muted py-4">Aucun utilisateur.</td>
+                    </tr>
+                    <?php else: foreach ($users as $u): ?>
+                    <tr>
+                        <td>
+                            <div class="fw-semibold"><?= htmlspecialchars($u->surname . ' ' . $u->name) ?></div>
+                            <small class="text-muted"><?= htmlspecialchars($u->mail) ?></small>
+                        </td>
+                        <td><?= roleBadge((int)$u->codeRole) ?></td>
+                        <td><?= memberNumCell($u) ?></td>
+                        <td class="text-center"><?= accessCell((int)$u->id, $activeByUser) ?></td>
+                        <td class="text-center text-muted small"><?= (int)$u->countConnect ?></td>
+                        <td class="text-end">
+                            <a href="<?= $actual_link ?>parametres/utilisateurs?page=edit&id=<?= (int)$u->id ?>"
+                               class="btn btn-sm btn-outline-primary">Éditer</a>
+                            <?php if ((int)$u->id !== $currentId): ?>
+                            <button type="button" class="btn btn-sm btn-outline-danger"
+                                    data-bs-toggle="modal" data-bs-target="#deleteModal"
+                                    data-id="<?= (int)$u->id ?>"
+                                    data-name="<?= htmlspecialchars($u->name . ' ' . $u->surname) ?>">
+                                Supprimer
+                            </button>
+                            <?php endif; ?>
+                        </td>
+                    </tr>
+                    <?php endforeach; endif; ?>
+                </tbody>
+            </table>
+        </div>
     </div>
 
     <!-- Pagination -->
@@ -185,20 +187,20 @@ function accessCell(int $userId, array $activeByUser): string {
 <div class="modal fade" id="deleteModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <div class="modal-header">
+            <div class="modal-header bg-danger text-white">
                 <h5 class="modal-title">Confirmer la suppression</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
                 Supprimer le compte de <strong id="deleteModalName"></strong> ?
-                Cette action est irréversible.
+                <div class="text-muted small mt-1">Cette action est irréversible.</div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Annuler</button>
                 <form id="deleteForm" method="POST" action="<?= $actual_link ?>parametres/utilisateurs">
                     <input type="hidden" name="action" value="delete">
                     <input type="hidden" name="id" id="deleteModalId" value="">
-                    <button type="submit" class="btn btn-danger">Supprimer</button>
+                    <button type="submit" class="btn btn-danger btn-sm">Supprimer</button>
                 </form>
             </div>
         </div>
@@ -230,14 +232,17 @@ $(document).ready(function () {
             (response) => {
                 $('#ajaxLoader').hide();
                 if (response && response.length > 0) {
-                    let html = '<ul class="list-group">';
+                    let html = '<ul class="list-group list-group-flush">';
                     response.forEach(u => {
-                        html += `<li class="list-group-item d-flex justify-content-between align-items-center">
-                            <span>${u.name} ${u.surname} <small class="text-muted">— ${u.mail}</small></span>
-                            <div class="d-flex gap-2">
+                        html += `<li class="list-group-item d-flex justify-content-between align-items-center py-2">
+                            <div>
+                                <span class="fw-semibold">${u.surname} ${u.name}</span>
+                                <small class="text-muted ms-2">${u.mail}</small>
+                            </div>
+                            <div class="d-flex gap-1">
                                 <a href="<?= $actual_link ?>parametres/utilisateurs?page=edit&id=${u.id}"
-                                   class="btn btn-sm btn-primary">Éditer</a>
-                                <button type="button" class="btn btn-sm btn-danger"
+                                   class="btn btn-sm btn-outline-primary">Éditer</a>
+                                <button type="button" class="btn btn-sm btn-outline-danger"
                                         data-bs-toggle="modal" data-bs-target="#deleteModal"
                                         data-id="${u.id}"
                                         data-name="${u.name} ${u.surname}">

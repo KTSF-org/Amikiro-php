@@ -6,19 +6,21 @@ use modele\DAO\UserDAO;
 use app\util\SessionLogin;
 use app\util\BaseURL;
 
+// Backdoor de dev uniquement — à retirer avant mise en production.
+// Usage : /dev/login?role=0 (invité), ?role=1 (adhérent), ?role=2 (naturaliste), ?role=3 (admin)
+// Sans paramètre : connecte le premier compte admin trouvé en base.
 class DevLogin {
 
-    private const ADMIN_MAIL = 'florian@gmail.com';
-
     public function __construct() {
+        $role    = isset($_GET['role']) ? (int)$_GET['role'] : ROLE_ADMIN;
         $userDAO = new UserDAO();
-        $user    = $userDAO->getUserByEmail(self::ADMIN_MAIL);
+        $users   = $userDAO->getAllFiltered($role, 0, 1);
 
-        if (!$user) {
-            die('DevLogin : compte introuvable (' . self::ADMIN_MAIL . ')');
+        if (empty($users)) {
+            die('DevLogin : aucun compte trouvé pour le rôle ' . $role);
         }
 
-        $_SESSION['user'] = $user;
+        $user = $users[0];
         SessionLogin::loginWithRole($user->codeRole, $user->id);
 
         header('Location: ' . BaseURL::getBaseUrl() . 'accueil');

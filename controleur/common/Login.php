@@ -75,27 +75,29 @@ class Login
                         exit;
 
                     } elseif ($role === ROLE_ADHERENT) {
-                        // Vérification du temps d'accès pour les adhérents
                         $subscriptionDAO = new SubscriptionDAO();
-                        if (!$subscriptionDAO->getActiveByUser($user->id)) {
-                            // Temps d'accès expiré : rétrogradation en invité avec durée par défaut
+                        // $userId et $effectiveRole sont extraits avant toute réassignation de $user
+                        // car getUsersById() retourne un objet User (propriétés privées, pas de ->id direct)
+                        $userId        = (int)$user->id;
+                        $effectiveRole = ROLE_ADHERENT;
+                        if (!$subscriptionDAO->getActiveByUser($userId)) {
+                            // Adhésion expirée : on crée une période invité par défaut et on rétrograde le compte.
+                            // La prochaine connexion passera par le flux ROLE_INVITE.
                             $config = (new ConfigDAO())->getConfig();
                             $days   = (int)($config->guestDefaultAccessDays ?? 7);
                             $subscriptionDAO->createForUser(
-                                $user->id,
+                                $userId,
                                 date('Y-m-d'),
                                 date('Y-m-d', strtotime("+$days days"))
                             );
-                            $user = $userDAO->getUsersById($user->id);
-                            $user->setCodeRole(ROLE_INVITE);
-                            $userDAO->update($user);
-                            $user->codeRole = ROLE_INVITE;
+                            $userObj = $userDAO->getUsersById($userId);
+                            $userObj->setCodeRole(ROLE_INVITE);
+                            $userDAO->update($userObj);
+                            $effectiveRole = ROLE_INVITE;
                         }
                         unset($_SESSION["captchaCode"]);
-                        $userDAO->incrementConnectCount($user->id);
-                        // Si user est good on enregistre le role et l'objet entier en session
-                        UserSession::loginWithRole($user->codeRole, $user->id);
-                        // REDIRECTION
+                        $userDAO->incrementConnectCount($userId);
+                        UserSession::loginWithRole($effectiveRole, $userId);
                         header('Location:  live');
                         exit;
 

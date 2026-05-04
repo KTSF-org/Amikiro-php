@@ -1,34 +1,51 @@
 <?php /** VUE : Admin / Edit account */ ?>
 <div class="container py-4">
     <div class="row justify-content-center">
-        <div class="col-md-6">
+        <div class="col-md-7">
 
             <div class="d-flex justify-content-between align-items-center mb-4">
-                <h1>Modifier le compte</h1>
-                <a href="<?= $actual_link ?>parametres/utilisateurs" class="btn btn-outline-secondary">← Retour</a>
+                <div>
+                    <h1 class="mb-0 h3">Modifier le compte</h1>
+                    <small class="text-muted">
+                        <?= htmlspecialchars($user->getSurname() . ' ' . $user->getName()) ?>
+                        · Administration
+                    </small>
+                </div>
+                <a href="<?= $actual_link ?>parametres/utilisateurs" class="btn btn-outline-secondary btn-sm px-3">← Retour</a>
             </div>
 
             <?php if ($error): ?>
                 <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>
             <?php endif; ?>
 
-            <div class="card mb-4">
+            <!--
+                Deux formulaires indépendants sur la même page.
+                action=identity : nom, email, mot de passe, rôle
+                action=subscription : ajout d'une période d'adhésion
+                Ils postent sur la même URL — le contrôleur dispatche via $_POST['action'].
+            -->
+
+            <!-- Formulaire identité -->
+            <div class="card mb-3">
+                <div class="card-header bg-dark text-white py-2">
+                    <span class="fw-semibold small">Identité</span>
+                </div>
                 <div class="card-body">
-                    <h5 class="card-title mb-3">Informations du compte</h5>
                     <form method="POST"
                           action="<?= $actual_link ?>parametres/utilisateurs?page=edit&id=<?= $user->getId() ?>">
                         <input type="hidden" name="action" value="identity">
 
-                        <div class="mb-3">
-                            <label for="name" class="form-label">Prénom <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" id="name" name="name"
-                                   value="<?= htmlspecialchars($user->getName()) ?>" required>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="surname" class="form-label">Nom <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" id="surname" name="surname"
-                                   value="<?= htmlspecialchars($user->getSurname()) ?>" required>
+                        <div class="row g-3 mb-3">
+                            <div class="col-6">
+                                <label for="name" class="form-label">Prénom <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="name" name="name"
+                                       value="<?= htmlspecialchars($user->getName()) ?>" required>
+                            </div>
+                            <div class="col-6">
+                                <label for="surname" class="form-label">Nom <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="surname" name="surname"
+                                       value="<?= htmlspecialchars($user->getSurname()) ?>" required>
+                            </div>
                         </div>
 
                         <div class="mb-3">
@@ -37,89 +54,106 @@
                                    value="<?= htmlspecialchars($user->getMail()) ?>" required>
                         </div>
 
-                        <div class="mb-3">
-                            <label for="password" class="form-label">
-                                Nouveau mot de passe
-                                <small class="text-muted">(laisser vide pour conserver l'actuel)</small>
-                            </label>
-                            <input type="password" class="form-control" id="password" name="password"
-                                   oninput="checkPasswords()">
+                        <div class="row g-3 mb-3">
+                            <div class="col-6">
+                                <label for="password" class="form-label">Nouveau mot de passe</label>
+                                <!-- Champ vide = mot de passe inchangé (contrôleur ignore si vide) -->
+                                <input type="password" class="form-control" id="password" name="password"
+                                       oninput="checkPasswords()" placeholder="Laisser vide pour conserver">
+                            </div>
+                            <div class="col-6">
+                                <label for="passwordConfirm" class="form-label">Confirmer</label>
+                                <input type="password" class="form-control" id="passwordConfirm"
+                                       oninput="checkPasswords()">
+                            </div>
+                        </div>
+                        <div id="passwordMismatch" class="text-danger small mb-3" style="display:none">
+                            Les mots de passe ne correspondent pas.
                         </div>
 
-                        <div class="mb-3">
-                            <label for="passwordConfirm" class="form-label">Confirmer le mot de passe</label>
-                            <input type="password" class="form-control" id="passwordConfirm"
-                                   oninput="checkPasswords()">
-                            <div id="passwordMismatch" class="form-text text-danger" style="display:none">
-                                Les mots de passe ne correspondent pas.
+                        <div class="row g-3 mb-3">
+                            <div class="col-6">
+                                <label for="codeRole" class="form-label">Rôle</label>
+                                <?php if ($isSelf): ?>
+                                    <!-- Un admin ne peut pas modifier son propre rôle : champ verrouillé,
+                                         la valeur POST codeRole est ignorée côté serveur ($isSelf). -->
+                                    <p class="form-control-plaintext mb-0">Administrateur
+                                        <small class="text-muted">(non modifiable)</small>
+                                    </p>
+                                <?php else: ?>
+                                <select class="form-select" id="codeRole" name="codeRole">
+                                    <?php if ($user->getCodeRole() === ROLE_INVITE): ?>
+                                    <!-- ROLE_INVITE affiché uniquement si le compte est déjà invité.
+                                         La rétrogradation manuelle vers invité est bloquée côté serveur :
+                                         elle ne peut se produire qu'automatiquement au login (adhésion expirée). -->
+                                    <option value="<?= ROLE_INVITE ?>" selected>Invité</option>
+                                    <?php endif; ?>
+                                    <option value="<?= ROLE_ADHERENT ?>"
+                                        <?= $user->getCodeRole() === ROLE_ADHERENT ? 'selected' : '' ?>>
+                                        Adhérent
+                                    </option>
+                                    <option value="<?= ROLE_NATURALISTE ?>"
+                                        <?= $user->getCodeRole() === ROLE_NATURALISTE ? 'selected' : '' ?>>
+                                        Naturaliste
+                                    </option>
+                                    <!-- ROLE_ADMIN absent : non assignable via l'interface -->
+                                </select>
+                                <?php endif; ?>
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label">N° adhérent</label>
+                                <?php
+                                $role = $user->getCodeRole();
+                                $num  = $user->getMemberNum();
+                                // Invité sans numéro = jamais été adhérent
+                                if ($role === ROLE_INVITE && empty($num)): ?>
+                                    <p class="form-control-plaintext mb-0 text-muted small">INVITE</p>
+                                <?php elseif ($role === ROLE_INVITE): ?>
+                                    <!-- Invité avec numéro = ex-adhérent rétrogradé (adhésion expirée au login) -->
+                                    <p class="form-control-plaintext mb-0">
+                                        <span class="badge bg-danger-subtle text-danger border border-danger-subtle">
+                                            <?= htmlspecialchars($num) ?>
+                                        </span>
+                                    </p>
+                                <?php elseif (!empty($num)): ?>
+                                    <p class="form-control-plaintext mb-0">
+                                        <span class="badge bg-success-subtle text-success border border-success-subtle">
+                                            <?= htmlspecialchars($num) ?>
+                                        </span>
+                                    </p>
+                                <?php else: ?>
+                                    <p class="form-control-plaintext mb-0 text-muted">—</p>
+                                <?php endif; ?>
                             </div>
                         </div>
 
-                        <div class="mb-3">
-                            <label for="codeRole" class="form-label">Rôle</label>
-                            <?php if ($isSelf): ?>
-                                <p class="form-control-plaintext">Administrateur
-                                    <small class="text-muted">(non modifiable)</small>
-                                </p>
-                            <?php else: ?>
-                            <select class="form-select" id="codeRole" name="codeRole">
-                                <?php if ($user->getCodeRole() === ROLE_INVITE): ?>
-                                <option value="<?= ROLE_INVITE ?>" selected>Invité</option>
-                                <?php endif; ?>
-                                <option value="<?= ROLE_ADHERENT ?>"
-                                    <?= $user->getCodeRole() === ROLE_ADHERENT ? 'selected' : '' ?>>
-                                    Adhérent
-                                </option>
-                                <option value="<?= ROLE_NATURALISTE ?>"
-                                    <?= $user->getCodeRole() === ROLE_NATURALISTE ? 'selected' : '' ?>>
-                                    Naturaliste
-                                </option>
-                            </select>
-                            <?php endif; ?>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label">N° adhérent</label>
-                            <?php
-                            $role = $user->getCodeRole();
-                            $num  = $user->getMemberNum();
-                            if ($role === ROLE_INVITE && empty($num)): ?>
-                                <p class="mb-0 text-muted">INVITE</p>
-                            <?php elseif ($role === ROLE_INVITE): ?>
-                                <p class="mb-0 text-danger fw-semibold"><?= htmlspecialchars($num) ?></p>
-                            <?php elseif (!empty($num)): ?>
-                                <p class="mb-0 text-success fw-semibold"><?= htmlspecialchars($num) ?></p>
-                            <?php else: ?>
-                                <p class="mb-0 text-muted">—</p>
-                            <?php endif; ?>
-                        </div>
-
-                        <button type="submit" class="btn btn-primary" id="submitIdentity">Enregistrer</button>
+                        <button type="submit" class="btn btn-primary btn-sm px-4" id="submitIdentity">
+                            Enregistrer
+                        </button>
                     </form>
-
-                    <script>
-                    function checkPasswords() {
-                        const pwd     = document.getElementById('password').value;
-                        const confirm = document.getElementById('passwordConfirm').value;
-                        const mismatch = document.getElementById('passwordMismatch');
-                        const submit   = document.getElementById('submitIdentity');
-                        const differs  = pwd.length > 0 && pwd !== confirm;
-                        mismatch.style.display = differs ? '' : 'none';
-                        submit.disabled = differs;
-                    }
-                    </script>
                 </div>
             </div>
 
+            <!--
+                Bloc adhésion — masqué pour l'admin connecté ($isSelf) car il ne peut pas s'auto-modifier.
+                Pour ROLE_NATURALISTE : bloc visible mais purement informatif (les dates n'affectent pas la connexion).
+                Pour ROLE_INVITE : titre "Temps d'accès" + case "Promouvoir en adhérent" visible.
+            -->
             <?php if (!$isSelf): ?>
-            <div class="card mb-4">
-                <div class="card-body">
-                    <h5 class="card-title mb-3">
-                        Adhésion
-                        <?php if ($user->getCodeRole() === ROLE_NATURALISTE): ?>
-                            <small class="text-muted fw-normal fs-6">— informatif, n'affecte pas la connexion</small>
+            <div class="card mb-3">
+                <div class="card-header bg-dark text-white py-2 d-flex justify-content-between align-items-center">
+                    <span class="fw-semibold small">
+                        <?php if ($user->getCodeRole() === ROLE_INVITE): ?>
+                            Temps d'accès
+                        <?php else: ?>
+                            Adhésion
                         <?php endif; ?>
-                    </h5>
+                    </span>
+                    <?php if ($user->getCodeRole() === ROLE_NATURALISTE): ?>
+                        <span class="text-white-50 small fw-normal">informatif — n'affecte pas la connexion</span>
+                    <?php endif; ?>
+                </div>
+                <div class="card-body">
 
                     <?php if ($activeSubscription): ?>
                         <div class="alert alert-success py-2 mb-3">
@@ -150,14 +184,17 @@
                                 <input type="date" class="form-control" id="endDate" name="endDate" required>
                             </div>
                             <div class="col-auto">
-                                <button type="submit" class="btn btn-success">Activer</button>
+                                <button type="submit" class="btn btn-success btn-sm px-3">Activer</button>
                             </div>
                         </div>
                         <?php if ($user->getCodeRole() === ROLE_INVITE): ?>
+                        <!-- Promotion invité → adhérent :
+                             le contrôleur efface l'historique d'adhésion invité et génère un numéro adhérent
+                             (ou conserve l'existant si le compte avait déjà été adhérent). -->
                         <div class="form-check mt-3">
                             <input class="form-check-input" type="checkbox"
                                    name="promoteToAdherent" id="promoteToAdherent" value="1">
-                            <label class="form-check-label" for="promoteToAdherent">
+                            <label class="form-check-label small" for="promoteToAdherent">
                                 Promouvoir en adhérent
                             </label>
                         </div>
@@ -165,21 +202,21 @@
                     </form>
 
                     <?php if (!empty($subscriptionHistory)): ?>
-                    <hr>
-                    <h6 class="text-muted mb-2">Historique</h6>
+                    <hr class="my-3">
+                    <p class="text-muted small mb-2 fw-semibold">Historique</p>
                     <table class="table table-sm mb-0">
-                        <thead>
+                        <thead class="table-light">
                             <tr>
-                                <th>Début</th>
-                                <th>Fin</th>
-                                <th>Statut</th>
+                                <th class="fw-normal text-muted small">Début</th>
+                                <th class="fw-normal text-muted small">Fin</th>
+                                <th class="fw-normal text-muted small">Statut</th>
                             </tr>
                         </thead>
                         <tbody>
                             <?php foreach ($subscriptionHistory as $sub): ?>
                             <tr>
-                                <td><?= date('d/m/Y', strtotime($sub->startDate)) ?></td>
-                                <td><?= date('d/m/Y', strtotime($sub->endDate)) ?></td>
+                                <td class="small"><?= date('d/m/Y', strtotime($sub->startDate)) ?></td>
+                                <td class="small"><?= date('d/m/Y', strtotime($sub->endDate)) ?></td>
                                 <td>
                                     <?php if ($sub->endDate >= date('Y-m-d')): ?>
                                         <span class="badge bg-success">Actif</span>
@@ -192,6 +229,7 @@
                         </tbody>
                     </table>
                     <?php endif; ?>
+
                 </div>
             </div>
             <?php endif; ?>
@@ -199,3 +237,16 @@
         </div>
     </div>
 </div>
+
+<script>
+function checkPasswords() {
+    const pwd      = document.getElementById('password').value;
+    const confirm  = document.getElementById('passwordConfirm').value;
+    const mismatch = document.getElementById('passwordMismatch');
+    const submit   = document.getElementById('submitIdentity');
+    // Ne bloque que si le champ pwd est rempli — un champ vide = pas de changement de mot de passe
+    const differs  = pwd.length > 0 && pwd !== confirm;
+    mismatch.style.display = differs ? '' : 'none';
+    submit.disabled = differs;
+}
+</script>
