@@ -7,7 +7,7 @@ use modele\DAO\journalDAO\SectionDAO;
 class Section{
 
 	private int $id=0; //La clé primaire est identifiée par $id
-	
+
 	protected $param=[]; //La liste des paramètres (ou attributs)
 
 	public function __construct(
@@ -30,26 +30,32 @@ class Section{
 	}
 	/**
 	 * METHODS
-	 */	
-	
+	 */
+
 	// STOCKER LA LISTE DES ATTRIBUTS
 	private function getKey(array $arr): array {
 		foreach($arr as $key => $value) {
 			if($key==="id" or $key==="param")continue;
-			$param[] = $key; 
+			$param[] = $key;
 		}
 		return $param;
 	}
-	
+
 	// SORTIR LA LISTE DES ATTRIBUTS
 	public function getParam(): array {
 		return $this->param;
 	}
-	
+
 	// CREATE
 	public function addSection(): bool {
 		$sectionDao = new SectionDAO();
 		return $sectionDao->create($this);
+	}
+
+	// UPDATE
+	public function updateSection() : bool {
+		$sectionDAO = new SectionDAO();
+        return $sectionDAO->update($this);
 	}
 
 	// DELETE
@@ -103,4 +109,3 @@ class Section{
 		$this->idLogs = $idLogs;
 	}
 }
-	
