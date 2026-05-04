@@ -95,7 +95,8 @@ use app\util\Helper;
                                     <a href="<?= $urlModif ?>&id=<?= $id ?>" class="btn btn-sm" style="color:LimeGreen">
                                         <i class="bi bi-pencil-square" width="20px" height="20px"></i>
                                     </a>
-                                    <a href="<?= $urlDelete ?>&id=<?= $id ?>" class="btn btn-sm" style="color:red">
+                                    <a href="<?= $urlDelete ?>&id=<?= $id ?>" class="btn btn-sm" style="color:red"
+                                    onclick="return confirm ('Etes-vous sûr de vouloir supprimer cette chauve-souris ?');">
                                         <i class="bi bi-trash3" width="20px" height="20px"></i>
                                     </a>
                                 </div>
