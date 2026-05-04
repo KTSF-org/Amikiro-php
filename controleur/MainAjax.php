@@ -12,9 +12,9 @@ use modele\journal\Section as Section;
 use app\util\SessionLogin as SessionLogin;
 /**
  *	Classe chargée depuis le routing : route/routing.php
- *	==> $route->add('/ajax', 'controleur\MainAjax'); 
+ *	==> $route->add('/ajax', 'controleur\MainAjax');
  *	Pour TESTER : http://localhost/apptest/ajax
- *	Avec le paramètre : 
+ *	Avec le paramètre :
  *	http://localhost/apptest/ajax?findUsers
  *	==> retourne false car aucun $_POST['name'], voir :
  *	vue/ajax/ajaxRechercher.php , ligne 36
@@ -32,7 +32,7 @@ class MainAjax extends Ajax {
 
 	/**
 	 * Collection par un tableau des requêtes de type GET pour AJAX
-	 * Est ajouté [ 'AjaxNom' => 'methodNom' ] : 
+	 * Est ajouté [ 'AjaxNom' => 'methodNom' ] :
 	 * 1/ AjaxNom = le nom reçu par l'url : /ajax?nom
 	 * 2/ methodNom = le nom de la méthode utilisée dans cette classe.
 	 */
@@ -43,7 +43,8 @@ class MainAjax extends Ajax {
 			'findUsers'   => 'getUserBySearch',
 			'liveLeave'   => 'liveLeave',
 			'viewerCount' => 'getViewerCount',
-			'addSectionColony' => 'addSectionCol'
+			'addSectionColony' => 'addSectionCol',
+			'updateSectionColony' => 'updateSectionCol'
 		];
 	}
 
@@ -61,9 +62,9 @@ class MainAjax extends Ajax {
 		}
 
 		$this->db = new Model();
-		
+
 		$route = $this->ajaxRoute();
-		
+
 		foreach($route as $k => $v) {
 			if( isset($_GET[$k]) ) {
 				$this->method = $v; //méthode héritée de : vue/base/Ajax.php
@@ -73,7 +74,7 @@ class MainAjax extends Ajax {
 		//constructeur de la classe Ajax() (vue/base/Ajax.php) :
 		parent::__construct();
 	}
-	
+
 	/**
 	 *	--------------------
 	 *	   AJAX : METHODS
@@ -121,28 +122,39 @@ class MainAjax extends Ajax {
 		$date = req::post('date');
 		$category = req::post('category');
 		$notes = req::post('notes');
-		
-		
+
+
 			$section = new Section($title, $notes, $date, SessionLogin::getUserId()); //création de la rubrique
 
 			if ($section->addSection()) {  //création de la rubrique en bdd
 				$sectionColony = new SectionColony($section->getId(), (int) $category); //création de la section Colony
 				$sectionColony->addSectionColony(); //création de la section colony en bdd
 				return "Success";
-		}	
+		}
 			return "Successsss";
 
 		}else{
 			return "No success";
 		}
 
+	}
 
-	
+	protected function updateSectionCol():string
+	{
+		$message = 'Les champs ne sont pas rempli';
+		if(req::has('title')){
+			$title = req::post('title');
+			$date = req::post('date');
+			$category = req::post('category');
+			$notes = req::post('notes');
+			$id = req::post('id');
 
-	
-				
-		
+			$section = new Section($title, $notes, $date, SessionLogin::getUserId());
+			
 
+
+
+		}
 	}
 
 }
