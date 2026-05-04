@@ -10,6 +10,14 @@
 
     <h1 class="m-2"> Journal </h1>
 
+    <a href="sectionColony" class="btn btn-primary m-1">
+        Nouvelle fiche colonie
+    </a>
+    <a href="sectionBat" class="btn btn-primary m-1">
+        Nouvelle fiche individu
+    </a>
+
+
     <div class="col m-2">
         <div class="container">
             <div class="row fw-bold">

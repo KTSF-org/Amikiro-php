@@ -48,8 +48,14 @@ class SectionColony {
         var_dump($modif);
 
         $catSection = $sectionCol->findColonySectionByIdSection($sectionId);
-        var_dump($catSection);
-        $catSec = $cat->findById($catSection->getIdCategory()); //récupérer la catégorie avec l'id
+
+        if ($catSection === null) {
+            $catSec = null;
+            } else {
+                $catSec = $cat->findById($catSection->getIdCategory());
+            }
+
+
 
         // if($_SERVER['REQUEST_METHOD'] === 'POST') {
         //     $title = Request::post('colonyTitle');
@@ -87,7 +93,7 @@ class SectionColony {
             ]
         );
 
-    
+
 
     }
 
