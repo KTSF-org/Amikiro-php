@@ -85,12 +85,14 @@ class MainAjax extends Ajax {
 	 * ==> voir au-dessus le tableau dans la fonction ajaxRoute().
 	 * @return mixed Retourne le nom ou le prénom recherché, ou false
 	 */
-	protected function getUserBySearch(): mixed {
+	protected function getUserBySearch(): mixed
+	{
 		// attention $_POST n'est pas sécurisé !
 		// $nom = $_POST['name'] ?? ''; //??=opérateur nullable, équivalent à isset
 		$nom = req::post('name'); //$_POST sécurisé avec la méthode Request (app/util/Request.php)
 		$user = $this->db->getUsersByName($nom);
-		if (empty($nom)) $user = false;
+		if (empty($nom))
+			$user = false;
 		if ($user !== false && \app\util\SessionLogin::getRole() === ROLE_ADMIN) {
 			$_SESSION['searched_user'] = $user;
 		}
@@ -101,7 +103,8 @@ class MainAjax extends Ajax {
 	 * Décrémente le compteur de viewers actifs quand l'utilisateur quitte la page Live.
 	 * Appelé via navigator.sendBeacon() au beforeunload.
 	 */
-	protected function liveLeave(): bool {
+	protected function liveLeave(): bool
+	{
 		if (isset($_SESSION['in_live'])) {
 			(new ConfigDAO())->decrementViewers();
 			unset($_SESSION['in_live']);
@@ -113,23 +116,35 @@ class MainAjax extends Ajax {
 	 * Retourne le nombre de viewers actifs en temps réel.
 	 * Interrogé périodiquement par la vue Live via setInterval.
 	 */
-	protected function getViewerCount(): int {
-		return (int)((new ConfigDAO())->getURLbyId(1)['viewerCount'] ?? 0);
+	protected function getViewerCount(): int
+	{
+		return (int) ((new ConfigDAO())->getURLbyId(1)['viewerCount'] ?? 0);
 	}
 
-	protected function addSectionCol(): bool{
+	protected function addSectionCol():string
+	{
+		$message = "Les champs ne sont pas rempli";
+		if (req::has('title')) {
 		$title = req::post('title');
 		$date = req::post('date');
 		$category = req::post('category');
 		$notes = req::post('notes');
 		
 		
-		$section = new Section($title, $notes, $date,SessionLogin::getUserId());
-		if($section->addSection()) {
-			$sectionColony = new SectionColony($section->getId(), (int)$category);
-			return $sectionColony->addSectionColony();
+			$section = new Section($title, $notes, $date, SessionLogin::getUserId()); //création de la rubrique
+
+			if ($section->addSection()) {  //création de la rubrique en bdd
+				$sectionColony = new SectionColony($section->getId(), (int) $category); //création de la section Colony
+				$sectionColony->addSectionColony(); //création de la section colony en bdd
+				return "Success";
 		}	
-		return false;
+			return "Successsss";
+
+		}else{
+			return "No success";
+		}
+
+
 	
 
 	
