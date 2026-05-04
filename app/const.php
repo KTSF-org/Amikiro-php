@@ -21,7 +21,7 @@ define('MAIN_TEMPLATE_DIR', VUE_DIR . 'common' . SLASH);
 define('APP_DIR', ROOT . 'app' . SLASH);
 define('FILE_DIR', APP_DIR . 'file' . SLASH);
 
-//Nom du répertoire des fichiers statique 
+//Nom du répertoire des fichiers statique
 define('ASSET_DIR', ROOT . ASSET . SLASH);
 
 //Config du SGBDR :
@@ -29,3 +29,11 @@ define('DB_CONFIG', include('DB.php'));
 
 // URL POUR L'ADMIN
 define('URL_ADMIN', 'df6hj98d24vp');
+
+//SMTP mail:
+// define('MAIL_HOST', getenv('MAIL_HOST') ?? 'mailpit');
+// define('MAIL_PORT', getenv('MAIL_PORT') ?? '587');
+// define('MAIL_USER', getenv('MAIL_USER') ?? '');
+// define('MAIL_PASS', getenv('MAIL_PASS') ?? '');
+// define('MAIL_FROM', getenv('MAIL_FROM') ?? 'noreply@amikiro.fr');
+// define('MAIL_FROM_NAME', getenv('MAIL_FROM_NAME') ?? '');

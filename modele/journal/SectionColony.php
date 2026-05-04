@@ -11,7 +11,7 @@ class SectionColony
     private int $id=0;
     protected $param = []; //La liste des paramètres (ou attributs)
 
-    // Constructeur : Bat
+   
     public function __construct(
         private int $idSection = -1,
         private int $idCategory = -1 

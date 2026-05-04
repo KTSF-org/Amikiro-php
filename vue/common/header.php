@@ -47,7 +47,7 @@ $userRole = \app\util\SessionLogin::getRole();
                     <?php if ($userRole >= ROLE_ADHERENT): ?>
                         <li class="nav-item dropdown">
                             <!-- <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Journal</a> -->
-                             <button class="btn btn-outline-info dropdown-toggle mx-2" type="button" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Journal</a>
+                             <button class="btn btn-outline-info dropdown-toggle mx-2" type="button" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Journal</button>
                             <ul class="dropdown-menu">
                                 <li>
                                     <h6 class="dropdown-header">Consultation</h6>
@@ -70,7 +70,7 @@ $userRole = \app\util\SessionLogin::getRole();
 
                     <li class="nav-item dropdown">
                         <!-- <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Paramètres</a> -->
-                        <button class="btn btn-outline-light dropdown-toggle" type="button" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Paramètres</a>
+                        <button class="btn btn-outline-light dropdown-toggle" type="button" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Paramètres</button>
                         <ul class="dropdown-menu dropdown-menu-end">
                             <li>
                                 <h6 class="dropdown-header">Compte</h6>

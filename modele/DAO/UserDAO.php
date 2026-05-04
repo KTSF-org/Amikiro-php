@@ -93,7 +93,7 @@ class UserDAO extends Database {
 		}
 		$rowData = (array)$row; //conversion objet --> array
 		unset($rowData[$this->primaryKey], $row); //retire la clé primaire du tableau et $row qui ne sert plus
-		$rowData['memberNum'] = (int)($rowData['memberNum'] ?? 0); //guard : memberNum nullable en BDD, int requis par le constructeur
+		$rowData['memberNum'] = (string)($rowData['memberNum'] ?? '');
 		$metier = new User(...$rowData); //crée l'objet User(->User.php) avec toutes les clés du tableau $rowData
 		$metier->setId($id); //ajoute $id dans l'objet métier (User)
 		return $metier; //retourne l'objet crée
@@ -126,10 +126,10 @@ class UserDAO extends Database {
 	* 	@param string $name Nom ou prénom de l'utilisateur
 	* 	@return array
 	*/
-	public function getUsersByName(string $name): mixed {
-		$stmt = $this->getPdo()->prepare("SELECT * FROM `" . $this->tableName . "` WHERE name LIKE :name OR surname LIKE :surname");
+	public function getUsersByName(string $name): array {
+		$stmt = $this->getPdo()->prepare("SELECT * FROM `" . $this->tableName . "` WHERE name LIKE :name OR surname LIKE :surname ORDER BY surname, name LIMIT 10");
 		$stmt->execute([':surname' => "%$name%", ':name' => "%$name%"]);
-		return $stmt->fetch(PDO::FETCH_ASSOC);
+		return $stmt->fetchAll(PDO::FETCH_ASSOC);
 	}
 
 
@@ -158,6 +158,54 @@ class UserDAO extends Database {
 	}
 	
 
+	/**
+	 * Retourne les utilisateurs filtrés par rôle avec pagination.
+	 * @param int $role  -1 = tous les rôles
+	 */
+	public function getAllFiltered(int $role = -1, int $offset = 0, int $limit = 20): array {
+		if ($role >= 0) {
+			$stmt = $this->getPdo()->prepare(
+				"SELECT * FROM `{$this->tableName}` WHERE codeRole = ? ORDER BY surname, name LIMIT ? OFFSET ?"
+			);
+			$stmt->bindValue(1, $role,   PDO::PARAM_INT);
+			$stmt->bindValue(2, $limit,  PDO::PARAM_INT);
+			$stmt->bindValue(3, $offset, PDO::PARAM_INT);
+		} else {
+			$stmt = $this->getPdo()->prepare(
+				"SELECT * FROM `{$this->tableName}` ORDER BY surname, name LIMIT ? OFFSET ?"
+			);
+			$stmt->bindValue(1, $limit,  PDO::PARAM_INT);
+			$stmt->bindValue(2, $offset, PDO::PARAM_INT);
+		}
+		$stmt->execute();
+		return $stmt->fetchAll(PDO::FETCH_OBJ);
+	}
+
+	/**
+	 * Compte le nombre d'utilisateurs (optionnellement filtrés par rôle).
+	 * @param int $role  -1 = tous les rôles
+	 */
+	public function countFiltered(int $role = -1): int {
+		if ($role >= 0) {
+			$stmt = $this->getPdo()->prepare(
+				"SELECT COUNT(*) FROM `{$this->tableName}` WHERE codeRole = ?"
+			);
+			$stmt->execute([$role]);
+		} else {
+			$stmt = $this->getPdo()->query("SELECT COUNT(*) FROM `{$this->tableName}`");
+		}
+		return (int)$stmt->fetchColumn();
+	}
+
+	/**
+	 * Incrémente le compteur de connexions de l'utilisateur.
+	 */
+	public function incrementConnectCount(int $id): void {
+		$this->getPdo()->prepare(
+			"UPDATE `" . $this->tableName . "` SET countConnect = countConnect + 1 WHERE id = ?"
+		)->execute([$id]);
+	}
+
 	//Fonction pour récuperer l'email de l'utilisateur
 	public function getUserByEmail(string $mail): mixed{
 		return $this->sendSQL(
@@ -165,5 +213,17 @@ class UserDAO extends Database {
 		);
 	}
 
-	
+	public function findAll(): array {
+        $allUsers = array();
+        $data = (array) $this->getAll();
+        foreach ($data as $elem) {
+            $rowData = (array) $elem;
+            $id = $rowData[$this->primaryKey];
+            unset($rowData[$this->primaryKey], $elem);
+            $user = new User(...$rowData);
+            $user->setId($id);  
+            array_push($allUsers, $user);
+        }
+        return $allUsers;
+    }
 }
