@@ -4,6 +4,7 @@ namespace controleur\admin;
 
 use app\util\Request as req;
 use app\util\SessionLogin as UserSession;
+use app\util\BaseURL;
 use vue\base\MainTemplate as Vue;
 use modele\User;
 
@@ -13,8 +14,9 @@ class AdminControleur
     public function __construct()
     {
 
+        // Déjà connecté : redirige vers l'accueil sans afficher le formulaire
         if (UserSession::isLogin()){
-            header('Location: accueil');
+            header('Location: ' . BaseURL::getBaseUrl() . 'accueil');
             exit;
         }
 
@@ -33,14 +35,13 @@ class AdminControleur
                 } else {
                     $user = User::verifIdentifiant($userMail, $userPassword);
 
-                    if ($user) {
-                        // Si user est good on enregistre le role et l'id en session
+                    // Seul un compte ROLE_ADMIN peut s'authentifier par cette route
+                    if ($user && (int)$user->codeRole === ROLE_ADMIN) {
                         UserSession::loginWithRole($user->codeRole, $user->id);
-                        // REDIRECTION
-                        header('Location:  accueil');
+                        header('Location: ' . BaseURL::getBaseUrl() . 'accueil');
                         exit;
                     } else {
-                        // Dernier cas d'echec : soit mail inconnu ou password
+                        // Échec : identifiants invalides ou rôle insuffisant
                         $erreur = "Email ou mot de passe incorrect.";
                     }
                 }

@@ -1,0 +1,113 @@
+{
+    // PHP
+    "php.validate.executablePath": "C:\\Users\\hereh\\AppData\\Local\\Microsoft\\WinGet\\Packages\\PHP.PHP.8.3_Microsoft.Winget.Source_8wekyb3d8bbwe\\php.exe",
+    "php.validate.enable": true,
+    // Intelephense
+    "intelephense.environment.phpVersion": "8.1.0",
+    "intelephense.environment.includePaths": [
+        "./vendor"
+    ],
+    "intelephense.diagnostics.undefinedVariables": false,
+    "intelephense.files.exclude": [
+        "**/.git/**",
+        "**/.vs/**",
+        "**/vendor/**/{Tests,tests}/**"
+    ],
+    "intelephense.stubs": [
+        "apache",
+        "bcmath",
+        "bz2",
+        "calendar",
+        "com_dotnet",
+        "Core",
+        "ctype",
+        "curl",
+        "date",
+        "dba",
+        "dom",
+        "enchant",
+        "exif",
+        "FFI",
+        "fileinfo",
+        "filter",
+        "fpm",
+        "ftp",
+        "gd",
+        "gettext",
+        "gmp",
+        "hash",
+        "iconv",
+        "imap",
+        "intl",
+        "json",
+        "ldap",
+        "libxml",
+        "mbstring",
+        "meta",
+        "mysqli",
+        "oci8",
+        "odbc",
+        "openssl",
+        "pcntl",
+        "pcre",
+        "PDO",
+        "pdo_ibm",
+        "pdo_mysql",
+        "pdo_pgsql",
+        "pdo_sqlite",
+        "pgsql",
+        "Phar",
+        "posix",
+        "pspell",
+        "random",
+        "readline",
+        "Reflection",
+        "session",
+        "shmop",
+        "SimpleXML",
+        "snmp",
+        "soap",
+        "sockets",
+        "sodium",
+        "SPL",
+        "sqlite3",
+        "standard",
+        "superglobals",
+        "sysvmsg",
+        "sysvsem",
+        "sysvshm",
+        "tidy",
+        "tokenizer",
+        "xml",
+        "xmlreader",
+        "xmlrpc",
+        "xmlwriter",
+        "xsl",
+        "Zend OPcache",
+        "zip",
+        "zlib"
+    ],
+    // Éditeur
+    "editor.tabSize": 4,
+    "editor.insertSpaces": false,
+    "editor.formatOnSave": false,
+    "editor.rulers": [
+        120
+    ],
+    // Recherche — exclure les dossiers inutiles
+    "search.exclude": {
+        "**/.vs": true,
+        "**/vendor": true,
+        "**/*.sql": false
+    },
+    "files.exclude": {
+        "**/.vs": true
+    },
+    // Associations fichiers
+    "files.associations": {
+        "*.php": "php"
+    },
+    // Trim whitespace à la sauvegarde
+    "files.trimTrailingWhitespace": true,
+    "files.insertFinalNewline": true
+}

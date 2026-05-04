@@ -29,8 +29,6 @@ class Routing {
 		$route->add('/img', 'controleur\util\Image');
 		//charge la classe MainAjax($message), 'Hello AJAX' un message de sortie par défaut :
 		$route->add('/ajax', 'controleur\MainAjax', 'Hello AJAX');
-		//si l'on souhaite passer plusieurs paramètres, il faut ajouter un tableau :
-		$route->add('/admin/test', 'controleur\admin\Test', ['hello', 'world']);
 		//méthode / fonction personalisée :
 		$route->add('/phpinfo', function () { phpinfo(); });
 		//login automatique en dev — à retirer avant mise en production :
@@ -55,7 +53,7 @@ class Routing {
 
 		// Paramètres admin (accès restreint à ROLE_ADMIN, contrôle à implémenter dans chaque contrôleur)
 		// Une seule route gère liste, création et édition via $_GET['page'] dans le contrôleur
-		$route->add('/parametres/utilisateurs', 'controleur\admin\Utilisateurs');
+		$route->add('/parametres/utilisateurs', 'controleur\admin\Users');
 		$route->add('/parametres/webcam', 'controleur\admin\Webcam');
 		// URL SPECIFIQUE ADMIN
 		$route->add('/' . URL_ADMIN, 'controleur\admin\AdminControleur');
