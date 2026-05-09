@@ -61,7 +61,7 @@ abstract class Template {
 		$customJS=null;
 		if(!empty(self::$customJS)) {
 			foreach(self::$customJS as $jsSrc) {
-				$customJS .= '<script src="'.$jsSrc.'"></script>'.PHP_EOL;
+				$customJS .= '<script src="'.$jsSrc.'" defer></script>'.PHP_EOL;
 			}
 		}
 		

@@ -5,14 +5,15 @@ namespace controleur;
 use app\util\Request;
 use app\util\Guard;
 use vue\base\MainTemplate as Vue;
+use modele\User;
 use modele\DAO\UserDAO;
 use app\util\SessionLogin as UserSession;
 
 /**
- * CONTRÔLEUR : Profil
- * Permet à tout utilisateur connecté de modifier son prénom/nom et son mot de passe.
+ * Contrôleur : profil de l'utilisateur connecté.
+ * Permet de modifier le prénom/nom et le mot de passe.
  *
- * Deux actions POST dispatché via $_POST['action'] :
+ * Deux actions POST dispatchées via $_POST['action'] :
  *   identity — met à jour name et surname (email non modifiable par l'utilisateur)
  *   password — change le mot de passe après vérification de l'actuel
  */
@@ -20,68 +21,82 @@ class Profil {
 
     public function __construct() {
         Guard::requireLogin();
+        $this->handle();
+    }
+
+    private function handle(): void {
+        $userDAO = new UserDAO();
+        // getUsersById() retourne un objet User avec propriétés privées — utiliser les getters
+        $user    = $userDAO->getUsersById(UserSession::getUserId());
+        $role    = UserSession::getRole();
 
         $success = null;
         $error   = null;
 
-        $id      = UserSession::getUserId();
-        $role    = UserSession::getRole();
-        $userDAO = new UserDAO();
-        // getUsersById() retourne un objet User avec propriétés privées — utiliser les getters
-        $user    = $userDAO->getUsersById($id);
-        $surname = $user->getSurname();
-        $name    = $user->getName();
-        $mail    = $user->getMail();
-
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-
-            $action = $_POST['action'] ?? '';
-
-            if ($action === 'identity') {
-                $namePost    = Request::post('name');
-                $surnamePost = Request::post('surname');
-
-                if (empty($namePost) || empty($surnamePost)) {
-                    $error = 'Le prénom et le nom ne peuvent pas être vides.';
-                } else {
-                    $user->setName($namePost)->setSurname($surnamePost);
-                    $success = $userDAO->update($user);
-                    // Mise à jour locale pour que la vue affiche les nouvelles valeurs sans rechargement BDD
-                    if ($success) {
-                        $name    = $namePost;
-                        $surname = $surnamePost;
-                    }
-                }
-
-            } elseif ($action === 'password') {
-                $current = Request::post('current_password');
-                $new     = Request::post('new_password');
-                $confirm = Request::post('confirm_password');
-
-                // Vérification de l'actuel avant d'accepter le changement — évite qu'une session volée
-                // puisse changer le mot de passe sans connaître l'original.
-                if (!password_verify($current, $user->getPassword())) {
-                    $error = 'Mot de passe actuel incorrect.';
-                } elseif (empty($new)) {
-                    $error = 'Le nouveau mot de passe ne peut pas être vide.';
-                } elseif ($new !== $confirm) {
-                    $error = 'Les mots de passe ne correspondent pas.';
-                } else {
-                    // setPassword() hache automatiquement via password_hash() (bcrypt cost 12)
-                    $user->setPassword($new);
-                    $success = $userDAO->update($user);
-                }
-            }
+            // Les setters appelés dans les méthodes modifient $user en place :
+            // $user->getName() reflétera les nouvelles valeurs au moment du rendu.
+            ['success' => $success, 'error' => $error] = match ($_POST['action'] ?? '') {
+                'identity' => $this->handleIdentityUpdate($user, $userDAO),
+                'password' => $this->handlePasswordChange($user, $userDAO),
+                default    => ['success' => null, 'error' => null],
+            };
         }
 
         Vue::setTitle('Mon Profil');
+        Vue::addJS([ASSET . '/js/profil.js']);
         Vue::render('Profil', [
-            'surname' => $surname,
-            'name'    => $name,
+            'surname' => $user->getSurname(),
+            'name'    => $user->getName(),
             'role'    => $role,
-            'mail'    => $mail,
+            'mail'    => $user->getMail(),
             'success' => $success,
             'error'   => $error,
         ]);
+    }
+
+    /**
+     * Met à jour le prénom et le nom de l'utilisateur.
+     * L'email n'est pas modifiable par l'utilisateur lui-même.
+     * @return array{success: bool|null, error: string|null}
+     */
+    private function handleIdentityUpdate(User $user, UserDAO $userDAO): array {
+        $name    = Request::post('name');
+        $surname = Request::post('surname');
+
+        if (empty($name) || empty($surname)) {
+            return ['success' => null, 'error' => 'Le prénom et le nom ne peuvent pas être vides.'];
+        }
+
+        $user->setName($name)->setSurname($surname);
+        return ['success' => $userDAO->update($user), 'error' => null];
+    }
+
+    /**
+     * Change le mot de passe après vérification de l'actuel.
+     * password_verify() est appelé ici car User n'expose pas de méthode de vérification —
+     * il ne stocke que le hash et délègue le contrôle à l'appelant.
+     * @return array{success: bool|null, error: string|null}
+     */
+    private function handlePasswordChange(User $user, UserDAO $userDAO): array {
+        $current = Request::post('current_password');
+        $new     = Request::post('new_password');
+        $confirm = Request::post('confirm_password');
+
+        // Vérification de l'actuel avant d'accepter le changement —
+        // évite qu'une session volée puisse changer le mot de passe sans connaître l'original.
+        if (!password_verify($current, $user->getPassword())) {
+            return ['success' => null, 'error' => 'Mot de passe actuel incorrect.'];
+        }
+        if (empty($new)) {
+            return ['success' => null, 'error' => 'Le nouveau mot de passe ne peut pas être vide.'];
+        }
+        if ($new !== $confirm) {
+            return ['success' => null, 'error' => 'Les mots de passe ne correspondent pas.'];
+        }
+
+        // setPassword() hache automatiquement via password_hash() (bcrypt cost 12)
+        $user->setPassword($new);
+        return ['success' => $userDAO->update($user), 'error' => null];
     }
 }
