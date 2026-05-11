@@ -1,20 +1,38 @@
 $(document).ready(function () {
-	$('#listBat').DataTable();
-});
 
+  // TABLEAU BAT
+  $('#listBat').DataTable({
+    order: [[2, 'asc']],
+    searching: true,
+    paging: true,
+    info: true,
+    language: {
+      url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/fr-FR.json'
+    },
+    columnDefs: [
+      { orderable: false, targets: [0, 3] },
+      { width: "30px", targets: [0, 1] },
+      { width: "120px", targets: [3] }
+    ]
+  });
 
+  // TABLEAU SECTION
+  $('#listSection').DataTable({
+    order: [[3, 'desc']],
+    searching: true,
+    paging: true,
+    info: true,
+    language: {
+      url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/fr-FR.json'
+    },
+    columnDefs: [
+      { orderable: false, targets: [5] },
+      { width: "30px", targets: [0] },
+      { width: "100px", targets:[1]},
+      { width: "200px", targets:[4]},
+      { width: "180px", targets: [3] },
+      { width: "120px", targets: [5]}
+    ]
+  });
 
- $('#listBat').DataTable({
-  order: [[2, 'asc']],    // Tri initial : colonne 1 croissant
-  searching: true,         // Activer/désactiver la recherche
-  paging: true,            // Activer/désactiver la pagination
-  info: true,              // Afficher "Showing X of Y entries"
-  language: {              // Traduction en français
-    url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/fr-FR.json'
-  },
-  columnDefs: [
-    { orderable: false, targets: [0, 3] },  // Désactiver le tri sur la colonne 3
-	{ width : "30px", targets: [0, 1] },
-	{ width : "120px", targets: [3] }
-]
 });
