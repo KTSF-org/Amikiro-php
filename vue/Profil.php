@@ -10,12 +10,12 @@
  *   $error   — string|null : message d'erreur de validation
  */
 
-$roleLabel = match((int)($role ?? -1)) {
-    ROLE_INVITE      => 'Invité',
-    ROLE_ADHERENT    => 'Adhérent',
+$roleLabel = match ((int) ($role ?? -1)) {
+    ROLE_INVITE => 'Invité',
+    ROLE_ADHERENT => 'Adhérent',
     ROLE_NATURALISTE => 'Naturaliste',
-    ROLE_ADMIN       => 'Administrateur',
-    default          => 'Inconnu',
+    ROLE_ADMIN => 'Administrateur',
+    default => 'Inconnu',
 };
 ?>
 <div class="container py-4">
@@ -50,9 +50,10 @@ $roleLabel = match((int)($role ?? -1)) {
                         <dd class="col-sm-8"><?= htmlspecialchars($mail ?? '') ?></dd>
 
                         <dt class="col-sm-4 text-muted fw-normal">Rôle</dt>
-                        <dd class="col-sm-8 mb-0"><?= htmlspecialchars($roleLabel?? '') ?></dd>
+                        <dd class="col-sm-8 mb-0"><?= htmlspecialchars($roleLabel ?? '') ?></dd>
 
                         <dt class="col-sm-4 text-muted fw-normal">N°Adhérent</dt>
+                        <!-- Le numéro de l'adhérent doit s'afficher s'il existe, même logique que dans le tableau admin, rouge si inactif, vert sinon-->
                         <dd class="col-sm-8 mb-0"></dd>
                     </dl>
                 </div>
@@ -87,6 +88,7 @@ $roleLabel = match((int)($role ?? -1)) {
                     </form>
                 </div>
             </div>
+            <!-- TODO Modifier l'email-->
 
             <!-- Modifier le mot de passe -->
             <div class="card">
@@ -94,25 +96,24 @@ $roleLabel = match((int)($role ?? -1)) {
                     <span class="fw-semibold small">Modifier le mot de passe</span>
                 </div>
                 <div class="card-body">
-                    <form method="POST" action="<?= $actual_link ?>parametres/profil"
-                          id="passwordForm">
+                    <form method="POST" action="<?= $actual_link ?>parametres/profil" id="passwordForm">
                         <input type="hidden" name="action" value="password">
                         <div class="mb-3">
                             <label for="current_password" class="form-label">Mot de passe actuel</label>
                             <!-- Vérifié côté serveur via password_verify() avant d'accepter le changement -->
-                            <input type="password" class="form-control" id="current_password"
-                                   name="current_password" required>
+                            <input type="password" class="form-control" id="current_password" name="current_password"
+                                required>
                         </div>
                         <div class="row g-3 mb-3">
                             <div class="col-6">
                                 <label for="new_password" class="form-label">Nouveau</label>
-                                <input type="password" class="form-control" id="new_password"
-                                       name="new_password" required>
+                                <input type="password" class="form-control" id="new_password" name="new_password"
+                                    required>
                             </div>
                             <div class="col-6">
                                 <label for="confirm_password" class="form-label">Confirmer</label>
                                 <input type="password" class="form-control" id="confirm_password"
-                                       name="confirm_password" required>
+                                    name="confirm_password" required>
                             </div>
                         </div>
                         <div id="pwdMismatch" class="text-danger small mb-3" style="display:none">
