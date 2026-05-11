@@ -3,6 +3,7 @@
 namespace controleur;
 
 use modele\DAO\journalDAO\SectionDAO;
+use modele\journal\Category;
 use vue\base\Ajax as Ajax;
 use app\util\Request as req;
 use app\util\Guard;
@@ -124,6 +125,11 @@ class MainAjax extends Ajax {
 		$category = req::post('category');
 		$notes = req::post('notes');
 
+			if(!is_numeric($category)){  ////création d'une category si on ne reçoit pas un id
+				$newCategory = new Category($category);
+				$newCategory->addCategory();
+				$category= $newCategory->getId();
+			}
 
 			$section = new Section($title, $notes, $date, SessionLogin::getUserId()); //création de la rubrique
 
@@ -149,6 +155,12 @@ class MainAjax extends Ajax {
 			$category = req::post('category');
 			$notes = req::post('notes');
 			$id = req::post('id');
+
+			if(!is_numeric($category)){   //création d'une category si on ne reçoit pas un id
+				$newCategory = new Category($category);
+				$newCategory->addCategory();
+				$category= $newCategory->getId();
+			}
 
 			$section = new Section($title, $notes, $date, SessionLogin::getUserId());
 			$section->setId($id);
