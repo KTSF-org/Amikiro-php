@@ -50,7 +50,10 @@ $roleLabel = match((int)($role ?? -1)) {
                         <dd class="col-sm-8"><?= htmlspecialchars($mail ?? '') ?></dd>
 
                         <dt class="col-sm-4 text-muted fw-normal">Rôle</dt>
-                        <dd class="col-sm-8 mb-0"><?= $roleLabel ?></dd>
+                        <dd class="col-sm-8 mb-0"><?= htmlspecialchars($roleLabel?? '') ?></dd>
+
+                        <dt class="col-sm-4 text-muted fw-normal">N°Adhérent</dt>
+                        <dd class="col-sm-8 mb-0"></dd>
                     </dl>
                 </div>
             </div>

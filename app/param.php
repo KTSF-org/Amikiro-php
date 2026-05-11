@@ -29,10 +29,10 @@ const ROLE_NATURALISTE = 2;
 const ROLE_ADMIN      = 3;
 
 // PHPMailer — Postfix sur l'hôte (host.docker.internal:25, pas d'auth)
-const MAIL_HOST      = 'postfix';
-const MAIL_PORT      = 25;
-const MAIL_USER      = '';
-const MAIL_PASS      = '';
-const MAIL_FROM      = 'noreply@amikiro.fr';
+const MAIL_HOST      = 'smtp.gmail.com';
+const MAIL_PORT      = 587;
+const MAIL_USER      = 'opuutanihiarii@gmail.com';
+const MAIL_PASS      = 'aakw yvnv hvrg luzp ';
+const MAIL_FROM      = 'opuutanihiarii@gmail.com';
 const MAIL_FROM_NAME = 'Amikiro';
 
