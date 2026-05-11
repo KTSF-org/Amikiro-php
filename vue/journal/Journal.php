@@ -11,7 +11,7 @@
     <h1 class="m-2"><?=($mesFiches) ? 'Mes fiches' : 'Journal'?></h1>
 
     <div class="col m-2">
-        <div class="container">
+        <div class="container overflow-auto">
             <div class="row fw-bold">
                 <div class="col-1 text-center border">
                     #
