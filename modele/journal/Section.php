@@ -13,7 +13,7 @@ class Section{
 	public function __construct(
 		private string $title='',
 		private string $content='',
-		private string $creationDate='',
+		private string $eventDate='',
 		private string $modifDate='',
 		private int $idUser=0,
 		private int $idLogs=1,
@@ -77,8 +77,8 @@ class Section{
 	public function getContent(): string {
 		return $this->content;
 	}
-	public function getCreationDate(): string {
-		return $this->creationDate;
+	public function getEventDate(): string {
+		return $this->eventDate;
 	}
 	public function getModifDate(): string {
 		return $this->modifDate;
@@ -103,8 +103,8 @@ class Section{
 	public function setContent($content): void {
 		$this->content = $content;
 	}
-	public function setCreationDate($creationDate): void {
-		$this->creationDate = $creationDate;
+	public function setEventDate($eventDate): void {
+		$this->eventDate = $eventDate;
 	}
 	public function setModifDate($modifDate): void {
 		$this->modifDate = $modifDate;

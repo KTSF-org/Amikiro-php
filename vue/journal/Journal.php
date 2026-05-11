@@ -23,7 +23,7 @@
                     Titre
                 </div>
                 <div class="col border">
-                    DATE / HEURE
+                    Dernière modification
                 </div>
                 <div class="col-2 border">
                     Auteur
@@ -44,7 +44,7 @@
                         <?= $fiche->getTitle() ?>
                     </div>
                     <div class="col border">
-                        <?= $fiche->getCreationDate() ?>
+                        <?= $fiche->getModifDate() ?>
                     </div>
                     <div class="col-2 border">
                         <?= $usersAsso[$fiche->getIdUser()] ?>
