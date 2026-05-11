@@ -27,16 +27,19 @@ function memberNumCell(object $u): string
     return '<span class="badge bg-success-subtle text-success border border-success-subtle">' . htmlspecialchars($num) . '</span>';
 }
 
-function subscriptionCell(int $userId, array $activeByUser): string
+function subscriptionCell(int $userId, int $role, array $activeByUser): string
 {
     if (!isset($activeByUser[$userId])) {
-        return '<span class="text-muted" title="Aucune adhésion active">✗</span>';
+        return '<span class="text-muted" title="Aucun accès actif">✗</span>';
+    }
+    if ($role === ROLE_INVITE) {
+        return '<span class="text-warning" title="Accès temporaire (invité)">⏱</span>';
     }
     return '<span class="text-success" title="Adhésion active">✓</span>';
 }
 ?>
 
-<div class="container py-4">
+<div class="container py-4" id="usersApp" data-base-url="<?= $actual_link ?>">
 
     <!-- En-tête -->
     <div class="d-flex justify-content-between align-items-center mb-4">
@@ -145,7 +148,7 @@ function subscriptionCell(int $userId, array $activeByUser): string
                                 </td>
                                 <td><?= roleBadge((int) $u->codeRole) ?></td>
                                 <td><?= memberNumCell($u) ?></td>
-                                <td class="text-center"><?= subscriptionCell((int) $u->id, $activeByUser) ?></td>
+                                <td class="text-center"><?= subscriptionCell((int) $u->id, (int) $u->codeRole, $activeByUser) ?></td>
                                 <td class="text-center text-muted small"><?= (int) $u->countConnect ?></td>
                                 <td class="text-end">
                                     <a href="<?= $actual_link ?>parametres/utilisateurs?page=edit&id=<?= (int) $u->id ?>"
@@ -208,67 +211,3 @@ function subscriptionCell(int $userId, array $activeByUser): string
         </div>
     </div>
 </div>
-
-<script>
-    $(document).ready(function () {
-
-        // --- Recherche AJAX ---
-        $('#searchUser').on('input', function () {
-            const term = $(this).val();
-
-            if (term.length < 2) {
-                $('#ajaxResults, #ajaxNoResult').hide();
-                return;
-            }
-
-            $('#ajaxLoader').show();
-            $('#ajaxResults, #ajaxNoResult').hide();
-
-            const request = new AjaxRequest(
-                '<?= $actual_link ?>ajax?findUsers',
-                'POST',
-                { name: term }
-            );
-
-            request.send(
-                (response) => {
-                    $('#ajaxLoader').hide();
-                    if (response && response.length > 0) {
-                        let html = '<ul class="list-group list-group-flush">';
-                        response.forEach(u => {
-                            html += `<li class="list-group-item d-flex justify-content-between align-items-center py-2">
-                            <div>
-                                <span class="fw-semibold">${u.surname} ${u.name}</span>
-                                <small class="text-muted ms-2">${u.mail}</small>
-                            </div>
-                            <div class="d-flex gap-1">
-                                <a href="<?= $actual_link ?>parametres/utilisateurs?page=edit&id=${u.id}"
-                                   class="btn btn-sm btn-outline-primary">Éditer</a>
-                                <button type="button" class="btn btn-sm btn-outline-danger"
-                                        data-bs-toggle="modal" data-bs-target="#deleteModal"
-                                        data-id="${u.id}"
-                                        data-name="${u.name} ${u.surname}">
-                                    Supprimer
-                                </button>
-                            </div>
-                        </li>`;
-                        });
-                        html += '</ul>';
-                        $('#ajaxResults').html(html).show();
-                    } else {
-                        $('#ajaxNoResult').show();
-                    }
-                },
-                () => { $('#ajaxLoader').hide(); }
-            );
-        });
-
-        // --- Modal suppression ---
-        $('#deleteModal').on('show.bs.modal', function (e) {
-            const btn = e.relatedTarget;
-            $('#deleteModalId').val(btn.dataset.id);
-            $('#deleteModalName').text(btn.dataset.name);
-        });
-
-    });
-</script>

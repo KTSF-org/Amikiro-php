@@ -230,40 +230,24 @@ class UserDAO extends Database
 		);
 	}
 
-	public function getLastAdherentNumber()
-	{
-		// On cherche le numéro de l'adhérent ayant l'ID le plus élevé
-		// ou on trie par le numéro lui-même s'il est bien formaté.
-		$sql = "SELECT memberNum
-                FROM User
-                WHERE memberNum IS NOT NULL
-                ORDER BY id DESC
-                LIMIT 1";
+    public function generateNextMemberNum(): string {
+        $year = (int)date('Y');
+        $row  = $this->sendSQL(
+            "SELECT memberNum FROM User
+             WHERE memberNum LIKE ?
+             ORDER BY CAST(SUBSTRING_INDEX(memberNum, '-', -1) AS UNSIGNED) DESC
+             LIMIT 1",
+            ["AMI-{$year}-%"]
+        );
 
-		$stmt = $this->getPdo()->prepare($sql);
-		$result = $stmt->fetch(PDO::FETCH_ASSOC);
-		return $result ? $result['numero_adherent'] : null;
-	}
-
-	/**
-     * Génère le prochain numéro séquentiel
-     */
-    public function generateNextNumber() {
-        $lastNumber = $this->getLastAdherentNumber();
-
-        if (!$lastNumber) {
-            return "AMI-0001";
+        if (!$row) {
+            return "AMI-{$year}-0001";
         }
 
-        // On extrait le nombre après le tiret
-        // AMI-0042 -> 0042
-        $parts = explode('-', $lastNumber);
-        $numericPart = (int)end($parts);
+        $parts = explode('-', $row->memberNum); // ['AMI', '2026', '0042']
+        $next  = (int)end($parts) + 1;
 
-        $nextNumericPart = $numericPart + 1;
-
-        // On reformate avec le préfixe et les 4 chiffres (ex: 0043)
-        return 'AMI-' . str_pad($nextNumericPart, 4, '0', STR_PAD_LEFT);
+        return "AMI-{$year}-" . str_pad($next, 4, '0', STR_PAD_LEFT);
     }
 
 	public function findAll(): array
