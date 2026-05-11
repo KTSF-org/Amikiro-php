@@ -44,8 +44,8 @@ class SectionColony {
             $section = $sectionDAO->find($sectionId);
         }
         $sectionId = (int)Request::get('id');
-        var_dump($sectionId);
-        var_dump($modif);
+        // var_dump($sectionId);
+        // var_dump($modif);
 
         $catSection = $sectionCol->findColonySectionByIdSection($sectionId);
 

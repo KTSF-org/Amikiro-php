@@ -12,6 +12,7 @@ use modele\DAO\ConfigDAO;
 use modele\journal\SectionColony as SectionColony;
 use modele\journal\Section as Section;
 use app\util\SessionLogin as SessionLogin;
+use DateTime;
 /**
  *	Classe chargée depuis le routing : route/routing.php
  *	==> $route->add('/ajax', 'controleur\MainAjax');
@@ -47,7 +48,8 @@ class MainAjax extends Ajax {
 			'viewerCount' => 'getViewerCount',
 			'addSectionColony' => 'addSectionCol',
 			'updateSectionColony' => 'updateSectionCol',
-			'addCategory' => 'addCategory'
+			'addCategory' => 'addCategory',
+			'getCategories' => 'getCategories'
 		];
 	}
 
@@ -132,7 +134,11 @@ class MainAjax extends Ajax {
 				$category= $newCategory->getId();
 			}
 
-			$section = new Section($title, $notes, $date, SessionLogin::getUserId()); //création de la rubrique
+			$now = new DateTime();
+			$dateModif= $now->format("Y-m-d H:i:s");
+
+			$section = new Section($title, $notes, $date, $dateModif,SessionLogin::getUserId()); //création de la rubrique
+
 
 			if ($section->addSection()) {  //création de la rubrique en bdd
 				$sectionColony = new SectionColony($section->getId(), (int) $category); //création de la section Colony
@@ -163,7 +169,9 @@ class MainAjax extends Ajax {
 				$category= $newCategory->getId();
 			}
 
-			$section = new Section($title, $notes, $date, SessionLogin::getUserId());
+			$now = new DateTime();
+			$dateModif= $now->format("Y-m-d H:i:s");
+			$section = new Section($title, $notes, $date,$dateModif, SessionLogin::getUserId());
 			$section->setId($id);
 			$sectionDAO = new SectionDAO();
 
@@ -191,6 +199,22 @@ class MainAjax extends Ajax {
 		}else{
 			return "No success";
 		}
+	}
+
+	protected function getCategories(): array //affichage categories dans le datatable
+	{
+    	$cat = new \modele\DAO\journalDAO\CategoryDAO();
+    	$allCategories = $cat->getAllCategories();
+    	$data = [];
+
+    	foreach($allCategories as $category){
+        	$data[] = [
+            	'id'   => $category->getId(),
+            	'name' => $category->getName(),
+        	];
+    	}
+
+    	return $data;
 	}
 
 }
