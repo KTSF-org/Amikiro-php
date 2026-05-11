@@ -70,7 +70,7 @@ class Journal
             $fiche = $sectionDAO -> find($ficheId);
 
             // Vérification si l'utilisateur est bien le créateur de la fiche avant de supprimer
-            if ($fiche && $fiche->getIdUser() === $idUserSession){
+            if ($fiche && $fiche->getIdUser() === $idUserSession || $isAdmin){
                 $fiche->deleteSection();
                 header("Location: " . url::getBaseUrl() . "journal");
                 exit();

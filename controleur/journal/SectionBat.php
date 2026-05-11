@@ -5,6 +5,7 @@ namespace controleur\journal;
 use app\util\Request as req;
 use app\util\BaseURL as url;
 
+use DateTime;
 use modele\DAO\journalDAO\BatDAO;
 use modele\DAO\journalDAO\SectionDAO;
 use modele\DAO\journalDAO\SectionSpecimenDAO;
@@ -22,6 +23,7 @@ class SectionBat
 
     public function __construct()
     {
+        date_default_timezone_set("Europe/Paris");
 
         $urlAdd = url::getBaseUrl() . "sectionBatAddition";
         $urlModif = url::getBaseUrl() . "sectionBatAddition?bat=mod";
@@ -68,11 +70,13 @@ class SectionBat
             req::has("sectionTitle") &&
             req::has("sectionObservation")
         ) {
+            $now = new DateTime();
             // Création de l'objet Section
             $section = new Section(
                 req::post("sectionTitle"),
                 req::post("sectionObservation"),
                 req::post("date"),
+                $now->format("Y-m-d H:i:s"),
                 SessionLogin::getUserId()
             );
 
