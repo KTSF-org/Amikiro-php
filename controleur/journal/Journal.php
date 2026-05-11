@@ -29,8 +29,12 @@ class Journal
         $users = $userDAO->findAll();
         $idUserSession = SessionLogin::getUserId();
         $sectionColonyDAO = new SectionColonyDAO();
+        $isAdmin = SessionLogin::getRole() == ROLE_ADMIN;
+        $mesFiches = req::get("mesFiches") == "true";
 
-        if (req::get("mesFiches") == "true") {
+
+
+        if ($mesFiches) {
             $listFiches = $sectionDAO->findAllByAuth($idUserSession);
         }
         else {
@@ -66,7 +70,7 @@ class Journal
             $fiche = $sectionDAO -> find($ficheId);
 
             // Vérification si l'utilisateur est bien le créateur de la fiche avant de supprimer
-            if ($fiche && $fiche->getIdUser() === $idUserSession){
+            if ($fiche && $fiche->getIdUser() === $idUserSession || $isAdmin){
                 $fiche->deleteSection();
                 header("Location: " . url::getBaseUrl() . "journal");
                 exit();
@@ -86,6 +90,8 @@ class Journal
                 'idUserSession' => $idUserSession,
                 'urlDelete' => $urlDelete,
                 'urlSectionRead'=> $urlSectionRead,
+                'isAdmin' => $isAdmin,
+                'mesFiches' => $mesFiches,
             ]
         );
 

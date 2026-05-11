@@ -16,6 +16,7 @@ $userRole = \app\util\SessionLogin::getRole();
     <title><?= $title ?></title>
     <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"> -->
     <link href="asset/lib/bootstrap/css/bootstrap.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="<?= ASSET ?>/css/popup.css">
     <link rel="stylesheet" href="<?= ASSET ?>/css/main.css">
@@ -26,6 +27,7 @@ $userRole = \app\util\SessionLogin::getRole();
     <script src="<?= ASSET ?>/js/main.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" defer></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script src="<?= ASSET ?>/js/<?= $_SESSION['CUSTOM_JS'] ?>" defer></script>
     <?= $customJS ?>
 </head>
@@ -55,7 +57,7 @@ $userRole = \app\util\SessionLogin::getRole();
                                 <li><a class="dropdown-item" href="<?= $actual_link ?>journal">Consulter le journal</a></li>
 
                                 <?php if ($userRole >= ROLE_NATURALISTE): ?>
-
+                                    <li><a class="dropdown-item" href="<?= $actual_link ?>journal?mesFiches=true"> Mes fiches</a></li>
                                 <?php endif; ?>
                             </ul>
                         </li>
