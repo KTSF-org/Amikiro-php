@@ -20,16 +20,22 @@ class Journal
         Guard::requireRole(ROLE_ADHERENT);
 
         $urlEditionBat = url::getBaseUrl() . "sectionBat?edition=true";
-        $urlEditionColonie = url::getBaseUrl() . "ouioui";
+        $urlEditionColonie = url::getBaseUrl() . "sectionColony?page=modification";
         $urlDelete = url::getBaseUrl() . "/journal";
         $urlSectionRead = url::getBaseUrl() . "/sectionRead";
 
         $sectionDAO = new SectionDAO();
-        $listFiches = $sectionDAO->findAll();
         $userDAO = new UserDAO();
         $users = $userDAO->findAll();
         $idUserSession = SessionLogin::getUserId();
         $sectionColonyDAO = new SectionColonyDAO();
+
+        if (req::get("mesFiches") == "true") {
+            $listFiches = $sectionDAO->findAllByAuth($idUserSession);
+        }
+        else {
+            $listFiches = $sectionDAO->findAll();
+        }
 
         // Tableau associatif pour récuperér les noms et prénoms des users
         // [id_users => "Prénom Nom"]
