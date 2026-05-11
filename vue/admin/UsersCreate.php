@@ -46,7 +46,8 @@
                         <span class="fw-semibold small">Rôle</span>
                     </div>
                     <div class="card-body">
-                        <select class="form-select" id="codeRole" name="codeRole">
+                        <select class="form-select" id="codeRole" name="codeRole"
+                            data-role-invite="<?= ROLE_INVITE ?>" data-role-adherent="<?= ROLE_ADHERENT ?>">
                             <option value="<?= ROLE_INVITE ?>">Invité</option>
                             <option value="<?= ROLE_ADHERENT ?>" selected>Adhérent</option>
                             <option value="<?= ROLE_NATURALISTE ?>">Naturaliste</option>
@@ -107,28 +108,3 @@
         </div>
     </div>
 </div>
-
-<script>
-(function () {
-    const select      = document.getElementById('codeRole');
-    const blockInvite = document.getElementById('accessInvite');
-    const blockDates  = document.getElementById('accessDates');
-    const label       = document.getElementById('accessDatesLabel');
-    const INVITE      = '<?= ROLE_INVITE ?>';
-    const ADHERENT    = '<?= ROLE_ADHERENT ?>';
-
-    function toggle() {
-        const role = select.value;
-        blockInvite.style.display = (role === INVITE) ? '' : 'none';
-        blockDates.style.display  = (role !== INVITE) ? '' : 'none';
-        // "obligatoire" pour adhérent (contrôleur valide côté serveur), "informatif" pour naturaliste
-        if (role === ADHERENT) {
-            label.innerHTML = 'Adhésion <span class="fw-normal text-white-50 ms-1">obligatoire</span>';
-        } else {
-            label.innerHTML = 'Adhésion <span class="fw-normal text-white-50 ms-1">informatif</span>';
-        }
-    }
-    select.addEventListener('change', toggle);
-    toggle(); // initialisation au chargement (défaut : Adhérent)
-})();
-</script>

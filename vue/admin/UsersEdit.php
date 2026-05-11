@@ -59,12 +59,11 @@
                                 <label for="password" class="form-label">Nouveau mot de passe</label>
                                 <!-- Champ vide = mot de passe inchangé (contrôleur ignore si vide) -->
                                 <input type="password" class="form-control" id="password" name="password"
-                                       oninput="checkPasswords()" placeholder="Laisser vide pour conserver">
+                                       placeholder="Laisser vide pour conserver">
                             </div>
                             <div class="col-6">
                                 <label for="passwordConfirm" class="form-label">Confirmer</label>
-                                <input type="password" class="form-control" id="passwordConfirm"
-                                       oninput="checkPasswords()">
+                                <input type="password" class="form-control" id="passwordConfirm">
                             </div>
                         </div>
                         <div id="passwordMismatch" class="text-danger small mb-3" style="display:none">
@@ -237,16 +236,3 @@
         </div>
     </div>
 </div>
-
-<script>
-function checkPasswords() {
-    const pwd      = document.getElementById('password').value;
-    const confirm  = document.getElementById('passwordConfirm').value;
-    const mismatch = document.getElementById('passwordMismatch');
-    const submit   = document.getElementById('submitIdentity');
-    // Ne bloque que si le champ pwd est rempli — un champ vide = pas de changement de mot de passe
-    const differs  = pwd.length > 0 && pwd !== confirm;
-    mismatch.style.display = differs ? '' : 'none';
-    submit.disabled = differs;
-}
-</script>
