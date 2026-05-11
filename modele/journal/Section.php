@@ -14,6 +14,7 @@ class Section{
 		private string $title='',
 		private string $content='',
 		private string $creationDate='',
+		private string $modifDate='',
 		private int $idUser=0,
 		private int $idLogs=1,
 	) {
@@ -79,6 +80,9 @@ class Section{
 	public function getCreationDate(): string {
 		return $this->creationDate;
 	}
+	public function getModifDate(): string {
+		return $this->modifDate;
+	}
 	public function getIdUser(): int {
 		return $this->idUser;
 	}
@@ -101,6 +105,9 @@ class Section{
 	}
 	public function setCreationDate($creationDate): void {
 		$this->creationDate = $creationDate;
+	}
+	public function setModifDate($modifDate): void {
+		$this->modifDate = $modifDate;
 	}
 	public function setIdUser($idUser): void {
 		$this->idUser = $idUser;
