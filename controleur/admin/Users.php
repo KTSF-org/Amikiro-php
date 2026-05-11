@@ -23,6 +23,8 @@ use modele\DAO\ConfigDAO;
  */
 class Users {
 
+    private const PER_PAGE = 20;
+
     public function __construct() {
         Guard::requireRole(ROLE_ADMIN);
 
@@ -33,40 +35,27 @@ class Users {
         };
     }
 
-    /**
-     * Affiche la liste de tous les comptes.
-     * Gère aussi la suppression (POST action=delete).
-     * Un admin ne peut pas supprimer son propre compte.
-     */
-    private const PER_PAGE = 20;
+    // -------------------------------------------------------------------------
+    // INDEX
+    // -------------------------------------------------------------------------
 
+    /**
+     * Affiche la liste paginée des comptes.
+     * Les actions POST (suppression, config) sont déléguées à leurs méthodes dédiées
+     * pour ne pas mélanger trois responsabilités dans une seule méthode.
+     */
     private function index(): void {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            match ($_POST['action'] ?? '') {
+                'delete'     => $this->delete(),
+                'saveConfig' => $this->saveConfig(),
+                default      => null,
+            };
+        }
+
         $userDAO         = new UserDAO();
         $subscriptionDAO = new SubscriptionDAO();
         $configDAO       = new ConfigDAO();
-
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $action = $_POST['action'] ?? '';
-
-            if ($action === 'delete') {
-                $id        = (int)($_POST['id'] ?? 0);
-                $currentId = SessionLogin::getUserId();
-                if ($id > 0 && $id !== $currentId) {
-                    // Nettoie les abonnements avant la suppression du compte
-                    $subscriptionDAO->deleteByUser($id);
-                    $userDAO->getUsersById($id)->deleteUser();
-                }
-                header('Location: ' . BaseURL::getBaseUrl() . 'parametres/utilisateurs');
-                exit;
-            }
-
-            if ($action === 'saveConfig') {
-                $days = max(1, (int)($_POST['guestDefaultAccessDays'] ?? 7));
-                $configDAO->updateConfig(['guestDefaultAccessDays' => $days]);
-                header('Location: ' . BaseURL::getBaseUrl() . 'parametres/utilisateurs');
-                exit;
-            }
-        }
 
         $roleFilter  = isset($_GET['role']) && $_GET['role'] !== '' ? (int)$_GET['role'] : -1;
         $currentPage = max(1, (int)($_GET['p'] ?? 1));
@@ -84,6 +73,7 @@ class Users {
         $activeByUser = $subscriptionDAO->getActiveByUserIds($userIds);
 
         Vue::setTitle('Gestion des utilisateurs');
+        Vue::addJS([ASSET . '/js/users.js']);
         Vue::render('admin/Users', [
             'users'                  => $users,
             'currentId'              => $currentId,
@@ -96,6 +86,39 @@ class Users {
     }
 
     /**
+     * Supprime un compte utilisateur et ses abonnements associés.
+     * Un admin ne peut pas supprimer son propre compte.
+     */
+    private function delete(): void {
+        $id        = (int)($_POST['id'] ?? 0);
+        $currentId = SessionLogin::getUserId();
+
+        if ($id > 0 && $id !== $currentId) {
+            // Nettoie les abonnements avant la suppression du compte (contrainte FK)
+            (new SubscriptionDAO())->deleteByUser($id);
+            (new UserDAO())->getUsersById($id)->deleteUser();
+        }
+
+        header('Location: ' . BaseURL::getBaseUrl() . 'parametres/utilisateurs');
+        exit;
+    }
+
+    /**
+     * Sauvegarde la durée d'accès invité par défaut depuis la ligne de config globale.
+     */
+    private function saveConfig(): void {
+        $days = max(1, (int)($_POST['guestDefaultAccessDays'] ?? 7));
+        (new ConfigDAO())->updateConfig(['guestDefaultAccessDays' => $days]);
+
+        header('Location: ' . BaseURL::getBaseUrl() . 'parametres/utilisateurs');
+        exit;
+    }
+
+    // -------------------------------------------------------------------------
+    // CREATE
+    // -------------------------------------------------------------------------
+
+    /**
      * Crée un nouveau compte utilisateur.
      *
      * Le mot de passe (8 caractères aléatoires) et le numéro adhérent
@@ -103,7 +126,6 @@ class Users {
      * - ROLE_INVITE     : adhésion auto-calculée (today + guestDefaultAccessDays).
      * - ROLE_ADHERENT   : période d'adhésion obligatoire.
      * - ROLE_NATURALISTE: période d'adhésion facultative, purement informative.
-     * Un email de bienvenue avec les identifiants est envoyé après création.
      */
     private function create(): void {
         $error     = null;
@@ -116,11 +138,6 @@ class Users {
             $surname  = Request::post('surname');
             $mail     = Request::post('mail');
             $codeRole = (int)($_POST['codeRole'] ?? ROLE_ADHERENT);
-            // Seul ROLE_ADHERENT reçoit un numéro à la création.
-            // ROLE_NATURALISTE n'en a pas par défaut ; il peut en hériter s'il est promu depuis adhérent.
-            $memberNum = ($codeRole === ROLE_ADHERENT)
-                ? 'AMI-' . strtoupper(bin2hex(random_bytes(4)))
-                : '';
             $chars    = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
             $password = implode('', array_map(fn() => $chars[random_int(0, strlen($chars) - 1)], range(1, 8)));
 
@@ -151,15 +168,16 @@ class Users {
             } elseif ($hasDates && $endDate <= $startDate) {
                 $error = 'La date de fin doit être postérieure à la date de début.';
             } else {
+                $memberNum = ($codeRole === ROLE_ADHERENT) ? $userDAO->generateNextMemberNum() : '';
                 // 'tmp' est un placeholder : setPassword() ci-dessous l'écrase immédiatement avec le hash bcrypt.
                 $user = new User($codeRole, $mail, 0, 'tmp', $name, $surname, 0, $memberNum);
                 $user->setPassword($password);
+
                 if ($userDAO->create($user)) {
                     if ($hasDates) {
-                        $subscriptionDAO = new SubscriptionDAO();
-                        $subscriptionDAO->createForUser($user->getId(), $startDate, $endDate);
+                        (new SubscriptionDAO())->createForUser($user->getId(), $startDate, $endDate);
                     }
-                    Mailer::sendWelcome($mail, $name, $password, $memberNum);
+                    $this->notifyNewAccount($mail, $name, $password, $memberNum);
                     header('Location: ' . BaseURL::getBaseUrl() . 'parametres/utilisateurs');
                     exit;
                 }
@@ -168,6 +186,7 @@ class Users {
         }
 
         Vue::setTitle('Créer un compte');
+        Vue::addJS([ASSET . '/js/users-create.js']);
         Vue::render('admin/UsersCreate', [
             'error'                  => $error,
             'guestDefaultAccessDays' => $guestDefaultAccessDays,
@@ -175,15 +194,28 @@ class Users {
     }
 
     /**
+     * Envoie l'email de bienvenue avec les identifiants du nouveau compte.
+     * Séparé de create() car l'envoi de notification est une action applicative distincte
+     * de la persistance du compte — les deux peuvent évoluer indépendamment.
+     */
+    private function notifyNewAccount(string $mail, string $name, string $password, string $memberNum): void {
+        Mailer::sendWelcome($mail, $name, $password, $memberNum);
+    }
+
+    // -------------------------------------------------------------------------
+    // EDIT
+    // -------------------------------------------------------------------------
+
+    /**
      * Modifie un compte existant.
      *
      * Deux formulaires distincts sur la même page, identifiés par POST action :
-     *   - identity => mise à jour des informations du compte
-     *   - subscription => ajout d'une nouvelle période d'accès
+     *   - identity     → mise à jour des informations du compte
+     *   - subscription → ajout d'une nouvelle période d'accès
      *
      * Un admin ne peut pas modifier son propre rôle.
      * L'ajout d'une période d'accès à un ROLE_INVITE le promeut automatiquement
-     * en ROLE_ADHERENT.
+     * en ROLE_ADHERENT si la checkbox de promotion est cochée.
      */
     private function edit(): void {
         $id = (int)($_GET['id'] ?? 0);
@@ -225,7 +257,7 @@ class Users {
 
                     if ($subscriptionSuccess && $isPromotion) {
                         if (empty($user->getMemberNum())) {
-                            $user->setMemberNum('AMI-' . strtoupper(bin2hex(random_bytes(4))));
+                            $user->setMemberNum($userDAO->generateNextMemberNum());
                         }
                         $user->setCodeRole(ROLE_ADHERENT);
                         $userDAO->update($user);
@@ -259,9 +291,8 @@ class Users {
                 } elseif ($mailTaken) {
                     $error = 'Cette adresse email est déjà utilisée par un autre compte.';
                 } else {
-                    // Génère un memberNum si l'utilisateur devient adhérent sans en avoir un
                     if ($codeRole === ROLE_ADHERENT && empty($memberNum)) {
-                        $memberNum = 'AMI-' . strtoupper(bin2hex(random_bytes(4)));
+                        $memberNum = $userDAO->generateNextMemberNum();
                     }
 
                     $user->setName($name)
@@ -288,6 +319,7 @@ class Users {
         $subscriptionHistory = $subscriptionDAO->getAllByUser($id);
 
         Vue::setTitle('Modifier un compte');
+        Vue::addJS([ASSET . '/js/users-edit.js']);
         Vue::render('admin/UsersEdit', [
             'user'                => $user,
             'error'               => $error,

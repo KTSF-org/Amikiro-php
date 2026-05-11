@@ -40,6 +40,8 @@ class Routing {
 
 		// Journal et ses sous-pages (édition des données métier)
 		$route->add('/journal', 'controleur\journal\Journal');
+		$route->add('/sectionBatAddition', 'controleur\journal\SectionBatAddition');
+
 		// $route->add('/journal/categorie', 'controleur\journal\Categorie');
 
 		// Déconnexion — détruit la session et redirige vers /login
@@ -47,7 +49,7 @@ class Routing {
 
 		$route->add('/sectionBat', 'controleur\journal\SectionBat');
 		$route->add('/sectionColony', 'controleur\journal\SectionColony');
-
+		$route->add('/sectionRead', 'controleur\journal\SectionRead');
 		// Paramètres utilisateur
 		$route->add('/parametres/profil', 'controleur\Profil');
 
@@ -60,13 +62,13 @@ class Routing {
 
 		$route->add('/confidentialite', 'controleur\legale\Confidentialite');
 		$route->add('/mentionslegales', 'controleur\legale\MentionsLegales');
-		
+
 		$route->add('/captcha', 'controleur\util\Captcha');
 
 
 		//Contrôleur 404 par défaut :
 		$route->set404('controleur\common\NotFound');
-		
+
 		if (self::$debug) $route->help();
 		$route->run();
 	}

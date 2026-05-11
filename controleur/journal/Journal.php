@@ -8,6 +8,9 @@ use vue\base\MainTemplate as Vue;
 use app\util\Guard;
 use modele\DAO\journalDAO\SectionDAO;
 use modele\DAO\journalDAO\SectionSpecimenDAO;
+use app\util\BaseURL as url;
+use app\util\SessionLogin;
+use app\util\Request as req;
 
 class Journal
 {
@@ -16,13 +19,27 @@ class Journal
     {
         Guard::requireRole(ROLE_ADHERENT);
 
-        $sectionDAO = new SectionDAO();
-        $listFiches = $sectionDAO->findAll();
+        $urlEditionBat = url::getBaseUrl() . "sectionBat?edition=true";
+        $urlEditionColonie = url::getBaseUrl() . "sectionColony?page=modification";
+        $urlDelete = url::getBaseUrl() . "/journal";
+        $urlSectionRead = url::getBaseUrl() . "/sectionRead";
 
+        $sectionDAO = new SectionDAO();
         $userDAO = new UserDAO();
         $users = $userDAO->findAll();
-
+        $idUserSession = SessionLogin::getUserId();
         $sectionColonyDAO = new SectionColonyDAO();
+        $isAdmin = SessionLogin::getRole() == ROLE_ADMIN;
+        $mesFiches = req::get("mesFiches") == "true";
+
+
+
+        if ($mesFiches) {
+            $listFiches = $sectionDAO->findAllByAuth($idUserSession);
+        }
+        else {
+            $listFiches = $sectionDAO->findAll();
+        }
 
         // Tableau associatif pour récuperér les noms et prénoms des users
         // [id_users => "Prénom Nom"]
@@ -48,13 +65,33 @@ class Journal
         }
 
 
+        if (req::get("delete") == true){
+            $ficheId = req::get("id");
+            $fiche = $sectionDAO -> find($ficheId);
+
+            // Vérification si l'utilisateur est bien le créateur de la fiche avant de supprimer
+            if ($fiche && $fiche->getIdUser() === $idUserSession){
+                $fiche->deleteSection();
+                header("Location: " . url::getBaseUrl() . "journal");
+                exit();
+            }
+        }
+
+
         Vue::setTitle('Journal');
         Vue::render(
             'journal/Journal',
             [
                 'listFiches' => $listFiches,
                 'usersAsso' => $usersAsso,
-                'typeAsso' => $typeAsso
+                'typeAsso' => $typeAsso,
+                'urlEditionBat' => $urlEditionBat,
+                'urlEditionColonie' => $urlEditionColonie,
+                'idUserSession' => $idUserSession,
+                'urlDelete' => $urlDelete,
+                'urlSectionRead'=> $urlSectionRead,
+                'isAdmin' => $isAdmin,
+                'mesFiches' => $mesFiches,
             ]
         );
 

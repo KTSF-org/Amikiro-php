@@ -78,9 +78,20 @@ class SectionDAO extends Database {
             $id = $rowData[$this->primaryKey];
             unset($rowData[$this->primaryKey], $elem);
             $section = new Section(...$rowData);
-            $section->setId($id);  
+            $section->setId($id);
             array_push($allSection, $section);
         }
         return $allSection;
+    }
+
+	public function findAllByAuth($idUser): array {
+        $allSection = $this->findAll();
+		$userSection = [];
+		foreach($allSection as $sec) {
+			if ($sec->getIdUser() == $idUser) {
+				array_push($userSection, $sec);
+			}
+		}
+		return $userSection;
     }
 }

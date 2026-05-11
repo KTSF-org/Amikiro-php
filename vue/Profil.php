@@ -104,12 +104,12 @@ $roleLabel = match((int)($role ?? -1)) {
                             <div class="col-6">
                                 <label for="new_password" class="form-label">Nouveau</label>
                                 <input type="password" class="form-control" id="new_password"
-                                       name="new_password" required oninput="checkPwd()">
+                                       name="new_password" required>
                             </div>
                             <div class="col-6">
                                 <label for="confirm_password" class="form-label">Confirmer</label>
                                 <input type="password" class="form-control" id="confirm_password"
-                                       name="confirm_password" required oninput="checkPwd()">
+                                       name="confirm_password" required>
                             </div>
                         </div>
                         <div id="pwdMismatch" class="text-danger small mb-3" style="display:none">
@@ -125,15 +125,3 @@ $roleLabel = match((int)($role ?? -1)) {
         </div>
     </div>
 </div>
-
-<script>
-function checkPwd() {
-    const pwd      = document.getElementById('new_password').value;
-    const confirm  = document.getElementById('confirm_password').value;
-    const mismatch = document.getElementById('pwdMismatch');
-    const submit   = document.getElementById('submitPwd');
-    const differs  = pwd.length > 0 && pwd !== confirm;
-    mismatch.style.display = differs ? '' : 'none';
-    submit.disabled = differs;
-}
-</script>

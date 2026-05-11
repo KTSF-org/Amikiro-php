@@ -2,19 +2,20 @@
 
 namespace controleur;
 
-
 use modele\DAO\ConfigDAO;
 use vue\base\MainTemplate as Vue;
 use app\util\Guard;
 
 class Live
 {
-
     public function __construct()
     {
         Guard::requireLogin();
+        $this->handle();
+    }
 
-        // Récupère la ligne de config (id=1) : URL du stream, limite et compteur de viewers
+    private function handle(): void
+    {
         $config = new ConfigDAO();
         $url1   = $config->getURLbyId(1);
 
@@ -29,14 +30,29 @@ class Live
             return;
         }
 
-        if (!isset($_SESSION['in_live'])) {
-            $config->incrementViewers();
-            $_SESSION['in_live'] = true;
-        }
-        $url1 = $config->getURLbyId(1);
+        $this->registerViewer($config, $url1, $viewerCount);
 
         Vue::setTitle('Live');
+        Vue::addCSS([ASSET . '/css/live.css']);
+        Vue::addJS([ASSET . '/js/live.js']);
         Vue::render('live/Live', ['url1' => $url1]);
+    }
 
+    /**
+     * Enregistre le viewer courant si ce n'est pas déjà fait pour cette session.
+     * Met à jour $url1 localement après l'incrément pour éviter un second appel BDD :
+     * la vue a besoin du compteur post-incrément, pas d'un refetch.
+     */
+    private function registerViewer(ConfigDAO $config, array &$url1, int $viewerCount): void
+    {
+        if (isset($_SESSION['in_live'])) {
+            return;
+        }
+
+        $config->incrementViewers();
+        $_SESSION['in_live'] = true;
+
+        // Reflète l'incrément dans le tableau sans retourner en base
+        $url1['viewerCount'] = $viewerCount + 1;
     }
 }

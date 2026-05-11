@@ -9,41 +9,21 @@ use app\util\Guard;
 
 class Accueil {
 
-	public function __construct() {
-		Guard::requireLogin();
+    public function __construct() {
+        Guard::requireLogin();
+        $this->handle();
+    }
 
-		/**
-		 *	    SESSION
-		 */
-		
-		$id = UserSession::getUserId();
-		$userDAO = new UserDAO();
-		// READ
-		$user = $userDAO->getUsersById($id);
+    private function handle(): void {
+        // La session ne stocke que l'ID et le rôle — un appel BDD est nécessaire
+        // pour récupérer le prénom et le nom affichés sur la page d'accueil.
+        $user = (new UserDAO())->getUsersById(UserSession::getUserId());
 
-		// getter
-		$surname = $user->getSurname();
-		$name = $user->getName();
-		
-		
-		
-		
-
-		/**
-		 *	    VUES
-		 */
-		
-
-		Vue::setTitle('Accueil');
-
-		Vue::addCSS([
-			ASSET . '/css/accueil.css',
-		]);
-
-		Vue::render('common/Accueil', [
-			'surname' => $surname,
-			'name' => $name,
-		]);
-
-	}
+        Vue::setTitle('Accueil');
+        Vue::addCSS([ASSET . '/css/accueil.css']);
+        Vue::render('common/Accueil', [
+            'surname' => $user->getSurname(),
+            'name'    => $user->getName(),
+        ]);
+    }
 }
