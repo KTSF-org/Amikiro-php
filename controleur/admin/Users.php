@@ -21,17 +21,19 @@ use modele\DAO\ConfigDAO;
  *   - create   → formulaire de création
  *   - edit&id  → formulaire de modification
  */
-class Users {
+class Users
+{
 
     private const PER_PAGE = 20;
 
-    public function __construct() {
+    public function __construct()
+    {
         Guard::requireRole(ROLE_ADMIN);
 
         match ($_GET['page'] ?? '') {
             'create' => $this->create(),
-            'edit'   => $this->edit(),
-            default  => $this->index(),
+            'edit' => $this->edit(),
+            default => $this->index(),
         };
     }
 
@@ -44,44 +46,45 @@ class Users {
      * Les actions POST (suppression, config) sont déléguées à leurs méthodes dédiées
      * pour ne pas mélanger trois responsabilités dans une seule méthode.
      */
-    private function index(): void {
+    private function index(): void
+    {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             match ($_POST['action'] ?? '') {
-                'delete'     => $this->delete(),
+                'delete' => $this->delete(),
                 'saveConfig' => $this->saveConfig(),
-                default      => null,
+                default => null,
             };
         }
 
-        $userDAO         = new UserDAO();
+        $userDAO = new UserDAO();
         $subscriptionDAO = new SubscriptionDAO();
-        $configDAO       = new ConfigDAO();
+        $configDAO = new ConfigDAO();
 
-        $roleFilter  = isset($_GET['role']) && $_GET['role'] !== '' ? (int)$_GET['role'] : -1;
-        $currentPage = max(1, (int)($_GET['p'] ?? 1));
-        $offset      = ($currentPage - 1) * self::PER_PAGE;
+        $roleFilter = isset($_GET['role']) && $_GET['role'] !== '' ? (int) $_GET['role'] : -1;
+        $currentPage = max(1, (int) ($_GET['p'] ?? 1));
+        $offset = ($currentPage - 1) * self::PER_PAGE;
 
-        $totalUsers  = $userDAO->countFiltered($roleFilter);
-        $totalPages  = max(1, (int)ceil($totalUsers / self::PER_PAGE));
+        $totalUsers = $userDAO->countFiltered($roleFilter);
+        $totalPages = max(1, (int) ceil($totalUsers / self::PER_PAGE));
         $currentPage = min($currentPage, $totalPages);
-        $users       = $userDAO->getAllFiltered($roleFilter, $offset, self::PER_PAGE);
-        $currentId   = SessionLogin::getUserId();
-        $config      = $configDAO->getConfig();
-        $guestDefaultAccessDays = (int)($config->guestDefaultAccessDays ?? 7);
+        $users = $userDAO->getAllFiltered($roleFilter, $offset, self::PER_PAGE);
+        $currentId = SessionLogin::getUserId();
+        $config = $configDAO->getConfig();
+        $guestDefaultAccessDays = (int) ($config->guestDefaultAccessDays ?? 7);
 
-        $userIds      = array_map(fn($u) => (int)$u->id, $users);
+        $userIds = array_map(fn($u) => (int) $u->id, $users);
         $activeByUser = $subscriptionDAO->getActiveByUserIds($userIds);
 
         Vue::setTitle('Gestion des utilisateurs');
         Vue::addJS([ASSET . '/js/users.js']);
         Vue::render('admin/Users', [
-            'users'                  => $users,
-            'currentId'              => $currentId,
+            'users' => $users,
+            'currentId' => $currentId,
             'guestDefaultAccessDays' => $guestDefaultAccessDays,
-            'activeByUser'           => $activeByUser,
-            'currentPage'            => $currentPage,
-            'totalPages'             => $totalPages,
-            'roleFilter'             => $roleFilter,
+            'activeByUser' => $activeByUser,
+            'currentPage' => $currentPage,
+            'totalPages' => $totalPages,
+            'roleFilter' => $roleFilter,
         ]);
     }
 
@@ -89,8 +92,9 @@ class Users {
      * Supprime un compte utilisateur et ses abonnements associés.
      * Un admin ne peut pas supprimer son propre compte.
      */
-    private function delete(): void {
-        $id        = (int)($_POST['id'] ?? 0);
+    private function delete(): void
+    {
+        $id = (int) ($_POST['id'] ?? 0);
         $currentId = SessionLogin::getUserId();
 
         if ($id > 0 && $id !== $currentId) {
@@ -106,8 +110,9 @@ class Users {
     /**
      * Sauvegarde la durée d'accès invité par défaut depuis la ligne de config globale.
      */
-    private function saveConfig(): void {
-        $days = max(1, (int)($_POST['guestDefaultAccessDays'] ?? 7));
+    private function saveConfig(): void
+    {
+        $days = max(1, (int) ($_POST['guestDefaultAccessDays'] ?? 7));
         (new ConfigDAO())->updateConfig(['guestDefaultAccessDays' => $days]);
 
         header('Location: ' . BaseURL::getBaseUrl() . 'parametres/utilisateurs');
@@ -127,30 +132,33 @@ class Users {
      * - ROLE_ADHERENT   : période d'adhésion obligatoire.
      * - ROLE_NATURALISTE: période d'adhésion facultative, purement informative.
      */
-    private function create(): void {
-        $error     = null;
+    //TODO ajouter un temps d'accès spécifique au naturaliste, on doit pouvoir l'éditer. Pareil pour l'adhérent,
+    // s'il renouvelle son adhésion au lieu de lui réassigner une période d'adhésion, on update.
+    private function create(): void
+    {
+        $error = null;
         $configDAO = new ConfigDAO();
-        $config    = $configDAO->getConfig();
-        $guestDefaultAccessDays = (int)($config->guestDefaultAccessDays ?? 7);
+        $config = $configDAO->getConfig();
+        $guestDefaultAccessDays = (int) ($config->guestDefaultAccessDays ?? 7);
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $name     = Request::post('name');
-            $surname  = Request::post('surname');
-            $mail     = Request::post('mail');
-            $codeRole = (int)($_POST['codeRole'] ?? ROLE_ADHERENT);
-            $chars    = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            $name = Request::post('name');
+            $surname = Request::post('surname');
+            $mail = Request::post('mail');
+            $codeRole = (int) ($_POST['codeRole'] ?? ROLE_ADHERENT);
+            $chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
             $password = implode('', array_map(fn() => $chars[random_int(0, strlen($chars) - 1)], range(1, 8)));
 
             // ROLE_INVITE : durée assignée depuis Config.guestDefaultAccessDays plutôt que saisie manuellement,
             // pour rester cohérent avec la rétrogradation automatique adhérent → invité au login.
             if ($codeRole === ROLE_INVITE) {
                 $startDate = date('Y-m-d');
-                $endDate   = date('Y-m-d', strtotime("+{$guestDefaultAccessDays} days"));
-                $hasDates  = true;
+                $endDate = date('Y-m-d', strtotime("+{$guestDefaultAccessDays} days"));
+                $hasDates = true;
             } else {
                 $startDate = $_POST['startDate'] ?? '';
-                $endDate   = $_POST['endDate']   ?? '';
-                $hasDates  = !empty($startDate) || !empty($endDate);
+                $endDate = $_POST['endDate'] ?? '';
+                $hasDates = !empty($startDate) || !empty($endDate);
             }
 
             $userDAO = new UserDAO();
@@ -188,7 +196,7 @@ class Users {
         Vue::setTitle('Créer un compte');
         Vue::addJS([ASSET . '/js/users-create.js']);
         Vue::render('admin/UsersCreate', [
-            'error'                  => $error,
+            'error' => $error,
             'guestDefaultAccessDays' => $guestDefaultAccessDays,
         ]);
     }
@@ -198,7 +206,8 @@ class Users {
      * Séparé de create() car l'envoi de notification est une action applicative distincte
      * de la persistance du compte — les deux peuvent évoluer indépendamment.
      */
-    private function notifyNewAccount(string $mail, string $name, string $password, string $memberNum): void {
+    private function notifyNewAccount(string $mail, string $name, string $password, string $memberNum): void
+    {
         Mailer::sendWelcome($mail, $name, $password, $memberNum);
     }
 
@@ -217,20 +226,23 @@ class Users {
      * L'ajout d'une période d'accès à un ROLE_INVITE le promeut automatiquement
      * en ROLE_ADHERENT si la checkbox de promotion est cochée.
      */
-    private function edit(): void {
-        $id = (int)($_GET['id'] ?? 0);
+    private function edit(): void
+    {
+        //TODO quand on donne une adhésion au naturaliste, un numéro d'adhérent doit être créée, quand il perd son adhésion,
+        // soit on ne l'affiche plus dans le tableau des utilisateurs, soit on l'affiche en rouge
+        $id = (int) ($_GET['id'] ?? 0);
         if ($id <= 0) {
             header('Location: ' . BaseURL::getBaseUrl() . 'parametres/utilisateurs');
             exit;
         }
 
-        $userDAO             = new UserDAO();
-        $subscriptionDAO     = new SubscriptionDAO();
-        $user                = $userDAO->getUsersById($id);
-        $currentId           = SessionLogin::getUserId();
-        $isSelf              = ($id === $currentId);
-        $error               = null;
-        $subscriptionError   = null;
+        $userDAO = new UserDAO();
+        $subscriptionDAO = new SubscriptionDAO();
+        $user = $userDAO->getUsersById($id);
+        $currentId = SessionLogin::getUserId();
+        $isSelf = ($id === $currentId);
+        $error = null;
+        $subscriptionError = null;
         $subscriptionSuccess = null;
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -238,7 +250,7 @@ class Users {
 
             if ($action === 'subscription') {
                 $startDate = $_POST['startDate'] ?? '';
-                $endDate   = $_POST['endDate']   ?? '';
+                $endDate = $_POST['endDate'] ?? '';
 
                 if (empty($startDate) || empty($endDate)) {
                     $subscriptionError = 'Les deux dates sont obligatoires.';
@@ -265,14 +277,14 @@ class Users {
                 }
 
             } else {
-                $name      = Request::post('name');
-                $surname   = Request::post('surname');
-                $mail      = Request::post('mail');
-                $password  = Request::post('password');
+                $name = Request::post('name');
+                $surname = Request::post('surname');
+                $mail = Request::post('mail');
+                $password = Request::post('password');
                 $memberNum = $_POST['memberNum'] ?? $user->getMemberNum();
-                $codeRole  = $isSelf
+                $codeRole = $isSelf
                     ? $user->getCodeRole()
-                    : (int)($_POST['codeRole'] ?? $user->getCodeRole());
+                    : (int) ($_POST['codeRole'] ?? $user->getCodeRole());
 
                 // La rétrogradation manuelle vers ROLE_INVITE est bloquée :
                 // elle ne peut se produire qu'automatiquement au login quand l'adhésion expire.
@@ -280,7 +292,7 @@ class Users {
                     && in_array($user->getCodeRole(), [ROLE_ADHERENT, ROLE_NATURALISTE]);
 
                 $existingMail = $userDAO->getUserByEmail($mail);
-                $mailTaken    = $existingMail && (int)$existingMail->id !== $id;
+                $mailTaken = $existingMail && (int) $existingMail->id !== $id;
 
                 if (!$isSelf && $codeRole === ROLE_ADMIN) {
                     $error = 'Impossible d\'attribuer le rôle administrateur.';
@@ -296,10 +308,10 @@ class Users {
                     }
 
                     $user->setName($name)
-                         ->setSurname($surname)
-                         ->setMail($mail)
-                         ->setCodeRole($codeRole)
-                         ->setMemberNum($memberNum);
+                        ->setSurname($surname)
+                        ->setMail($mail)
+                        ->setCodeRole($codeRole)
+                        ->setMemberNum($memberNum);
 
                     // Le mot de passe n'est mis à jour que s'il est fourni
                     if (!empty($password)) {
@@ -315,18 +327,18 @@ class Users {
             }
         }
 
-        $activeSubscription  = $subscriptionDAO->getActiveByUser($id);
+        $activeSubscription = $subscriptionDAO->getActiveByUser($id);
         $subscriptionHistory = $subscriptionDAO->getAllByUser($id);
 
         Vue::setTitle('Modifier un compte');
         Vue::addJS([ASSET . '/js/users-edit.js']);
         Vue::render('admin/UsersEdit', [
-            'user'                => $user,
-            'error'               => $error,
-            'isSelf'              => $isSelf,
-            'activeSubscription'  => $activeSubscription,
+            'user' => $user,
+            'error' => $error,
+            'isSelf' => $isSelf,
+            'activeSubscription' => $activeSubscription,
             'subscriptionHistory' => $subscriptionHistory,
-            'subscriptionError'   => $subscriptionError,
+            'subscriptionError' => $subscriptionError,
             'subscriptionSuccess' => $subscriptionSuccess,
         ]);
     }

@@ -48,6 +48,10 @@ class Webcam {
                 if (!$success) $error = 'Erreur lors de la sauvegarde.';
             }
         }
+        //TODO avoir un mini player qui montre si le flux est valide
+        //TODO modifier le nombre de viewers autorisé
+        //TODO Améliorer le système de session de visionnage, quand il s'écoule, le flux devient innacessible pour tous les utilisateurs
+        //actuellement il suffit d'actualiser la page pour réaccéder a une session de visionnage
 
         // Chargement de la configuration courante après une éventuelle mise à jour.
         $config = $configDAO->getConfig();

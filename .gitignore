@@ -5,3 +5,4 @@
 /.vs/slnx.sqlite
 /.vs/Amikiro.slnx/FileContentIndex
 /app/DB.php
+/app/param.php

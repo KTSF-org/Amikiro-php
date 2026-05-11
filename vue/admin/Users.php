@@ -21,7 +21,8 @@ function memberNumCell(object $u): string
             ? '<span class="text-muted small">INVITE</span>'
             : '<span class="badge bg-danger-subtle text-danger border border-danger-subtle">' . htmlspecialchars($num) . '</span>';
     }
-    if (empty($num)) {
+    if (empty($num)) //TODO Mettre une condition pour que tous les gens sans adhésion affiche - dans la colonne
+        {
         return '<span class="text-muted">—</span>';
     }
     return '<span class="badge bg-success-subtle text-success border border-success-subtle">' . htmlspecialchars($num) . '</span>';
@@ -119,7 +120,7 @@ function subscriptionCell(int $userId, int $role, array $activeByUser): string
             </li>
         <?php endforeach; ?>
     </ul>
-
+<!-- TODO suppression de compte invité automatique ? -->
     <!-- Tableau -->
     <div class="card">
         <div class="table-responsive">
