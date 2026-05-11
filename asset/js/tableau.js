@@ -30,7 +30,7 @@ $(document).ready(function () {
       { width: "30px", targets: [0] },
       { width: "100px", targets:[1]},
       { width: "200px", targets:[4]},
-      { width: "120px", targets: [3] },
+      { width: "180px", targets: [3] },
       { width: "120px", targets: [5]}
     ]
   });
