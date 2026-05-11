@@ -8,7 +8,7 @@
 
 <div class="container">
 
-    <h1 class="m-2"> Journal </h1>
+    <h1 class="m-2"><?=($mesFiches) ? 'Mes fiches' : 'Journal'?></h1>
 
     <a href="sectionColony" class="btn btn-primary m-1">
         Nouvelle fiche colonie
@@ -63,11 +63,15 @@
                             <i class="bi bi-eye-fill" width="20px" height="20px" style="color:DodgerBlue;" title="Consulter"></i>
                         </a>
 
-                        <a href="<?=($typeAsso[$fiche->getId()] === "Chauve souris") ? $urlEditionBat : $urlEditionColonie?>&id=<?= $fiche->getId() ?>" class="btn btn-sm" style="color:black">
+                        <a href="<?=($typeAsso[$fiche->getId()] === "Chauve souris") ? $urlEditionBat : $urlEditionColonie?>&id=<?= $fiche->getId() ?>"
+                        class="btn btn-sm <?php if ($fiche->getIdUser()!= $idUserSession && !$isAdmin) echo "disabled border-0" ?>"
+                        style="color:black">
                             <i class="bi bi-pencil-square" width="20px" height="20px" title="Modifier"></i>
                         </a>
 
-                         <a href="<?= $urlDelete ?>?delete=true&id=<?= $fiche->getId() ?>" class="btn btn-sm <?php if ($fiche->getIdUser()!= $idUserSession) echo "disabled border-0" ?> " style="color: <?= ($fiche->getIdUser() == $idUserSession) ? 'red' : 'black' ?>" onclick="return confirm ('Etes-vous sûr de vouloir supprimer cette fiche ?');">
+                         <a href="<?= $urlDelete ?>?delete=true&id=<?= $fiche->getId() ?>" class="btn btn-sm <?php if ($fiche->getIdUser()!= $idUserSession && !$isAdmin) echo "disabled border-0" ?> "
+                         style="color: <?= ($fiche->getIdUser() == $idUserSession || $isAdmin) ? 'red' : 'black' ?>"
+                         onclick="return confirm ('Etes-vous sûr de vouloir supprimer cette fiche ?');">
                             <i class="bi bi-trash3" width="20px" height="20px" title="Supprimer"></i>
                         </a>
 
