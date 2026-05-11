@@ -53,6 +53,9 @@ class Routing {
 		// Paramètres utilisateur
 		$route->add('/parametres/profil', 'controleur\Profil');
 
+		//Category
+		$route->add('/category', 'controleur\journal\Category');
+
 		// Paramètres admin (accès restreint à ROLE_ADMIN, contrôle à implémenter dans chaque contrôleur)
 		// Une seule route gère liste, création et édition via $_GET['page'] dans le contrôleur
 		$route->add('/parametres/utilisateurs', 'controleur\admin\Users');
