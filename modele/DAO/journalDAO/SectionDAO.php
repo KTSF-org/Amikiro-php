@@ -85,18 +85,13 @@ class SectionDAO extends Database {
     }
 
 	public function findAllByAuth($idUser): array {
-        $allSection = array();
-		$sql = "Select * from " . $this->tableName . " where idUser = ?";
-        $data = (array) $this->sendSQLAssoc($sql, [$idUser]);
-		dd($data);
-        foreach ($data as $elem) {
-            $rowData = (array) $elem;
-            $id = $rowData[$this->primaryKey];
-            unset($rowData[$this->primaryKey], $elem);
-            $section = new Section(...$rowData);
-            $section->setId($id);
-            array_push($allSection, $section);
-        }
-        return $allSection;
+        $allSection = $this->findAll();
+		$userSection = [];
+		foreach($allSection as $sec) {
+			if ($sec->getIdUser() == $idUser) {
+				array_push($userSection, $sec);
+			}
+		}
+		return $userSection;
     }
 }
