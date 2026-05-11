@@ -46,7 +46,8 @@ class MainAjax extends Ajax {
 			'liveLeave'   => 'liveLeave',
 			'viewerCount' => 'getViewerCount',
 			'addSectionColony' => 'addSectionCol',
-			'updateSectionColony' => 'updateSectionCol'
+			'updateSectionColony' => 'updateSectionCol',
+			'addCategory' => 'addCategory'
 		];
 	}
 
@@ -173,6 +174,20 @@ class MainAjax extends Ajax {
 			}
 				return "Successsss";
 
+		}else{
+			return "No success";
+		}
+	}
+
+	protected function addCategory():string
+	{
+		if(req::has('name')){
+			$name = req::post('name');
+
+			$newCategory = new Category($name);
+			$newCategory->addCategory();
+
+			return "Success";
 		}else{
 			return "No success";
 		}
