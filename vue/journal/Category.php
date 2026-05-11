@@ -23,23 +23,13 @@ use app\util\Helper;
             </tr>
         </thead>
         <tbody>
-            <?php foreach ($categories as $category): ?>
-                <tr>
-                    <td><?= $category->getId()?></td>
-                    <td><?= $category->getName()?></td>
-					<td>
-						<button id="modif" class=" btn btn-primary">Modifier</button>
-						<button id="delete" class="btn btn-danger">Supprimer</button>
-					</td>
 
-                </tr>
-            <?php endforeach; ?>
         </tbody>
     </table>
 
 <div class="mt-4 pb-5">
         <div class="card card-body">
-            <form method="POST" action="<?= $actual_link ?>category"></form> id="addCategory">
+            <form method="POST" action="<?= $actual_link ?>category" id="addCategory">
                 <div class="row align-items-end">
                     <div class="col-md-3">
                         <label for="cat" class="form-label">Rajouter une catégorie</label>
@@ -54,27 +44,43 @@ use app\util\Helper;
         </div>
     </div>
 </div>
+
 <script>
     $(document).ready( function () {
         const table = $('#categoryTable').DataTable({
-            language: {
-                url: 'https://cdn.datatables.net/plug-ins/1.13.7/i18n/fr-FR.json' // Pour avoir l'interface en français
-            },
-            pageLength: 10,
-            responsive: true,
-			columnDefs: [
-				{"width": "2px" , "targets":0},
+    language: {
+        url: 'https://cdn.datatables.net/plug-ins/1.13.7/i18n/fr-FR.json'
+    },
+    pageLength: 10,
+    responsive: true,
+    columnDefs: [
+        {"width": "2px", "targets": 0},
+    ],
 
-			]
-        }
+    ajax: {
+        url: "<?= $actual_link ?>ajax?getCategories",
+        dataSrc: ''
+    },
+    columns: [
+        { data: 'id' },
+        { data: 'name' },
+        {
+            data: 'id',
+            render: function(id) {
+                return `<button class="btn btn-primary btn-modif" data-id="${id}">Modifier</button>
+                        <button class="btn btn-danger btn-delete" data-id="${id}">Supprimer</button>`;
+            }
+        }//TODO gérer la modif et suppression comme au stage
+    ]
+});
 
-	);
 
-	$('#addCategory').on('submit',function(e)){
+
+	$('#addCategory').on('submit',function(e){
 		e.preventDefault();
 
 		const spanMessage = $('#formMessage');
-		const url = "<?= $actual_link ?>ajax?addCategory",
+		const url = "<?= $actual_link ?>ajax?addCategory";
 
 		data = {
 			'name' : $('#name').val(),
@@ -85,7 +91,8 @@ use app\util\Helper;
 			(response)=>{
 				if(response === "Success") {
 					spanMessage.text('Catégorie créée avec succès').css('color', 'green');
-					table.ajax.reload();
+                    table.ajax.reload(); //reload du datatable
+                    $('#name').val(''); //on vide le champ texte
 				}else {
 					 spanMessage.text('Problème lors de la création').css('color', 'red');
 				}
@@ -96,8 +103,7 @@ use app\util\Helper;
 
 
 
-	}
+	});
 
-
-	} );
+});
 </script>
