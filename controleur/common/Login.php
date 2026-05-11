@@ -24,8 +24,8 @@ use app\util\SessionLogin as UserSession;
  * Logique de temps d'accès à la connexion :
  *   - ROLE_ADHERENT sans temps d'accès actif : rétrogradé en ROLE_INVITE avec un temps
  *     d'accès par défaut (guestDefaultAccessDays depuis Config), puis connecté.
+ *   - ROLE_NATURALISTE sans temps d'accès actif : même mécanique que ROLE_ADHERENT.
  *   - ROLE_INVITE sans temps d'accès actif : connexion refusée.
- *   - ROLE_NATURALISTE : toujours connecté, pas de vérification.
  *   - ROLE_ADMIN : route séparée en production, bloqué ici intentionnellement.
  */
 
@@ -66,23 +66,12 @@ class Login
                     $role    = (int) $user->codeRole;
                     $userDAO = new UserDAO();
 
-                    if ($role === ROLE_NATURALISTE) {
-                        // Naturaliste : accès permanent, pas de vérification de temps d'accès
-                        unset($_SESSION["captchaCode"]);
-                        $userDAO->incrementConnectCount($user->id);
-                        UserSession::loginWithRole($user->codeRole, $user->id);
-                        header('Location:  live');
-                        exit;
-
-                    } elseif ($role === ROLE_ADHERENT) {
+                    if ($role === ROLE_NATURALISTE || $role === ROLE_ADHERENT) {
                         $subscriptionDAO = new SubscriptionDAO();
-                        // $userId et $effectiveRole sont extraits avant toute réassignation de $user
-                        // car getUsersById() retourne un objet User (propriétés privées, pas de ->id direct)
                         $userId        = (int)$user->id;
-                        $effectiveRole = ROLE_ADHERENT;
+                        $effectiveRole = $role;
                         if (!$subscriptionDAO->getActiveByUser($userId)) {
-                            // Adhésion expirée : on crée une période invité par défaut et on rétrograde le compte.
-                            // La prochaine connexion passera par le flux ROLE_INVITE.
+                            // Accès expiré : rétrograde en invité avec une période par défaut.
                             $config = (new ConfigDAO())->getConfig();
                             $days   = (int)($config->guestDefaultAccessDays ?? 7);
                             $subscriptionDAO->createForUser(

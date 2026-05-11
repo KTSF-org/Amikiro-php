@@ -134,6 +134,25 @@ class UserDAO extends Database
 	 * 	@param string $name Nom ou prénom de l'utilisateur
 	 * 	@return array
 	 */
+	/**
+	 * Retourne les invités purgeables : ROLE_INVITE, sans memberNum, sans accès actif.
+	 * Les ex-adhérents (memberNum non null) sont exclus volontairement.
+	 */
+	public function getPurgeableGuests(): array
+	{
+		return $this->sendSQL(
+			"SELECT * FROM `User`
+			 WHERE codeRole = ?
+			 AND (memberNum IS NULL OR memberNum = '')
+			 AND NOT EXISTS (
+			     SELECT 1 FROM `Abonnement`
+			     WHERE idUser = User.id
+			     AND endDate >= CURDATE()
+			 )",
+			[ROLE_INVITE]
+		);
+	}
+
 	public function getUsersByName(string $name): array
 	{
 		$stmt = $this->getPdo()->prepare("SELECT * FROM `" . $this->tableName . "` WHERE name LIKE :name OR surname LIKE :surname ORDER BY surname, name LIMIT 10");
