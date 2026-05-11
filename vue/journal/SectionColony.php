@@ -5,24 +5,27 @@
  */
 use app\util\Helper;
 ?>
+<link href="https://cdn.jsdelivr.net/npm/tom-select/dist/css/tom-select.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/tom-select/dist/js/tom-select.complete.min.js"></script>
+<script src="asset/js/formulaire.js" defer></script>
 
 <div class="container">
 
     <p>Création fiche colonie</p>
 
     <?php if ($modif): ?>
-        <form id="colonyFormModif" method="POST" action="<?= $actual_link ?>sectionColony">
+        <form id="formulaire" class="colonyFormModi" method="POST" action="<?= $actual_link ?>sectionColony">
     <?php else: ?>
-        <form id="colonyForm" method="POST" action="<?= $actual_link ?>sectionColony"></form>
+        <form id="formulaire" class="colonyForm" method="POST" action="<?= $actual_link ?>sectionColony">
     <?php endif; ?>
 
         <!-- Champs du formulaire -->
         <div class="mb-3 col-3">
             <label for="colonyTitle" class="form-label">Titre rubrique</label>
             <?php if ($modif): ?>
-                <input type="text" class="form-control" id="title" value="<?= $section->getTitle() ?>" name="colonyTitle">
+                <input type="text" class="form-control mandatory" id="title" value="<?= $section->getTitle() ?>" name="colonyTitle">
             <?php else: ?>
-                <input type="text" class="form-control" id="title" placeholder="Titre rubrique" name="colonyTitle">
+                <input type="text" class="form-control mandatory" id="title" placeholder="Titre rubrique" name="colonyTitle">
             <?php endif; ?>
         </div>
         <div class="mb-3 row col-8">
@@ -38,11 +41,11 @@ use app\util\Helper;
         </div>
         <div class="mb-3 col-3">
             <label for="colonyCategory" class="form-label">Catégorie</label>
-            <select class="form-select" id="category" aria-label="Floating label select example" name="colonyCategory">
+            <select class="mandatory" id="category" aria-label="Floating label select example" name="colonyCategory">
                 <?php if ($modif): ?>
                     <option selected value="<?= $catSec->getId() ?>"><?= $catSec->getName() ?></option>
                 <?php else: ?>
-                    <option selected value="">----Choisissez une catégorie----</option>
+                    <option value="">----Choisissez une catégorie----</option>
                     <?= $categories ?>
                 <?php endif; ?>
             </select>
@@ -50,26 +53,32 @@ use app\util\Helper;
         <div class="mb-3 col-3">
             <label for="colonyObservation" class="form-label">Observations</label>
             <?php if ($modif): ?>
-            <textarea class="form-control" id="observation" rows="3" placeholder="" name="colonyNotes"><?= $section->getContent() ?></textarea>
+            <textarea class="form-control mandatory" id="observation" rows="3" placeholder="" name="colonyNotes"><?= $section->getContent() ?></textarea>
             <?php else: ?>
-            <textarea class="form-control" id="observation" rows="3" placeholder="" name="colonyNotes"></textarea>
+            <textarea class="form-control mandatory" id="observation" rows="3" placeholder="" name="colonyNotes"></textarea>
             <?php endif; ?>
         </div>
         <span id="formMessage"></span>
         <div class="mb-3 col-3">
             <button type="submit" class="btn btn-primary">Enregistrer</button>
         </div>
-
     </form>
-
-
-
 </div>
+
 <script>
     $(document).ready(function () {
 
+        new TomSelect("#category",{
+	    create: true,
+	    sortField: {
+		    field: "text",
 
-         $("#colonyFormModif").on("submit", function (e) {
+	    }
+
+    });
+
+
+         $(".colonyFormModif").on("submit", function (e) {
                 e.preventDefault();
 
 
@@ -105,7 +114,7 @@ use app\util\Helper;
 
 
 
-            $("#colonyForm").on("submit", function (e) {
+            $(".colonyForm").on("submit", function (e) {
                 e.preventDefault();
 
                 const spanMessage = $('#formMessage');
@@ -139,5 +148,5 @@ use app\util\Helper;
 
 
 
-    })
+    });
 </script>
