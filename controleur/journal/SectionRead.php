@@ -26,7 +26,7 @@ class SectionRead
 
 		$sectionTitle = $fiche->getTitle();
 		$sectionContent = $fiche->getContent();
-		$creationDate = $fiche->getCreationDate();
+		$creationDate = $fiche->getModifDate();
 
 		$nameCategory = "";
 		$nameBat = "";
