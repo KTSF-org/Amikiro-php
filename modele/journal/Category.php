@@ -7,10 +7,10 @@ use modele\DAO\journalDAO\CategoryDAO;
 class Category{
 
 	private int $id=0; //La clé primaire est identifiée par $id
-	
+
 	protected $param=[]; //La liste des paramètres (ou attributs)
 
-	public function __construct( 
+	public function __construct(
 		private string $name='') {
 
 		// Gestionnaire d'erreur (pour les requêtes) :
@@ -26,26 +26,39 @@ class Category{
 
 	/**
 	 * METHODS
-	 */	
-	
+	 */
+
 	// STOCKER LA LISTE DES ATTRIBUTS
 	private function getKey(array $arr): array {
 		foreach($arr as $key => $value) {
 			if($key==="id" or $key==="param")continue;
-			$param[] = $key; 
+			$param[] = $key;
 		}
 		return $param;
 	}
-	
+
 	// SORTIR LA LISTE DES ATTRIBUTS
 	public function getParam(): array {
 		return $this->param;
 	}
-	
+
 	// CREATE
 	public function addCategory(): bool {
 		$categoryDao = new CategoryDAO();
 		return $categoryDao->create($this);
+	}
+
+	// UPDATE
+	public function updateCategory(): bool {
+		$categoryDAO = new CategoryDAO();
+		return $categoryDAO->update($this);
+	}
+
+
+	// DELETE
+	public function delCategory(): bool{
+		$categoryDAO = new CategoryDAO();
+		return $categoryDAO->delete($this);
 	}
 
 	/**
@@ -66,7 +79,7 @@ class Category{
 	 public function setId($id): void {
 		$this->id = $id;
 	}
-	
+
 	public function setName($name): void {
 		$this->name = $name;
 	}

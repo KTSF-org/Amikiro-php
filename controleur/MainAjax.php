@@ -13,6 +13,7 @@ use modele\journal\SectionColony as SectionColony;
 use modele\journal\Section as Section;
 use app\util\SessionLogin as SessionLogin;
 use DateTime;
+use modele\DAO\journalDAO\CategoryDAO;
 /**
  *	Classe chargée depuis le routing : route/routing.php
  *	==> $route->add('/ajax', 'controleur\MainAjax');
@@ -49,7 +50,9 @@ class MainAjax extends Ajax {
 			'addSectionColony' => 'addSectionCol',
 			'updateSectionColony' => 'updateSectionCol',
 			'addCategory' => 'addCategory',
-			'getCategories' => 'getCategories'
+			'getCategories' => 'getCategories',
+			'delCategory' => 'delCategory',
+			'updateCategory' => 'updateCategory',
 		];
 	}
 
@@ -203,7 +206,7 @@ class MainAjax extends Ajax {
 
 	protected function getCategories(): array //affichage categories dans le datatable
 	{
-    	$cat = new \modele\DAO\journalDAO\CategoryDAO();
+    	$cat = new CategoryDAO();
     	$allCategories = $cat->getAllCategories();
     	$data = [];
 
@@ -215,6 +218,42 @@ class MainAjax extends Ajax {
     	}
 
     	return $data;
+	}
+
+	protected function delCategory() :string //suppression d'une categorie
+	{
+		if(req::has('id')){
+			$id = req::post('id');
+
+			$cat = new CategoryDAO();
+			$category = $cat->findById($id);
+			$category->delCategory();
+
+			return "Success";
+		}else{
+			return "No success";
+		}
+	}
+
+
+	protected function updateCategory() :string
+	{
+		if(req::has('id') || req::has('name')){
+			$id = req::post('id');
+			$name = req::post('name');
+
+			$category = new Category($name);
+			$category->setId($id);
+
+			if($category->updateCategory()){
+				return "Success";
+			}
+
+			return "Successsss";
+
+		}else{
+			return "No success";
+		}
 	}
 
 }
