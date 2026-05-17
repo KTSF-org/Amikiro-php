@@ -4,10 +4,12 @@ namespace controleur;
 
 use app\util\Request;
 use app\util\Guard;
+use app\util\BaseURL;
+use app\util\SessionLogin as UserSession;
 use vue\base\MainTemplate as Vue;
 use modele\User;
 use modele\DAO\UserDAO;
-use app\util\SessionLogin as UserSession;
+use modele\DAO\SubscriptionDAO;
 
 /**
  * Contrôleur : profil de l'utilisateur connecté.
@@ -37,21 +39,26 @@ class Profil {
             // Les setters appelés dans les méthodes modifient $user en place :
             // $user->getName() reflétera les nouvelles valeurs au moment du rendu.
             ['success' => $success, 'error' => $error] = match ($_POST['action'] ?? '') {
-                'identity' => $this->handleIdentityUpdate($user, $userDAO),
-                'password' => $this->handlePasswordChange($user, $userDAO),
-                default    => ['success' => null, 'error' => null],
+                'identity'      => $this->handleIdentityUpdate($user, $userDAO),
+                'password'      => $this->handlePasswordChange($user, $userDAO),
+                'deleteAccount' => $this->deleteAccount($user),
+                default         => ['success' => null, 'error' => null],
             };
         }
+
+        $activeSub = (new SubscriptionDAO())->getActiveByUser($user->getId());
 
         Vue::setTitle('Mon Profil');
         Vue::addJS([ASSET . '/js/profil.js']);
         Vue::render('Profil', [
-            'surname' => $user->getSurname(),
-            'name'    => $user->getName(),
-            'role'    => $role,
-            'mail'    => $user->getMail(),
-            'success' => $success,
-            'error'   => $error,
+            'surname'      => $user->getSurname(),
+            'name'         => $user->getName(),
+            'role'         => $role,
+            'mail'         => $user->getMail(),
+            'memberNum'    => $user->getMemberNum(),
+            'hasActiveSub' => (bool) $activeSub,
+            'success'      => $success,
+            'error'        => $error,
         ]);
     }
 
@@ -98,5 +105,31 @@ class Profil {
         // setPassword() hache automatiquement via password_hash() (bcrypt cost 12)
         $user->setPassword($new);
         return ['success' => $userDAO->update($user), 'error' => null];
+    }
+
+    /**
+     * Supprime le compte de l'invité connecté après vérification du mot de passe.
+     * Réservé aux ROLE_INVITE — les autres rôles sont ignorés.
+     * Redirige vers /login après suppression.
+     * @return array{success: bool|null, error: string|null}
+     */
+    private function deleteAccount(User $user): array {
+        if (UserSession::getRole() !== ROLE_INVITE) {
+            return ['success' => null, 'error' => null];
+        }
+
+        $password = Request::post('confirm_delete_password');
+
+        if (!password_verify($password, $user->getPassword())) {
+            return ['success' => null, 'error' => 'Mot de passe incorrect — suppression annulée.'];
+        }
+
+        $id = $user->getId();
+        (new SubscriptionDAO())->deleteByUser($id);
+        (new UserDAO())->getUsersById($id)->deleteUser();
+
+        UserSession::logout();
+        header('Location: ' . BaseURL::getBaseUrl() . 'login');
+        exit;
     }
 }

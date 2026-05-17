@@ -40,7 +40,7 @@
 <script>
 window.liveConfig = {
     videoUrl:        "<?= htmlspecialchars($url1['streamUrl'], ENT_QUOTES) ?>",
-    sessionDuration: <?= (int)$url1['sessionDuration'] ?>,
+    sessionDuration: <?= (int)$remaining ?>,
     baseUrl:         "<?= $actual_link ?>"
 };
 </script>

@@ -47,7 +47,9 @@
                     </div>
                     <div class="card-body">
                         <select class="form-select" id="codeRole" name="codeRole"
-                            data-role-invite="<?= ROLE_INVITE ?>" data-role-adherent="<?= ROLE_ADHERENT ?>">
+                            data-role-invite="<?= ROLE_INVITE ?>"
+                            data-role-adherent="<?= ROLE_ADHERENT ?>"
+                            data-role-naturaliste="<?= ROLE_NATURALISTE ?>">
                             <option value="<?= ROLE_INVITE ?>">Invité</option>
                             <option value="<?= ROLE_ADHERENT ?>" selected>Adhérent</option>
                             <option value="<?= ROLE_NATURALISTE ?>">Naturaliste</option>
@@ -60,25 +62,39 @@
 
                 <!--
                     Bloc adhésion dynamique selon le rôle sélectionné.
-                    Deux variantes affichées/masquées par JS :
-                      - accessInvite : dates auto (pas de saisie), valeur = guestDefaultAccessDays depuis Config
-                      - accessDates  : saisie manuelle début/fin (obligatoire pour adhérent, informatif pour naturaliste)
+                    Trois variantes affichées/masquées par JS :
+                      - accessInvite      : dates auto, valeur = guestDefaultAccessDays depuis Config
+                      - accessNaturaliste : dates auto, valeur = naturalisteDefaultAccessDays depuis Config
+                      - accessDates       : saisie manuelle début/fin (obligatoire pour adhérent)
                 -->
 
-                <!-- Invité : durée fixe depuis Config, pas de saisie possible -->
+                <!-- Invité : durée fixe depuis Config -->
                 <div id="accessInvite" class="card mb-4" style="display:none;">
                     <div class="card-header bg-dark text-white py-2">
-                        <span class="fw-semibold small">Adhésion</span>
+                        <span class="fw-semibold small">Accès</span>
                     </div>
                     <div class="card-body">
                         <p class="mb-0 text-muted small">
-                            Attribuée automatiquement :
+                            Attribué automatiquement :
                             <strong><?= (int)$guestDefaultAccessDays ?> jours</strong> à partir d'aujourd'hui.
                         </p>
                     </div>
                 </div>
 
-                <!-- Adhérent / Naturaliste : saisie manuelle (required côté serveur pour adhérent) -->
+                <!-- Naturaliste : durée fixe depuis Config -->
+                <div id="accessNaturaliste" class="card mb-4" style="display:none;">
+                    <div class="card-header bg-dark text-white py-2">
+                        <span class="fw-semibold small">Accès</span>
+                    </div>
+                    <div class="card-body">
+                        <p class="mb-0 text-muted small">
+                            Attribué automatiquement :
+                            <strong><?= (int)$naturalisteDefaultAccessDays ?> jours</strong> à partir d'aujourd'hui.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Adhérent : saisie manuelle obligatoire -->
                 <div id="accessDates" class="card mb-4" style="display:none;">
                     <div class="card-header bg-dark text-white py-2 d-flex align-items-center gap-2">
                         <!-- Le texte du label est mis à jour par JS pour refléter obligatoire vs informatif -->
