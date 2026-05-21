@@ -50,10 +50,10 @@
                                 <div class="input-group">
                                     <input type="number" class="form-control" id="sessionDuration"
                                            name="sessionDuration"
-                                           value="<?= (int)($config->sessionDuration ?? 3600) ?>" min="60">
+                                           value="<?= (int)($config->sessionDuration ?? 3600) ?>" min="0">
                                     <span class="input-group-text text-muted small">s</span>
                                 </div>
-                                <div class="form-text text-muted small">min. 60 s</div>
+                                <div class="form-text text-muted small">0 = illimité, sinon min. 60 s</div>
                             </div>
                             <div class="col-6">
                                 <label for="viewerLimit" class="form-label">
@@ -64,10 +64,10 @@
                                 <div class="input-group">
                                     <input type="number" class="form-control" id="viewerLimit"
                                            name="viewerLimit"
-                                           value="<?= (int)($config->viewerLimit ?? 10) ?>" min="1">
+                                           value="<?= (int)($config->viewerLimit ?? 10) ?>" min="0">
                                     <span class="input-group-text text-muted small">max</span>
                                 </div>
-                                <div class="form-text text-muted small">min. 1</div>
+                                <div class="form-text text-muted small">0 = illimité</div>
                             </div>
                         </div>
                     </div>

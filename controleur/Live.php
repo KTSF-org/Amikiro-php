@@ -19,29 +19,47 @@ class Live
         $config = new ConfigDAO();
         $url1   = $config->getURLbyId(1);
 
-        // Cast en int pour éviter une comparaison incorrecte si la valeur est null en base
-        $viewerLimit = (int)($url1['viewerLimit'] ?? 0);
-        $viewerCount = (int)($url1['viewerCount'] ?? 0);
+        $viewerLimit     = (int)($url1['viewerLimit'] ?? 0);
+        $viewerCount     = (int)($url1['viewerCount'] ?? 0);
+        $sessionDuration = (int)($url1['sessionDuration'] ?? 0);
+
+        // Vérifie si la durée de session est expirée avant de re-admettre l'utilisateur.
+        // live_started_at est posé à la première registration et jamais réinitialisé.
+        if ($sessionDuration > 0 && isset($_SESSION['live_started_at'])) {
+            $elapsed = time() - (int)$_SESSION['live_started_at'];
+            if ($elapsed >= $sessionDuration) {
+                Vue::setTitle('Live');
+                Vue::render('live/LiveExpire');
+                return;
+            }
+        }
 
         // Si la limite est activée (> 0) et atteinte, affiche la page d'attente sans incrémenter
         if ($viewerLimit > 0 && $viewerCount >= $viewerLimit) {
             Vue::setTitle('Live');
-            Vue::render('LiveLimite');
+            Vue::render('live/LiveLimite');
             return;
         }
 
         $this->registerViewer($config, $url1, $viewerCount);
 
+        // Temps restant calculé depuis le timestamp de début de session.
+        // Permet de ne pas réinitialiser le timer à la pleine durée sur actualisation.
+        $remaining = $sessionDuration;
+        if ($sessionDuration > 0 && isset($_SESSION['live_started_at'])) {
+            $remaining = $sessionDuration - (time() - (int)$_SESSION['live_started_at']);
+            $remaining = max(1, $remaining);
+        }
+
         Vue::setTitle('Live');
         Vue::addCSS([ASSET . '/css/live.css']);
         Vue::addJS([ASSET . '/js/live.js']);
-        Vue::render('live/Live', ['url1' => $url1]);
+        Vue::render('live/Live', ['url1' => $url1, 'remaining' => $remaining]);
     }
 
     /**
      * Enregistre le viewer courant si ce n'est pas déjà fait pour cette session.
-     * Met à jour $url1 localement après l'incrément pour éviter un second appel BDD :
-     * la vue a besoin du compteur post-incrément, pas d'un refetch.
+     * Pose live_started_at une seule fois — jamais réinitialisé, sert à calculer le temps restant.
      */
     private function registerViewer(ConfigDAO $config, array &$url1, int $viewerCount): void
     {
@@ -50,9 +68,9 @@ class Live
         }
 
         $config->incrementViewers();
-        $_SESSION['in_live'] = true;
+        $_SESSION['in_live']        = true;
+        $_SESSION['live_started_at'] = time();
 
-        // Reflète l'incrément dans le tableau sans retourner en base
         $url1['viewerCount'] = $viewerCount + 1;
     }
 }
