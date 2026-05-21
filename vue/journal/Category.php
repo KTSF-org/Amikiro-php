@@ -59,6 +59,10 @@ use app\util\Helper;
             responsive: true,
             columnDefs: [
                 {"width": "2px", "targets": 0},
+                {"width": "20%", "targets": 2},
+                {"className": "text-end", "targets": 2},
+
+
             ],
 
             ajax: {
@@ -71,13 +75,16 @@ use app\util\Helper;
                 {
                     data: 'id',
                     render: function(id) {
-                        return `<button class="btn btn-primary btn-modif" data-id="${id}">Modifier</button>
-                            <button class="btn btn-danger btn-delete" data-id="${id}">Supprimer</button>
-                            <div class="update" style="display:none">
-                            <input class="form-control nameUpdate" type="text" placeholder="saisir le nom à modifier">
-                            <button class="btn btn-success btn-update" data-id="${id}">Valider</button>
-                            </div>
-                            `;
+                        return `<button class="btn btn-sm btn-modif" data-id="${id}">
+                                    <i class="bi bi-pencil-square" style="color:black" title="Modifier"></i>
+                                </button>
+                                <button class="btn btn-sm btn-delete" data-id="${id}">
+                                    <i class="bi bi-trash3" style="color:red" title="Supprimer"></i>
+                                </button>
+                                <div class="update" style="display:none">
+                                    <input class="form-control nameUpdate" type="text" placeholder="saisir le nom à modifier">
+                                    <button class="btn btn-success btn-update mt-1" data-id="${id}">Valider</button>
+                                </div>`;
                         //ne pas mettre des id mais des classes car répétées plusieurs fois dans le tableau
                     }
                 }//TODO gérer la modif et suppression comme au stage

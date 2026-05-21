@@ -58,6 +58,7 @@ $userRole = \app\util\SessionLogin::getRole();
 
                                 <?php if ($userRole >= ROLE_NATURALISTE): ?>
                                     <li><a class="dropdown-item" href="<?= $actual_link ?>journal?mesFiches=true"> Mes fiches</a></li>
+                                    <li><a class="dropdown-item" href="<?= $actual_link ?>category"> Catégories</a></li>
                                 <?php endif; ?>
                             </ul>
                         </li>
