@@ -140,7 +140,7 @@ class UserDAO extends Database
 	 */
 	public function getPurgeableGuests(): array
 	{
-		return $this->sendSQL(
+		$stmt = $this->getPdo()->prepare(
 			"SELECT * FROM `User`
 			 WHERE codeRole = ?
 			 AND (memberNum IS NULL OR memberNum = '')
@@ -148,9 +148,10 @@ class UserDAO extends Database
 			     SELECT 1 FROM `Abonnement`
 			     WHERE idUser = User.id
 			     AND endDate >= CURDATE()
-			 )",
-			[ROLE_INVITE]
+			 )"
 		);
+		$stmt->execute([ROLE_INVITE]);
+		return $stmt->fetchAll(PDO::FETCH_OBJ);
 	}
 
 	public function getUsersByName(string $name): array
@@ -277,6 +278,7 @@ class UserDAO extends Database
 			$rowData = (array) $elem;
 			$id = $rowData[$this->primaryKey];
 			unset($rowData[$this->primaryKey], $elem);
+			$rowData['memberNum'] = (string) ($rowData['memberNum'] ?? '');
 			$user = new User(...$rowData);
 			$user->setId($id);
 			array_push($allUsers, $user);
