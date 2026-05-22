@@ -44,18 +44,18 @@ class CategoryDAO extends Database {
 		}
 		$rowData = (array)$row;
 		unset($rowData[$this->primaryKey], $row);
-		$metier = new Category(...$rowData);
-		$metier->setId($id);
-		return $metier;
+		$category = new Category(...$rowData);
+		$category->setId($id);
+		return $category;
 	}
 
-	public function update($metier): bool {
-		$data = $this->getAllData($metier);
-		return $this->updateOne($metier->getId(), $data);
+	public function update($category): bool {
+		$data = $this->getAllData($category);
+		return $this->updateOne($category->getId(), $data);
 	}
 
-	public function delete($metier): bool {
-		return $this->deleteOne($metier->getId());
+	public function delete($category): bool {
+		return $this->deleteOne($category->getId());
 	}
 
     public function findAll(): array {

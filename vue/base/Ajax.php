@@ -16,7 +16,7 @@ abstract class Ajax {
 		if (!is_null($method) && method_exists($this, $method)) {
 			$rawData = $this->$method();
 		} else {
-			$rawData = [ __CLASS__ => $this->message ]; //pour tester 
+			$rawData = [ __CLASS__ => $this->message ]; //pour tester
 		}
 
 		//Sortie sur le navigateur au format JSON :

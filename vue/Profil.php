@@ -53,8 +53,21 @@ $roleLabel = match ((int) ($role ?? -1)) {
                         <dd class="col-sm-8 mb-0"><?= htmlspecialchars($roleLabel ?? '') ?></dd>
 
                         <dt class="col-sm-4 text-muted fw-normal">N°Adhérent</dt>
-                        <!-- Le numéro de l'adhérent doit s'afficher s'il existe, même logique que dans le tableau admin, rouge si inactif, vert sinon-->
-                        <dd class="col-sm-8 mb-0"></dd>
+                        <dd class="col-sm-8 mb-0">
+                            <?php if (!empty($memberNum)): ?>
+                                <?php if ($hasActiveSub): ?>
+                                    <span class="badge bg-success-subtle text-success border border-success-subtle">
+                                        <?= htmlspecialchars($memberNum) ?>
+                                    </span>
+                                <?php else: ?>
+                                    <span class="badge bg-danger-subtle text-danger border border-danger-subtle">
+                                        <?= htmlspecialchars($memberNum) ?>
+                                    </span>
+                                <?php endif; ?>
+                            <?php else: ?>
+                                <span class="text-muted">—</span>
+                            <?php endif; ?>
+                        </dd>
                     </dl>
                 </div>
             </div>
@@ -125,6 +138,30 @@ $roleLabel = match ((int) ($role ?? -1)) {
                     </form>
                 </div>
             </div>
+
+            <?php if ((int)($role ?? -1) === ROLE_INVITE): ?>
+            <!-- Suppression de compte — uniquement pour les invités -->
+            <div class="card mt-4 border-danger">
+                <div class="card-header bg-danger text-white py-2">
+                    <span class="fw-semibold small">Supprimer mon compte</span>
+                </div>
+                <div class="card-body">
+                    <p class="small text-muted mb-3">
+                        Cette action est <strong>irréversible</strong>. Votre compte et vos données seront définitivement supprimés.
+                    </p>
+                    <form method="POST" action="<?= $actual_link ?>parametres/profil"
+                          onsubmit="return confirm('Supprimer définitivement votre compte ? Cette action est irréversible.')">
+                        <input type="hidden" name="action" value="deleteAccount">
+                        <div class="mb-3">
+                            <label for="confirm_delete_password" class="form-label small">Confirmez votre mot de passe</label>
+                            <input type="password" class="form-control form-control-sm" id="confirm_delete_password"
+                                   name="confirm_delete_password" required>
+                        </div>
+                        <button type="submit" class="btn btn-danger btn-sm px-4">Supprimer mon compte</button>
+                    </form>
+                </div>
+            </div>
+            <?php endif; ?>
 
         </div>
     </div>

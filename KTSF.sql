@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : localhost
--- Généré le : lun. 04 mai 2026 à 15:52
+-- Généré le : lun. 11 mai 2026 à 16:25
 -- Version du serveur :  10.3.29-MariaDB
 -- Version de PHP : 7.4.30
 
@@ -42,7 +42,15 @@ CREATE TABLE `Abonnement` (
 INSERT INTO `Abonnement` (`id`, `idUser`, `startDate`, `endDate`) VALUES
 (1, 9, '2026-05-04', '2026-05-05'),
 (6, 8, '2026-05-04', '2026-05-05'),
-(7, 8, '2026-05-04', '2026-05-31');
+(7, 8, '2026-05-04', '2026-05-31'),
+(8, 9, '2026-05-11', '2026-05-12'),
+(9, 7, '2026-05-11', '2026-05-12'),
+(10, 17, '2026-05-11', '2026-05-18'),
+(12, 23, '2026-05-11', '2026-05-17'),
+(13, 16, '2026-05-11', '2026-05-12'),
+(14, 25, '2026-05-01', '2026-05-05'),
+(15, 26, '2026-04-15', '2026-04-22'),
+(16, 27, '2026-04-01', '2026-04-08');
 
 -- --------------------------------------------------------
 
@@ -84,7 +92,9 @@ CREATE TABLE `Category` (
 --
 
 INSERT INTO `Category` (`id`, `name`) VALUES
-(1, 'Départ chasse');
+(1, 'Départ chasse'),
+(2, 'testajoutcat'),
+(3, 'pause');
 
 -- --------------------------------------------------------
 
@@ -103,8 +113,10 @@ CREATE TABLE `ColonySection` (
 --
 
 INSERT INTO `ColonySection` (`id`, `idSection`, `idCategory`) VALUES
-(2, 3, 1),
-(3, 12, 1);
+(3, 12, 1),
+(4, 19, 1),
+(6, 21, 2),
+(7, 22, 3);
 
 -- --------------------------------------------------------
 
@@ -118,15 +130,16 @@ CREATE TABLE `Config` (
   `sessionDuration` int(11) NOT NULL DEFAULT 3600,
   `viewerLimit` int(11) NOT NULL DEFAULT 10,
   `viewerCount` int(11) NOT NULL DEFAULT 0,
-  `guestDefaultAccessDays` int(11) NOT NULL
+  `guestDefaultAccessDays` int(11) NOT NULL DEFAULT 7,
+  `naturalisteDefaultAccessDays` int(11) NOT NULL DEFAULT 30
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Déchargement des données de la table `Config`
 --
 
-INSERT INTO `Config` (`id`, `streamUrl`, `sessionDuration`, `viewerLimit`, `viewerCount`, `guestDefaultAccessDays`) VALUES
-(1, 'https://s40.ipcamlive.com/streams/28gra6mohj2ruybvy/stream.m3u8', 3600, 10, 0, 7);
+INSERT INTO `Config` (`id`, `streamUrl`, `sessionDuration`, `viewerLimit`, `viewerCount`, `guestDefaultAccessDays`, `naturalisteDefaultAccessDays`) VALUES
+(1, 'https://ds1-cache.quanteec.com/contents/encodings/live/112fd325-c7cf-42fa-3032-3730-6d61-63-9dcb-e991fc0db4a4d/master.m3u8', 60, 3, 0, 7, 30);
 
 -- --------------------------------------------------------
 
@@ -155,7 +168,8 @@ CREATE TABLE `Section` (
   `id` int(11) NOT NULL,
   `title` varchar(256) COLLATE utf8mb4_unicode_ci NOT NULL,
   `content` varchar(4096) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `creationDate` datetime NOT NULL,
+  `eventDate` datetime NOT NULL,
+  `modifDate` datetime NOT NULL,
   `idUser` int(11) NOT NULL,
   `idLogs` int(11) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -164,17 +178,15 @@ CREATE TABLE `Section` (
 -- Déchargement des données de la table `Section`
 --
 
-INSERT INTO `Section` (`id`, `title`, `content`, `creationDate`, `idUser`, `idLogs`) VALUES
-(3, 'baguettee', 'frzerzere', '2026-04-08 15:34:41', 7, 1),
-(4, 'bidoof', 'bfqhgipugouydystsresr', '2026-04-15 14:22:00', 9, 1),
-(7, 'SALUT', 'bite', '2026-04-04 14:25:00', 9, 1),
-(8, 'SALUT', 'bite', '2026-04-04 14:25:00', 9, 1),
-(9, 'SALUT', 'bite', '2026-04-04 14:25:00', 9, 1),
-(11, 'BATGIRL LA FOLLASSE', 'elle a tapé batman', '2026-04-30 15:36:00', 9, 1),
-(12, 'Flo la déglingue', 'miaou', '2026-04-30 15:52:00', 9, 1),
-(13, 'BATGIRL OUAIS', 'elle a tapé batman', '2026-04-30 15:36:00', 9, 1),
-(17, 'TEST 0000006', 'hgjfhgurdhgsmjkvhreuhvdsithc gh riehfsjd lo', '2026-05-20 17:09:00', 9, 1),
-(18, 'toi tu vire', 'adieu', '2026-05-07 14:16:00', 9, 1);
+INSERT INTO `Section` (`id`, `title`, `content`, `eventDate`, `modifDate`, `idUser`, `idLogs`) VALUES
+(11, 'BATGIRL LA FOLLASSE', 'elle a tapé batman', '2026-04-30 15:36:00', '0000-00-00 00:00:00', 9, 1),
+(12, 'Flo la déglingue', 'miaou', '2026-04-30 15:52:00', '0000-00-00 00:00:00', 9, 1),
+(13, 'BATGIRL OUAIS', 'elle a fait un calin à batman', '2026-04-30 15:36:00', '2026-05-11 15:19:38', 9, 1),
+(17, 'TEST 0000006', 'hgjfhgurdhgsmjkvhreuhvdsithc gh riehfsjd lo', '2026-05-20 17:09:00', '2026-05-11 13:17:52', 9, 1),
+(19, 'test', 'test', '2026-05-11 11:18:00', '0000-00-00 00:00:00', 9, 1),
+(20, 'test', 'test', '2026-05-11 11:18:00', '0000-00-00 00:00:00', 9, 1),
+(21, 'test', 'test', '2026-05-11 11:18:00', '0000-00-00 00:00:00', 9, 1),
+(22, 'test', 'w', '2025-04-10 10:42:00', '0000-00-00 00:00:00', 9, 1);
 
 -- --------------------------------------------------------
 
@@ -213,7 +225,6 @@ CREATE TABLE `SpecimenSection` (
 --
 
 INSERT INTO `SpecimenSection` (`id`, `idSection`, `idBat`) VALUES
-(2, 4, 2),
 (5, 11, 6),
 (6, 13, 6),
 (7, 17, 2);
@@ -233,7 +244,7 @@ CREATE TABLE `User` (
   `name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
   `surname` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
   `countConnect` int(11) NOT NULL,
-  `memberNum` varchar(24) COLLATE utf8mb4_unicode_ci NOT NULL
+  `memberNum` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -241,10 +252,18 @@ CREATE TABLE `User` (
 --
 
 INSERT INTO `User` (`id`, `codeRole`, `mail`, `uptime`, `password`, `name`, `surname`, `countConnect`, `memberNum`) VALUES
-(7, 0, 'kevin@gmail.com', 45, '$2y$12$/79CKTFEyeNJPalcHbpOK.056ZH3KE6xjxvNkRiNI8dPho6j88Ubu', 'Kevin', 'Bidoof', 16, 'AMI-2026-001'),
-(8, 1, 'simon@gmail.com', 45, '$2y$12$slf5Z6Z6WZzy6msircaMLOakfhDT6W6kHnCg9Au1hrzUbeeOv4/M6', 'Simon', 'Gemini', 20, 'AMI-2026-002'),
-(9, 2, 'tani@gmail.com', 45, '$2y$12$lylhaRrLUjnu9lSZsZ.hxOiXm8T4KGfgXMpk62pkQMXTrLdKwrrRe', 'Tani', 'OUI', 44, 'AMI-2026-003'),
-(10, 3, 'florian@gmail.com', 20, '$2y$12$AjQtWIQ4tUBZztIJ8OOLOe0WK8dCto2CAm829TueyQj/N4SdeKabO', 'Florian', 'CS2', 41, 'AMI-2026-004');
+(7, 1, 'kevin@gmail.com', 45, '$2y$12$/79CKTFEyeNJPalcHbpOK.056ZH3KE6xjxvNkRiNI8dPho6j88Ubu', 'Kevin', 'Bidoof', 17, 'AMI-2026-001'),
+(8, 1, 'simon@gmail.com', 45, '$2y$12$SeIcT4vxBC834zm/2npQ7.jPcCgWc/.rM5zS3TfEyQMTj/QeYxTYW', 'Simon', 'Gemini', 23, 'AMI-2026-002'),
+(9, 2, 'tani@gmail.com', 45, '$2y$12$lylhaRrLUjnu9lSZsZ.hxOiXm8T4KGfgXMpk62pkQMXTrLdKwrrRe', 'Tani', 'OUI', 51, 'AMI-2026-003'),
+(10, 3, 'florian@gmail.com', 20, '$2y$12$TCupomw.4bsf0rdF3GUIk.UhduLByjRzyfTzTVtVSnZNhoshs8iFe', 'Florian', 'CS2', 41, 'AMI-2026-004'),
+(16, 2, 'natu@gmail.com', 0, '$2y$12$g.PQywz.oNXYpYClqjm7H.sX1TmcPpApBQq8GMeLgD0rRufLAVv3O', 'Naturaliste', 'Nat', 3, NULL),
+(17, 0, 'Inv@gmail.com', 0, '$2y$12$lCoPOMe34D3fy9jiIuJTNOuR5JHyG6U3A5HmkdNM8yT644UAt.6zm', 'Jean', 'De la Mime', 2, NULL),
+(22, 2, 'herehiaus@gmail.com', 0, '$2y$12$k46l7WFdNPtUXYOAE88kiO5m69CXBW9B7k5W8JHcGoTSS92DwV5ZW', 'Herehia', 'US', 0, NULL),
+(23, 1, 'florian.dev56@gmail.com', 0, '$2y$12$hsDS.9lavkpszkTE0jAF6umkkaW8Ii1yrjLG4Bx97AdtYWS47x4Va', 'Florian', 'Edouard', 1, 'AMI-2026-0005'),
+(24, 2, 'opuutanihiarii@gmail.com', 0, '$2y$12$Wi/yxj6JzwtjakRyDlaUEupaXbU062rAtMtrIHU7AmyOwfw/GR9Ga', 'Tanihiarii', 'OPUU', 1, NULL),
+(25, 0, 'marie.dupont@gmail.com', 0, '$2y$12$lylhaRrLUjnu9lSZsZ.hxOiXm8T4KGfgXMpk62pkQMXTrLdKwrrRe', 'Marie', 'Dupont', 1, NULL),
+(26, 0, 'paul.martin@gmail.com', 0, '$2y$12$lylhaRrLUjnu9lSZsZ.hxOiXm8T4KGfgXMpk62pkQMXTrLdKwrrRe', 'Paul', 'Martin', 2, NULL),
+(27, 0, 'clara.petit@gmail.com', 0, '$2y$12$lylhaRrLUjnu9lSZsZ.hxOiXm8T4KGfgXMpk62pkQMXTrLdKwrrRe', 'Clara', 'Petit', 0, NULL);
 
 --
 -- Index pour les tables déchargées
@@ -326,25 +345,25 @@ ALTER TABLE `User`
 -- AUTO_INCREMENT pour la table `Abonnement`
 --
 ALTER TABLE `Abonnement`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT pour la table `Bat`
 --
 ALTER TABLE `Bat`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
 
 --
 -- AUTO_INCREMENT pour la table `Category`
 --
 ALTER TABLE `Category`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT pour la table `ColonySection`
 --
 ALTER TABLE `ColonySection`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT pour la table `Config`
@@ -362,7 +381,7 @@ ALTER TABLE `Logs`
 -- AUTO_INCREMENT pour la table `Section`
 --
 ALTER TABLE `Section`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- AUTO_INCREMENT pour la table `Species`
@@ -380,7 +399,7 @@ ALTER TABLE `SpecimenSection`
 -- AUTO_INCREMENT pour la table `User`
 --
 ALTER TABLE `User`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 
 --
 -- Contraintes pour les tables déchargées
@@ -409,7 +428,7 @@ ALTER TABLE `ColonySection`
 -- Contraintes pour la table `Section`
 --
 ALTER TABLE `Section`
-  ADD CONSTRAINT `LogsConstraint` FOREIGN KEY (`IdLogs`) REFERENCES `Logs` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `LogsConstraint` FOREIGN KEY (`idLogs`) REFERENCES `Logs` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `UserConstraint` FOREIGN KEY (`idUser`) REFERENCES `User` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
