@@ -164,7 +164,7 @@ class MainAjax extends Ajax {
 			$date = req::post('date');
 			$category = req::post('category');
 			$notes = req::post('notes');
-			$id = req::post('id');
+			$id = req::post('sectionId');
 
 			if(!is_numeric($category)){   //création d'une category si on ne reçoit pas un id
 				$newCategory = new Category($category);

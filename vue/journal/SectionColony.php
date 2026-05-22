@@ -10,11 +10,11 @@ use app\util\Helper;
 <script src="asset/js/formulaire.js" defer></script>
 
 <div class="container">
-
-    <p>Création fiche colonie</p>
+    <a href="journal" role="button" class="btn btn-primary m-1">Retour</a>
+    <p><?= $modif ? 'Modification fiche colonie' : 'Création fiche colonie' ?></p>
 
     <?php if ($modif): ?>
-        <form id="formulaire" class="colonyFormModi" method="POST" action="<?= $actual_link ?>sectionColony">
+        <form id="formulaire" class="colonyFormModif" method="POST" action="<?= $actual_link ?>sectionColony">
     <?php else: ?>
         <form id="formulaire" class="colonyForm" method="POST" action="<?= $actual_link ?>sectionColony">
     <?php endif; ?>
@@ -33,7 +33,7 @@ use app\util\Helper;
                 <label for="Date" class="form-label">Date</label>
                 <?php if ($modif): ?>
                     <input type="datetime-local" class="" id="date" name="colonyDate"
-                        value="<?= Helper::dateToDatetimelocal($section->getCreationDate()) ?>">
+                        value="<?= Helper::dateToDatetimelocal($section->getEventDate()) ?>">
                 <?php else: ?>
                     <input type="datetime-local" class="" id="date" name="colonyDate">
                 <?php endif; ?>

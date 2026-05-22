@@ -56,28 +56,6 @@ class SectionColony {
             }
 
 
-
-        // if($_SERVER['REQUEST_METHOD'] === 'POST') {
-        //     $title = Request::post('colonyTitle');
-        //     $content = Request::post('colonyContent');
-        //     $creationDate = Request::post('colonyDate');
-        //     $idUser = UserSession::getUserId();
-
-        //     if(empty($title) || empty($content) || empty($creationDate)) {
-        //         $error = 'Tous les champs doivent être remplis.';
-        //     } else {
-        //         $section = new Section($title, $content, $creationDate, $idUser);
-        //         if ($section->addSection()) {
-        //             header('Location: ' . BaseURL::getBaseUrl() . 'sectionColony');
-        //             exit;
-        //         }
-        //         $error = 'Erreur lors de la création de la section.';
-
-
-
-        //     }
-        // }
-
         Vue::render(
             'journal/SectionColony',
             [
