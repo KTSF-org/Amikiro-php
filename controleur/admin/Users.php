@@ -50,9 +50,10 @@ class Users
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             match ($_POST['action'] ?? '') {
-                'delete' => $this->delete(),
+                'delete'     => $this->delete(),
                 'saveConfig' => $this->saveConfig(),
-                default => null,
+                'purge'      => $this->purge(),
+                default      => null,
             };
         }
 
@@ -70,7 +71,10 @@ class Users
         $users = $userDAO->getAllFiltered($roleFilter, $offset, self::PER_PAGE);
         $currentId = SessionLogin::getUserId();
         $config = $configDAO->getConfig();
-        $guestDefaultAccessDays = (int) ($config->guestDefaultAccessDays ?? 7);
+        $guestDefaultAccessDays       = (int) ($config->guestDefaultAccessDays ?? 7);
+        $naturalisteDefaultAccessDays = (int) ($config->naturalisteDefaultAccessDays ?? 30);
+        $purgeableCount               = count($userDAO->getPurgeableGuests());
+        $purgedCount                  = isset($_GET['purged']) ? (int) $_GET['purged'] : null;
 
         $userIds = array_map(fn($u) => (int) $u->id, $users);
         $activeByUser = $subscriptionDAO->getActiveByUserIds($userIds);
@@ -78,13 +82,16 @@ class Users
         Vue::setTitle('Gestion des utilisateurs');
         Vue::addJS([ASSET . '/js/users.js']);
         Vue::render('admin/Users', [
-            'users' => $users,
-            'currentId' => $currentId,
-            'guestDefaultAccessDays' => $guestDefaultAccessDays,
-            'activeByUser' => $activeByUser,
-            'currentPage' => $currentPage,
-            'totalPages' => $totalPages,
-            'roleFilter' => $roleFilter,
+            'users'                        => $users,
+            'currentId'                    => $currentId,
+            'guestDefaultAccessDays'       => $guestDefaultAccessDays,
+            'naturalisteDefaultAccessDays' => $naturalisteDefaultAccessDays,
+            'activeByUser'                 => $activeByUser,
+            'currentPage'                  => $currentPage,
+            'totalPages'                   => $totalPages,
+            'roleFilter'                   => $roleFilter,
+            'purgeableCount'               => $purgeableCount,
+            'purgedCount'                  => $purgedCount,
         ]);
     }
 
@@ -108,12 +115,35 @@ class Users
     }
 
     /**
+     * Supprime les invités expirés sans memberNum (jamais adhérents).
+     * Les ex-adhérents rétrogradés (memberNum non null) sont exclus.
+     */
+    private function purge(): void
+    {
+        $userDAO         = new UserDAO();
+        $subscriptionDAO = new SubscriptionDAO();
+        $targets         = $userDAO->getPurgeableGuests();
+
+        foreach ($targets as $u) {
+            $subscriptionDAO->deleteByUser((int) $u->id);
+            $userDAO->getUsersById((int) $u->id)->deleteUser();
+        }
+
+        header('Location: ' . BaseURL::getBaseUrl() . 'parametres/utilisateurs?purged=' . count($targets));
+        exit;
+    }
+
+    /**
      * Sauvegarde la durée d'accès invité par défaut depuis la ligne de config globale.
      */
     private function saveConfig(): void
     {
-        $days = max(1, (int) ($_POST['guestDefaultAccessDays'] ?? 7));
-        (new ConfigDAO())->updateConfig(['guestDefaultAccessDays' => $days]);
+        $guestDays       = max(1, (int) ($_POST['guestDefaultAccessDays'] ?? 7));
+        $naturalisteDays = max(1, (int) ($_POST['naturalisteDefaultAccessDays'] ?? 30));
+        (new ConfigDAO())->updateConfig([
+            'guestDefaultAccessDays'       => $guestDays,
+            'naturalisteDefaultAccessDays' => $naturalisteDays,
+        ]);
 
         header('Location: ' . BaseURL::getBaseUrl() . 'parametres/utilisateurs');
         exit;
@@ -132,14 +162,13 @@ class Users
      * - ROLE_ADHERENT   : période d'adhésion obligatoire.
      * - ROLE_NATURALISTE: période d'adhésion facultative, purement informative.
      */
-    //TODO ajouter un temps d'accès spécifique au naturaliste, on doit pouvoir l'éditer. Pareil pour l'adhérent,
-    // s'il renouvelle son adhésion au lieu de lui réassigner une période d'adhésion, on update.
     private function create(): void
     {
         $error = null;
         $configDAO = new ConfigDAO();
         $config = $configDAO->getConfig();
-        $guestDefaultAccessDays = (int) ($config->guestDefaultAccessDays ?? 7);
+        $guestDefaultAccessDays       = (int) ($config->guestDefaultAccessDays ?? 7);
+        $naturalisteDefaultAccessDays = (int) ($config->naturalisteDefaultAccessDays ?? 30);
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $name = Request::post('name');
@@ -149,16 +178,19 @@ class Users
             $chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
             $password = implode('', array_map(fn() => $chars[random_int(0, strlen($chars) - 1)], range(1, 8)));
 
-            // ROLE_INVITE : durée assignée depuis Config.guestDefaultAccessDays plutôt que saisie manuellement,
-            // pour rester cohérent avec la rétrogradation automatique adhérent → invité au login.
+            // ROLE_INVITE / ROLE_NATURALISTE : durée auto-calculée depuis Config, pas de saisie manuelle.
             if ($codeRole === ROLE_INVITE) {
                 $startDate = date('Y-m-d');
-                $endDate = date('Y-m-d', strtotime("+{$guestDefaultAccessDays} days"));
-                $hasDates = true;
+                $endDate   = date('Y-m-d', strtotime("+{$guestDefaultAccessDays} days"));
+                $hasDates  = true;
+            } elseif ($codeRole === ROLE_NATURALISTE) {
+                $startDate = date('Y-m-d');
+                $endDate   = date('Y-m-d', strtotime("+{$naturalisteDefaultAccessDays} days"));
+                $hasDates  = true;
             } else {
                 $startDate = $_POST['startDate'] ?? '';
-                $endDate = $_POST['endDate'] ?? '';
-                $hasDates = !empty($startDate) || !empty($endDate);
+                $endDate   = $_POST['endDate'] ?? '';
+                $hasDates  = !empty($startDate) || !empty($endDate);
             }
 
             $userDAO = new UserDAO();
@@ -176,7 +208,7 @@ class Users
             } elseif ($hasDates && $endDate <= $startDate) {
                 $error = 'La date de fin doit être postérieure à la date de début.';
             } else {
-                $memberNum = ($codeRole === ROLE_ADHERENT) ? $userDAO->generateNextMemberNum() : '';
+                $memberNum = in_array($codeRole, [ROLE_ADHERENT, ROLE_NATURALISTE]) ? $userDAO->generateNextMemberNum() : '';
                 // 'tmp' est un placeholder : setPassword() ci-dessous l'écrase immédiatement avec le hash bcrypt.
                 $user = new User($codeRole, $mail, 0, 'tmp', $name, $surname, 0, $memberNum);
                 $user->setPassword($password);
@@ -196,8 +228,9 @@ class Users
         Vue::setTitle('Créer un compte');
         Vue::addJS([ASSET . '/js/users-create.js']);
         Vue::render('admin/UsersCreate', [
-            'error' => $error,
-            'guestDefaultAccessDays' => $guestDefaultAccessDays,
+            'error'                        => $error,
+            'guestDefaultAccessDays'       => $guestDefaultAccessDays,
+            'naturalisteDefaultAccessDays' => $naturalisteDefaultAccessDays,
         ]);
     }
 
@@ -228,8 +261,6 @@ class Users
      */
     private function edit(): void
     {
-        //TODO quand on donne une adhésion au naturaliste, un numéro d'adhérent doit être créée, quand il perd son adhésion,
-        // soit on ne l'affiche plus dans le tableau des utilisateurs, soit on l'affiche en rouge
         $id = (int) ($_GET['id'] ?? 0);
         if ($id <= 0) {
             header('Location: ' . BaseURL::getBaseUrl() . 'parametres/utilisateurs');
@@ -272,6 +303,9 @@ class Users
                             $user->setMemberNum($userDAO->generateNextMemberNum());
                         }
                         $user->setCodeRole(ROLE_ADHERENT);
+                        $userDAO->update($user);
+                    } elseif ($subscriptionSuccess && $user->getCodeRole() === ROLE_NATURALISTE && empty($user->getMemberNum())) {
+                        $user->setMemberNum($userDAO->generateNextMemberNum());
                         $userDAO->update($user);
                     }
                 }

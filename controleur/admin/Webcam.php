@@ -37,8 +37,11 @@ class Webcam {
             $sessionDuration = (int)($_POST['sessionDuration'] ?? 3600);
             $viewerLimit     = (int)($_POST['viewerLimit'] ?? 10);
 
-            if ($sessionDuration < 60 || $viewerLimit < 1) {
-                $error = 'Valeurs invalides (durée min. 60 s, viewers min. 1).';
+            $durationInvalid = $sessionDuration !== 0 && $sessionDuration < 60;
+            $limitInvalid    = $viewerLimit < 0;
+
+            if ($durationInvalid || $limitInvalid) {
+                $error = 'Valeurs invalides (durée : 0 ou ≥ 60 s ; viewers : 0 ou plus).';
             } else {
                 $success = $configDAO->updateConfig([
                     'streamUrl'       => $streamUrl,
@@ -49,9 +52,6 @@ class Webcam {
             }
         }
         //TODO avoir un mini player qui montre si le flux est valide
-        //TODO modifier le nombre de viewers autorisé
-        //TODO Améliorer le système de session de visionnage, quand il s'écoule, le flux devient innacessible pour tous les utilisateurs
-        //actuellement il suffit d'actualiser la page pour réaccéder a une session de visionnage
 
         // Chargement de la configuration courante après une éventuelle mise à jour.
         $config = $configDAO->getConfig();

@@ -10,33 +10,42 @@ function roleBadge(int $code): string
     };
 }
 
-function memberNumCell(object $u): string
+function memberNumCell(object $u, array $activeByUser): string
 {
-    $role = (int) $u->codeRole;
-    $num = $u->memberNum ?? '';
+    $role      = (int) $u->codeRole;
+    $num       = $u->memberNum ?? '';
+    $hasAccess = isset($activeByUser[(int) $u->id]);
 
-    if ($role === ROLE_INVITE) {
-        // Un invité avec un numéro est un ex-adhérent rétrogradé (adhésion expirée au login) — affiché en rouge.
-        return empty($num)
+    if (empty($num)) {
+        return $role === ROLE_INVITE
             ? '<span class="text-muted small">INVITE</span>'
-            : '<span class="badge bg-danger-subtle text-danger border border-danger-subtle">' . htmlspecialchars($num) . '</span>';
+            : '<span class="text-muted">—</span>';
     }
-    if (empty($num)) //TODO Mettre une condition pour que tous les gens sans adhésion affiche - dans la colonne
-        {
-        return '<span class="text-muted">—</span>';
-    }
-    return '<span class="badge bg-success-subtle text-success border border-success-subtle">' . htmlspecialchars($num) . '</span>';
+
+    // Numéro vert si accès actif, rouge sinon (indique que l'adhésion/accès est échu)
+    return $hasAccess
+        ? '<span class="badge bg-success-subtle text-success border border-success-subtle">' . htmlspecialchars($num) . '</span>'
+        : '<span class="badge bg-danger-subtle text-danger border border-danger-subtle">' . htmlspecialchars($num) . '</span>';
 }
 
 function subscriptionCell(int $userId, int $role, array $activeByUser): string
 {
+    if ($role === ROLE_ADMIN) {
+        return '<span class="text-muted">—</span>';
+    }
     if (!isset($activeByUser[$userId])) {
         return '<span class="text-muted" title="Aucun accès actif">✗</span>';
     }
-    if ($role === ROLE_INVITE) {
-        return '<span class="text-warning" title="Accès temporaire (invité)">⏱</span>';
-    }
-    return '<span class="text-success" title="Adhésion active">✓</span>';
+
+    $sub      = $activeByUser[$userId];
+    $endDate  = new \DateTime($sub->endDate);
+    $daysLeft = (int)(new \DateTime('today'))->diff($endDate)->days;
+    $endFmt   = $endDate->format('d/m/Y');
+
+    return sprintf(
+        '<span class="badge bg-success-subtle text-success border border-success-subtle fw-normal">%s <span class="opacity-75 small">(%dj)</span></span>',
+        $endFmt, $daysLeft
+    );
 }
 ?>
 
@@ -48,10 +57,26 @@ function subscriptionCell(int $userId, int $role, array $activeByUser): string
             <h1 class="mb-0 h3">Utilisateurs</h1>
             <small class="text-muted">Administration · <?= htmlspecialchars(APP_NAME) ?></small>
         </div>
-        <a href="<?= $actual_link ?>parametres/utilisateurs?page=create" class="btn btn-success btn-sm px-3">
-            + Créer un compte
-        </a>
+        <div class="d-flex gap-2">
+            <?php if ($purgeableCount > 0): ?>
+            <button type="button" class="btn btn-outline-danger btn-sm px-3"
+                    data-bs-toggle="modal" data-bs-target="#purgeModal">
+                Purger les invités expirés
+                <span class="badge bg-danger ms-1"><?= $purgeableCount ?></span>
+            </button>
+            <?php endif; ?>
+            <a href="<?= $actual_link ?>parametres/utilisateurs?page=create" class="btn btn-success btn-sm px-3">
+                + Créer un compte
+            </a>
+        </div>
     </div>
+
+    <?php if ($purgedCount !== null): ?>
+    <div class="alert alert-success alert-dismissible fade show py-2" role="alert">
+        <?= $purgedCount ?> compte<?= $purgedCount > 1 ? 's' : '' ?> invité<?= $purgedCount > 1 ? 's' : '' ?> supprimé<?= $purgedCount > 1 ? 's' : '' ?>.
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    <?php endif; ?>
 
     <!-- Barre outils : recherche + config -->
     <div class="row g-3 mb-4">
@@ -82,15 +107,27 @@ function subscriptionCell(int $userId, int $role, array $activeByUser): string
                 </div>
                 <div class="card-body">
                     <form method="POST" action="<?= $actual_link ?>parametres/utilisateurs"
-                        class="d-flex align-items-end gap-2">
+                        class="d-flex align-items-end gap-2 flex-wrap">
                         <input type="hidden" name="action" value="saveConfig">
-                        <div class="flex-grow-1">
+                        <div>
                             <label for="guestDefaultAccessDays" class="form-label small mb-1">
-                                Durée accès invité par défaut
+                                Accès invité par défaut
                             </label>
                             <div class="input-group input-group-sm">
                                 <input type="number" class="form-control" id="guestDefaultAccessDays"
                                     name="guestDefaultAccessDays" min="1" value="<?= (int) $guestDefaultAccessDays ?>"
+                                    style="max-width:80px">
+                                <span class="input-group-text">jours</span>
+                            </div>
+                        </div>
+                        <div>
+                            <label for="naturalisteDefaultAccessDays" class="form-label small mb-1">
+                                Accès naturaliste par défaut
+                            </label>
+                            <div class="input-group input-group-sm">
+                                <input type="number" class="form-control" id="naturalisteDefaultAccessDays"
+                                    name="naturalisteDefaultAccessDays" min="1"
+                                    value="<?= (int) $naturalisteDefaultAccessDays ?>"
                                     style="max-width:80px">
                                 <span class="input-group-text">jours</span>
                             </div>
@@ -120,7 +157,6 @@ function subscriptionCell(int $userId, int $role, array $activeByUser): string
             </li>
         <?php endforeach; ?>
     </ul>
-<!-- TODO suppression de compte invité automatique ? -->
     <!-- Tableau -->
     <div class="card">
         <div class="table-responsive">
@@ -130,7 +166,7 @@ function subscriptionCell(int $userId, int $role, array $activeByUser): string
                         <th>Identité</th>
                         <th>Rôle</th>
                         <th>N° adhérent</th>
-                        <th class="text-center">Adhésion</th>
+                        <th class="text-center">Temps d'accès</th>
                         <th class="text-center">Connexions</th>
                         <th class="text-end">Actions</th>
                     </tr>
@@ -148,7 +184,7 @@ function subscriptionCell(int $userId, int $role, array $activeByUser): string
                                     <small class="text-muted"><?= htmlspecialchars($u->mail) ?></small>
                                 </td>
                                 <td><?= roleBadge((int) $u->codeRole) ?></td>
-                                <td><?= memberNumCell($u) ?></td>
+                                <td><?= memberNumCell($u, $activeByUser) ?></td>
                                 <td class="text-center"><?= subscriptionCell((int) $u->id, (int) $u->codeRole, $activeByUser) ?></td>
                                 <td class="text-center text-muted small"><?= (int) $u->countConnect ?></td>
                                 <td class="text-end">
@@ -190,6 +226,29 @@ function subscriptionCell(int $userId, int $role, array $activeByUser): string
 </div>
 
 <!-- Modal suppression -->
+<div class="modal fade" id="purgeModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title">Purger les invités expirés</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <strong><?= $purgeableCount ?></strong> compte<?= $purgeableCount > 1 ? 's' : '' ?> invité<?= $purgeableCount > 1 ? 's' : '' ?> sans historique
+                <?= $purgeableCount > 1 ? 'seront supprimés' : 'sera supprimé' ?> définitivement.
+                <div class="text-muted small mt-1">Les ex-adhérents (numéro en rouge) ne sont pas concernés.</div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Annuler</button>
+                <form method="POST" action="<?= $actual_link ?>parametres/utilisateurs">
+                    <input type="hidden" name="action" value="purge">
+                    <button type="submit" class="btn btn-danger btn-sm">Supprimer</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="modal fade" id="deleteModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">

@@ -12,6 +12,8 @@ use modele\DAO\ConfigDAO;
 use modele\journal\SectionColony as SectionColony;
 use modele\journal\Section as Section;
 use app\util\SessionLogin as SessionLogin;
+use DateTime;
+use modele\DAO\journalDAO\CategoryDAO;
 /**
  *	Classe chargée depuis le routing : route/routing.php
  *	==> $route->add('/ajax', 'controleur\MainAjax');
@@ -46,7 +48,11 @@ class MainAjax extends Ajax {
 			'liveLeave'   => 'liveLeave',
 			'viewerCount' => 'getViewerCount',
 			'addSectionColony' => 'addSectionCol',
-			'updateSectionColony' => 'updateSectionCol'
+			'updateSectionColony' => 'updateSectionCol',
+			'addCategory' => 'addCategory',
+			'getCategories' => 'getCategories',
+			'delCategory' => 'delCategory',
+			'updateCategory' => 'updateCategory',
 		];
 	}
 
@@ -131,7 +137,11 @@ class MainAjax extends Ajax {
 				$category= $newCategory->getId();
 			}
 
-			$section = new Section($title, $notes, $date, SessionLogin::getUserId()); //création de la rubrique
+			$now = new DateTime();
+			$dateModif= $now->format("Y-m-d H:i:s");
+
+			$section = new Section($title, $notes, $date, $dateModif,SessionLogin::getUserId()); //création de la rubrique
+
 
 			if ($section->addSection()) {  //création de la rubrique en bdd
 				$sectionColony = new SectionColony($section->getId(), (int) $category); //création de la section Colony
@@ -162,7 +172,9 @@ class MainAjax extends Ajax {
 				$category= $newCategory->getId();
 			}
 
-			$section = new Section($title, $notes, $date, SessionLogin::getUserId());
+			$now = new DateTime();
+			$dateModif= $now->format("Y-m-d H:i:s");
+			$section = new Section($title, $notes, $date,$dateModif, SessionLogin::getUserId());
 			$section->setId($id);
 			$sectionDAO = new SectionDAO();
 
@@ -172,6 +184,72 @@ class MainAjax extends Ajax {
 				return "Success";
 			}
 				return "Successsss";
+
+		}else{
+			return "No success";
+		}
+	}
+
+	protected function addCategory():string
+	{
+		if(req::has('name')){
+			$name = req::post('name');
+
+			$newCategory = new Category($name);
+			$newCategory->addCategory();
+
+			return "Success";
+		}else{
+			return "No success";
+		}
+	}
+
+	protected function getCategories(): array //affichage categories dans le datatable
+	{
+    	$cat = new CategoryDAO();
+    	$allCategories = $cat->getAllCategories();
+    	$data = [];
+
+    	foreach($allCategories as $category){
+        	$data[] = [
+            	'id'   => $category->getId(),
+            	'name' => $category->getName(),
+        	];
+    	}
+
+    	return $data;
+	}
+
+	protected function delCategory() :string //suppression d'une categorie
+	{
+		if(req::has('id')){
+			$id = req::post('id');
+
+			$cat = new CategoryDAO();
+			$category = $cat->findById($id);
+			$category->delCategory();
+
+			return "Success";
+		}else{
+			return "No success";
+		}
+	}
+
+
+	protected function updateCategory() :string
+	{
+		if(req::has('id') || req::has('name')){
+			$id = req::post('id');
+			$name = req::post('name');
+
+			$category = new Category($name);
+			$category->setId($id);
+
+			if($category->updateCategory()){
+				return "Success";
+			}
+
+			return "Successsss";
 
 		}else{
 			return "No success";
