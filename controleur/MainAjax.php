@@ -147,8 +147,8 @@ class MainAjax extends Ajax {
 				$sectionColony = new SectionColony($section->getId(), (int) $category); //création de la section Colony
 				$sectionColony->addSectionColony(); //création de la section colony en bdd
 				return "Success";
-		}
-			return "Successsss";
+			}
+			return "No success";
 
 		}else{
 			return "No success";
@@ -183,7 +183,7 @@ class MainAjax extends Ajax {
 				$sectionColony->addSectionColony();
 				return "Success";
 			}
-				return "Successsss";
+			return "No success";
 
 		}else{
 			return "No success";

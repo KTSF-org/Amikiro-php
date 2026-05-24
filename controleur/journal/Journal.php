@@ -12,6 +12,18 @@ use app\util\BaseURL as url;
 use app\util\SessionLogin;
 use app\util\Request as req;
 
+/**
+ * Contrôleur : liste du journal d'observations.
+ *
+ * Affiche toutes les fiches de la table Section (ou seulement celles de
+ * l'utilisateur connecté si le filtre "mesFiches" est actif).
+ *
+ * Pour chaque fiche, on détermine son type (Colonie ou Chauve-souris)
+ * en cherchant un enregistrement correspondant dans ColonySection ou SpecimenSection.
+ *
+ * Suppression : accessible depuis cette page via un GET ?delete=true&id=X.
+ * Seul le créateur de la fiche ou un admin peut la supprimer.
+ */
 class Journal
 {
 
@@ -19,58 +31,57 @@ class Journal
     {
         Guard::requireRole(ROLE_ADHERENT);
 
-        $urlEditionBat = url::getBaseUrl() . "sectionBat?edition=true";
+        $urlEditionBat     = url::getBaseUrl() . "sectionBat?edition=true";
         $urlEditionColonie = url::getBaseUrl() . "sectionColony?page=modification";
-        $urlDelete = url::getBaseUrl() . "/journal";
-        $urlSectionRead = url::getBaseUrl() . "/sectionRead";
+        $urlDelete         = url::getBaseUrl() . "/journal";
+        $urlSectionRead    = url::getBaseUrl() . "/sectionRead";
 
-        $sectionDAO = new SectionDAO();
-        $userDAO = new UserDAO();
-        $users = $userDAO->findAll();
-        $idUserSession = SessionLogin::getUserId();
+        $sectionDAO       = new SectionDAO();
+        $userDAO          = new UserDAO();
+        $users            = $userDAO->findAll();
+        $idUserSession    = SessionLogin::getUserId();
         $sectionColonyDAO = new SectionColonyDAO();
-        $isAdmin = SessionLogin::getRole() == ROLE_ADMIN;
+        $isAdmin          = SessionLogin::getRole() == ROLE_ADMIN;
+        // Filtre "mes fiches" : activé par ?mesFiches=true dans l'URL
         $mesFiches = req::get("mesFiches") == "true";
 
-
-
+        // Charge toutes les fiches ou seulement celles de l'utilisateur connecté
         if ($mesFiches) {
             $listFiches = $sectionDAO->findAllByAuth($idUserSession);
-        }
-        else {
+        } else {
             $listFiches = $sectionDAO->findAll();
         }
 
-        // Tableau associatif pour récuperér les noms et prénoms des users
-        // [id_users => "Prénom Nom"]
+        // Tableau associatif [id_user => "Prénom Nom"] pour afficher l'auteur de chaque fiche
         $usersAsso = [];
         foreach ($users as $u) {
             $usersAsso[$u->getId()] = $u->getSurname() . " " . $u->getName();
         }
 
-        // DETERMINE LE TYPE DE FICHE
-        // On parcours chaque fiche pour savoir si elle appartient à une colonie ou une chauve souris
-        $type = "";
+        // Détermine le type de chaque fiche ("Colonie" ou "Chauve souris") en consultant
+        // la table de liaison correspondante. Le résultat est mis en cache dans $typeAsso
+        // pour éviter N requêtes supplémentaires dans la vue.
+        $type    = "";
         $typeAsso = [];
         foreach ($listFiches as $fiche) {
-            // Vérifie si l'ID de la section existe dans la table colonie
+            // Une fiche présente dans ColonySection est une fiche colonie ;
+            // sinon, elle est forcément liée à un individu (SpecimenSection).
             if ($sectionColonyDAO->findColonySectionByIdSection($fiche->getId())) {
                 $type = "Colonie";
             } else {
-                // Si elle n'est pas dans la table colonie elle est forcément dans la spécimen
                 $type = "Chauve souris";
             }
-            // On stock le résultat dans un tableau [id_fiche => "Type"]
             $typeAsso[$fiche->getId()] = $type;
         }
 
-
-        if (req::get("delete") == true){
+        // Suppression d'une fiche déclenchée par un lien GET ?delete=true&id=X.
+        // Double vérification : seul le créateur ou un admin peut supprimer.
+        // Après suppression, redirection pour éviter la re-soumission au rechargement.
+        if (req::get("delete") == true) {
             $ficheId = req::get("id");
-            $fiche = $sectionDAO -> find($ficheId);
+            $fiche   = $sectionDAO->find($ficheId);
 
-            // Vérification si l'utilisateur est bien le créateur de la fiche avant de supprimer
-            if ($fiche && $fiche->getIdUser() === $idUserSession || $isAdmin){
+            if ($fiche && $fiche->getIdUser() === $idUserSession || $isAdmin) {
                 $fiche->deleteSection();
                 header("Location: " . url::getBaseUrl() . "journal");
                 exit();

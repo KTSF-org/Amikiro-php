@@ -18,23 +18,43 @@ use app\util\SessionLogin;
 use modele\journal\Bat;
 use modele\DAO\journalDAO\SpeciesDAO;
 
+/**
+ * Contrôleur : formulaire de saisie d'une fiche d'observation individu (chauve-souris).
+ *
+ * Une fiche individu est composée de deux enregistrements liés :
+ *   - Section       : titre, contenu, date d'événement, auteur.
+ *   - SectionSpecimen : liaison entre la Section et le Bat sélectionné.
+ *
+ * Ce contrôleur gère trois cas selon les paramètres GET/POST :
+ *   ?bat=del&id=X    → supprime le Bat (individu) identifié par X.
+ *   ?edition=true&id=X → pré-charge la fiche X pour modification.
+ *   POST (sectionTitle + sectionObservation présents)
+ *       - ?section=X → mise à jour de la fiche existante.
+ *       - (aucun)    → création d'une nouvelle fiche.
+ *
+ * La gestion de la liste des individus (ajout/modification) est déléguée
+ * au contrôleur SectionBatAddition (ROLE_NATURALISTE requis).
+ */
 class SectionBat
 {
 
     public function __construct()
     {
+        Guard::requireRole(ROLE_ADHERENT);
+
+        // Nécessaire pour que les dates affichées correspondent au fuseau local
         date_default_timezone_set("Europe/Paris");
 
-        $urlAdd = url::getBaseUrl() . "sectionBatAddition";
-        $urlModif = url::getBaseUrl() . "sectionBatAddition?bat=mod";
+        $urlAdd    = url::getBaseUrl() . "sectionBatAddition";
+        $urlModif  = url::getBaseUrl() . "sectionBatAddition?bat=mod";
         $urlDelete = url::getBaseUrl() . "sectionBat?bat=del";
-        $bat = null;
+        $bat       = null;
 
-        $edit = req::get("edition") == "true";
-        $section = null;
+        $edit            = req::get("edition") == "true";
+        $section         = null;
         $sectionSpecimen = null;
 
-        // Si il faut supprimer une Bat
+        // Suppression d'un individu (Bat) depuis la liste
         if (req::get("bat") == "del") {
             $batId = req::get("id");
             $batDAO = new BatDAO();
@@ -42,7 +62,7 @@ class SectionBat
             $bat->deleteBat();
         }
 
-        // Si modification de la fiche chauve-souris
+        // Pré-chargement de la fiche et de sa liaison SectionSpecimen pour pré-remplir le formulaire
         else if ($edit) {
             $sectionDAO = new SectionDAO();
             $sectionSpecimenDAO = new SectionSpecimenDAO();
@@ -65,13 +85,13 @@ class SectionBat
         $batDAO = new BatDAO();
         $batList = $batDAO->getAllBat();
 
-        // Ajoute la fiche individu à la BDD
+        // Soumission du formulaire : présence de sectionTitle + sectionObservation détecte un POST valide
         if (
             req::has("sectionTitle") &&
             req::has("sectionObservation")
         ) {
             $now = new DateTime();
-            // Création de l'objet Section
+            // modifDate = date/heure serveur au moment de l'enregistrement (mise à jour à chaque édit)
             $section = new Section(
                 req::post("sectionTitle"),
                 req::post("sectionObservation"),
@@ -84,6 +104,7 @@ class SectionBat
             $sectionSpecimenDAO = new SectionSpecimenDAO();
 
             if (req::has("section")) {
+                // Mise à jour : ?section est passé en GET pour indiquer qu'il s'agit d'une édition
                 $sectionId = req::get("id");
                 $section->setId($sectionId);
                 $sectionSpecimen = $sectionSpecimenDAO->findSpecimenSectionByIdSection($sectionId);
@@ -91,6 +112,8 @@ class SectionBat
                 $section->updateSection();
                 $sectionSpecimen->updateSectionSpecimen();
             } else {
+                // Création : on insère d'abord Section pour obtenir son ID auto-incrémenté,
+                // puis SectionSpecimen qui référence cet ID.
                 $section->addSection();
                 $sectionBat = new SectionSpecimen($section->getId(), (int) req::post("batSelected"));
                 $sectionBat->addSectionSpecimen();

@@ -4,11 +4,20 @@ namespace modele\journal;
 use app\util\Error;
 use modele\DAO\journalDAO\CategoryDAO;
 
-class Category{
+/**
+ * Modèle métier : catégorie d'observation colonie (table Category).
+ *
+ * Une Category représente un type d'événement observé sur une colonie
+ * (ex : "Départ chasse", "Rentrée gîte", "Pause").
+ * Elle est liée aux fiches d'observation via la table de liaison ColonySection.
+ *
+ * La gestion des catégories (ajout/suppression) est accessible via
+ * le contrôleur Category (ROLE_NATURALISTE requis).
+ */
+class Category {
 
-	private int $id=0; //La clé primaire est identifiée par $id
-
-	protected $param=[]; //La liste des paramètres (ou attributs)
+	private int $id = 0; // Clé primaire auto-incrémentée
+	protected $param = []; // Liste des noms d'attributs pour CategoryDAO::getAllData()
 
 	public function __construct(
 		private string $name='') {

@@ -8,14 +8,18 @@ use modele\journal\Bat;
 use PDO;
 use UnexpectedValueException;
 
+/**
+ * DAO : individus chauves-souris (table Bat).
+ *
+ * Fournit le CRUD complet pour les objets métier Bat.
+ * Hérite des méthodes génériques de Database (getAll, getOne, createOne, etc.).
+ *
+ * getAllData() : méthode privée qui reflète dynamiquement les getters de Bat
+ * pour construire le tableau [colonne => valeur] attendu par createOne/updateOne.
+ * Ce pattern est identique dans tous les DAOs de l'application.
+ */
 class BatDAO extends Database
 {
-    /** 
-     *	Deux paramètres pour le constructeur du DAO :
-     *	1/ nom de la table
-     *	2/ nom de la clé primaire
-     *	Voir les méthodes du CRUD dans le DAO (modele/DAO/base/Database.php).
-     */
     public function __construct()
     {
         $tableName = "Bat";
@@ -24,6 +28,11 @@ class BatDAO extends Database
     }
 
 
+    /**
+     * Construit le tableau [colonne => valeur] à partir des getters de l'objet Bat.
+     * getParam() retourne la liste des noms de propriétés déclarée dans le constructeur de Bat.
+     * Pour chaque propriété "foo", on appelle getFoo() dynamiquement via ucfirst().
+     */
     private function getAllData($bat): array
     {
         $data = [];

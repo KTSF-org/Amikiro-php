@@ -6,12 +6,18 @@ use DateTime;
 use modele\DAO\journalDAO\SpeciesDAO;
 use mysqli_sql_exception;
 
+/**
+ * Modèle métier : espèce de chauve-souris (table Species).
+ *
+ * Référentiel des espèces disponibles dans l'application.
+ * Chaque Bat (individu) est rattaché à une Species via $idSpecies.
+ * La liste des espèces alimente le menu déroulant du formulaire d'ajout de Bat.
+ */
 class Species
 {
     private int $id = 0;
-    protected $param = [];
+    protected $param = []; // Liste des noms d'attributs pour SpeciesDAO::getAllData()
 
-    // Constructeur : Species
     public function __construct(
         private string $scientificName = "",
         private string $commonName = ""
