@@ -54,21 +54,6 @@ class UserDAO extends Database
 		return $data;
 	}
 
-	//Equivalent pour comprendre :
-	// private function getAllData($metier): array {
-	// return [
-	// 'nom' => $metier->getNom(),
-	// 'prenom' => $metier->getPrenom(),
-	// 'email' => $metier->getEmail(),
-	// 'ne_le' => $metier->getDateNaissance(),
-	// 'ville' => $metier->getVille(),
-	// 'enfants' => $metier->getEnfants(),
-	// 'tel' => $metier->getTel(),
-	// 'avatar' => $metier->getAvatar(),
-	// ];
-	// }
-
-
 	/**
 	 *	CRUD : create
 	 *	@param object:metier Instance de l'objet métier

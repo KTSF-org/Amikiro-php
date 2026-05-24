@@ -96,14 +96,6 @@ class CategoryDAO extends Database {
         }
     }
 
-	// public function getCategoryBySection(int $idSection): int {
-	// 	try{
-	// 		$stmt = $this->getPdo()->prepare(
-	// 			"SELECT idCategory From `Category` WHERE id"
-	// 		)
-	// 	}
-	// }
-
 	// Ancienne méthode — préférer findAll() pour les nouveaux appels
 	public function getAllcategories(): array {
 		$allCategories = array();

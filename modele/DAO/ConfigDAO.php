@@ -21,8 +21,6 @@ use modele\DAO\base\Database;
 class ConfigDAO extends Database {
 
     public function __construct() {
-        $tablename="config";
-        $primarykey="id";
         parent::__construct('Config', 'id');
     }
 

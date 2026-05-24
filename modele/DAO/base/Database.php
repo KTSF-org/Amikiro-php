@@ -39,15 +39,8 @@ class Database implements IDatabase {
      */
     public static function getPdo(): PDO {
 		
-		//Avec l'opérateur null coalescing (??=)
+		// ??= : initialise $pdo uniquement à la première utilisation (singleton)
 		return self::$pdo ??= Connect::run();
-		
-		//Sans
-        // if (self::$pdo == null) {
-            // self::$pdo = Connect::run();
-        // }
-
-        // return self::$pdo;
     }
 
     /**

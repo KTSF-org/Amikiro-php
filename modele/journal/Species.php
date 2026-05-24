@@ -33,11 +33,14 @@ class Species
         }
     }
 
-    // STOCKER LA LISTE DES ATTRIBUTS
+    /**
+     * Construit la liste des noms de propriétés à persister en base (hors $id et $param).
+     * Appelé une seule fois dans le constructeur et stocké dans $this->param.
+     */
     private function getKey(array $arr): array
     {
         foreach ($arr as $key => $value) {
-            if ($key === "IdBat" or $key === "param")
+            if ($key === "id" or $key === "param")
                 continue;
             $param[] = $key;
         }
