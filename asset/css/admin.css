@@ -1,8 +1,6 @@
-/* CSS POUR LA PAGE DE CONNEXION POUR L'ADMIN */
-.navbar-brand{
-    pointer-events: none;
-}
+/* CSS POUR LA PAGE DE CONNEXION ADMIN */
 
-h4 {
-    color: red;
+/* Désactive le lien du logo dans la navbar (page sans navigation réelle) */
+.navbar-brand {
+    pointer-events: none;
 }

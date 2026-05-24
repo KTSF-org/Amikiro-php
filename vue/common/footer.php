@@ -9,27 +9,33 @@
     localStorage.setItem("rgpdBannerSeen", "true");
   }
 
-  // verifier si bandeau déjà vu par l'utilisateur
   window.onload = function () {
     if (localStorage.getItem("rgpdBannerSeen") === "true") {
       document.getElementById("rgpd-banner").classList.add("hidden");
     }
   }
 </script>
+
+    </main><!-- /.page-body — fermé ici, ouvert dans header.php après </nav> -->
+
 <footer class="footer bg-dark text-light">
-  <script>$(document).ready(function () {
-      $('body').css('padding-bottom', $('footer').height() + 'px');
-    });</script>
+  <!--
+    Plus de jQuery padding-bottom ici — le sticky footer est géré
+    par body { display:flex; flex-direction:column } + main.page-body { flex:1 }
+    dans main.css. Aucun JavaScript nécessaire.
+  -->
   <div class="container text-center">
-    &copy;<?= date('Y') . ' ' . APP_NAME ?> | <a href="confidentialite" target="_blank" style="color:#FFF"> Politique de
-      confidentialité </a> | <a href="mentionslegales" target="_blank" style="color:#FFF"> Mentions légales</a>
+    &copy;<?= date('Y') . ' ' . APP_NAME ?>
+    | <a href="confidentialite" target="_blank">Politique de confidentialité</a>
+    | <a href="mentionslegales" target="_blank">Mentions légales</a>
   </div>
 </footer>
+
 <div id="rgpd-banner" class="rgpd-container">
-  <p>Ce site respecte votre vie privée : nous ne collectons aucun cookie.</p>
+  <p class="mb-0">Ce site respecte votre vie privée : nous ne collectons aucun cookie.</p>
   <div class="rgpd-buttons">
     <a href="confidentialite" class="btn-link">En savoir plus</a>
-    <button onclick="closeRGPD()" class="btn btn-primary" type="button">Fermer</button>
+    <button onclick="closeRGPD()" class="btn btn-primary btn-sm" type="button">Fermer</button>
   </div>
 </div>
 
