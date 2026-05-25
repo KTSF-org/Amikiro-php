@@ -4,11 +4,24 @@ namespace modele\journal;
 use app\util\Error;
 use modele\DAO\journalDAO\SectionDAO;
 
-class Section{
+/**
+ * Modèle métier : fiche d'observation (table Section).
+ *
+ * Une Section est le tronc commun de toutes les fiches du journal.
+ * Elle contient le titre, le contenu textuel, la date de l'événement
+ * et l'identifiant de l'auteur.
+ *
+ * Chaque Section est ensuite spécialisée par une table de liaison :
+ *   - SectionSpecimen (SpecimenSection) → fiche individu (Bat)
+ *   - ColonySection                     → fiche colonie (Category)
+ *
+ * Les noms des propriétés du constructeur doivent correspondre exactement
+ * aux noms de colonnes de la table SQL Section.
+ */
+class Section {
 
-	private int $id=0; //La clé primaire est identifiée par $id
-
-	protected $param=[]; //La liste des paramètres (ou attributs)
+	private int $id = 0; // Clé primaire — jamais dans le constructeur (auto-incrémentée)
+	protected $param = []; // Liste des noms d'attributs utilisée par SectionDAO::getAllData()
 
 	public function __construct(
 		private string $title='',

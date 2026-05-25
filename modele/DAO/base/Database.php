@@ -5,11 +5,23 @@ namespace modele\DAO\base;
 use PDO;
 
 /**
- * DATA ACCESS OBJECT (DAO) de l'application
- * Les méthodes principales d'accès aux données sont implémentées ici.
- * L'ensemble n'est pas forcement exhaustif !
+ * Classe de base de tous les DAOs — fournit le CRUD générique.
+ *
+ * Chaque DAO concret (UserDAO, BatDAO…) hérite de cette classe et
+ * passe le nom de sa table + sa clé primaire au constructeur parent.
+ *
+ * Connexion PDO :
+ *   - $pdo est un singleton statique partagé entre tous les DAOs.
+ *   - Initialisé à la première utilisation via Connect::run() (??=).
+ *   - Accès via getPdo() — ne jamais utiliser $pdo directement depuis l'extérieur.
+ *
+ * Méthodes personnalisées (requêtes spécifiques) :
+ *   Utiliser getPdo()->prepare() dans le DAO fils plutôt que d'étendre les méthodes génériques.
+ *
+ * ⚠ deleteOne($id, true) et deleteMany($ids, true) sont NON FONCTIONNELS :
+ *   PDO ne supporte pas les multi-instructions dans une seule exec() — les FK checks
+ *   ne sont pas désactivés. Ne jamais passer $disableConstraintKey = true.
  */
-
 class Database implements IDatabase {
 
     protected $tableName = '';
@@ -27,15 +39,8 @@ class Database implements IDatabase {
      */
     public static function getPdo(): PDO {
 		
-		//Avec l'opérateur null coalescing (??=)
+		// ??= : initialise $pdo uniquement à la première utilisation (singleton)
 		return self::$pdo ??= Connect::run();
-		
-		//Sans
-        // if (self::$pdo == null) {
-            // self::$pdo = Connect::run();
-        // }
-
-        // return self::$pdo;
     }
 
     /**

@@ -124,7 +124,7 @@ class MainAjax extends Ajax {
 
 	protected function addSectionCol():string
 	{
-		$message = "Les champs ne sont pas rempli";
+		if (SessionLogin::getRole() < ROLE_NATURALISTE) return "No success";
 		if (req::has('title')) {
 		$title = req::post('title');
 		$date = req::post('date');
@@ -147,8 +147,8 @@ class MainAjax extends Ajax {
 				$sectionColony = new SectionColony($section->getId(), (int) $category); //création de la section Colony
 				$sectionColony->addSectionColony(); //création de la section colony en bdd
 				return "Success";
-		}
-			return "Successsss";
+			}
+			return "No success";
 
 		}else{
 			return "No success";
@@ -158,7 +158,7 @@ class MainAjax extends Ajax {
 
 	protected function updateSectionCol():string
 	{
-		$message = 'Les champs ne sont pas rempli';
+		if (SessionLogin::getRole() < ROLE_NATURALISTE) return "No success";
 		if(req::has('title')){
 			$title = req::post('title');
 			$date = req::post('date');
@@ -183,7 +183,7 @@ class MainAjax extends Ajax {
 				$sectionColony->addSectionColony();
 				return "Success";
 			}
-				return "Successsss";
+			return "No success";
 
 		}else{
 			return "No success";
@@ -192,6 +192,7 @@ class MainAjax extends Ajax {
 
 	protected function addCategory():string
 	{
+		if (SessionLogin::getRole() < ROLE_NATURALISTE) return "No success";
 		if(req::has('name')){
 			$name = req::post('name');
 
@@ -222,6 +223,7 @@ class MainAjax extends Ajax {
 
 	protected function delCategory() :string //suppression d'une categorie
 	{
+		if (SessionLogin::getRole() < ROLE_NATURALISTE) return "No success";
 		if(req::has('id')){
 			$id = req::post('id');
 
@@ -238,6 +240,7 @@ class MainAjax extends Ajax {
 
 	protected function updateCategory() :string
 	{
+		if (SessionLogin::getRole() < ROLE_NATURALISTE) return "No success";
 		if(req::has('id') || req::has('name')){
 			$id = req::post('id');
 			$name = req::post('name');

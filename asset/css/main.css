@@ -1,82 +1,459 @@
-/*** Main CSS ***/
+/* ============================================================
+   MAIN.CSS — Amikiro
+   Police, variables globales et règles communes à toutes les pages.
+   ============================================================ */
 
-html,
-body {
+/* Police Outfit — auto-hébergée (woff2, variable font 300–700) */
+@import url('../lib/fonts/outfit/outfit.css');
+
+/* === VARIABLES GLOBALES =========================================== */
+:root {
+    /* Couleurs de marque */
+    --amk-navy:      #07143F;
+    --amk-navy-mid:  #0d2260;
+    --amk-green:     #1d6f42;
+    --amk-green-dk:  #165c37;
+
+    /* Interface */
+    --amk-bg:        #f5f6fa;
+    --amk-card-bg:   #ffffff;
+    --amk-border:    #dde2ec;
+    --amk-text:      #1a1d2e;
+    --amk-muted:     #6b7280;
+
+    /* Ombres */
+    --amk-shadow-sm: 0 1px 6px  rgba(7, 20, 63, 0.08);
+    --amk-shadow-md: 0 4px 18px rgba(7, 20, 63, 0.12);
+    --amk-shadow-lg: 0 8px 32px rgba(7, 20, 63, 0.16);
+
+    /* Utilitaires */
+    --amk-radius:     0.5rem;
+    --amk-font:       'Outfit', system-ui, sans-serif;
+    --amk-transition: 0.18s ease;
+}
+
+/* === BASE ========================================================= */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html {
     height: 100%;
-    margin: 0;
-    display: grid;
-    grid-template-rows: auto 1fr auto;
-    padding-bottom: 30px;
+    scroll-behavior: smooth;
 }
 
-.container {
+body {
+    font-family: var(--amk-font);
+    color: var(--amk-text);
+    background-color: var(--amk-bg);
+    /*
+     * Sticky footer en pur CSS :
+     * body = colonne flex min-height 100vh → nav / main.page-body(flex:1) / footer
+     * Plus besoin du hack jQuery padding-bottom.
+     */
     min-height: 100%;
-    /* taille du footer + 20px */
-    margin-bottom: 50px;
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    padding: 0;
 }
 
-.spacer {
-    clear: both;
-    height: 20px;
+/* Zone de contenu principale — grandit pour pousser le footer en bas */
+.page-body {
+    flex: 1;
 }
 
-.footer {
-    position: fixed;
-    height: 30px;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background-color: #f0f0f0;
-    text-align: center;
+/* === ANIMATION D'ENTRÉE DE PAGE ================================== */
+@keyframes pageIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+.page-body > .container,
+.page-body > .container-fluid,
+.accueil-hero,
+.login-page,
+.live-page {
+    animation: pageIn 0.25s ease both;
 }
 
+/* === NAVBAR ======================================================= */
+.navbar.bg-dark {
+    background-color: var(--amk-navy) !important;
+    box-shadow: 0 2px 8px rgba(7, 20, 63, 0.25);
+}
+
+/* Logo texte avec icône en fond */
 .app-logo {
-    /* En CSS l'image est chargée à un niveau supérieur */
     background-image: url('../img/app.png');
-    background-size: 30px 30px;
+    background-size: 28px 28px;
     background-repeat: no-repeat;
     background-position: left center;
-    height: 30px;
-    padding-left: 40px;
+    height: 28px;
+    padding-left: 38px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    line-height: 28px;
 }
 
-.left {
-    text-align: left;
+/* Taille et style uniformes pour tous les boutons de la navbar */
+.navbar .btn {
+    font-size: 0.875rem;
+    padding: 0.35rem 0.9rem;
+}
+.navbar .btn-outline-light {
+    border-color: rgba(255, 255, 255, 0.35);
+    color: rgba(255, 255, 255, 0.9);
+}
+.navbar .btn-outline-light:hover {
+    background-color: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.6);
+    color: #fff;
+}
+.navbar-toggler:focus {
+    box-shadow: 0 0 0 0.2rem rgba(255, 255, 255, 0.2);
 }
 
+/* === FOOTER ======================================================= */
+.footer {
+    background-color: var(--amk-navy) !important;
+    color: rgba(255, 255, 255, 0.80);
+    font-size: 0.85rem;
+    padding: 0.6rem 0;
+}
+.footer a {
+    color: rgba(255, 255, 255, 0.70);
+    text-decoration: none;
+    transition: color var(--amk-transition);
+}
+.footer a:hover {
+    color: #fff;
+    text-decoration: underline;
+}
+
+/* === BOUTONS ====================================================== */
+.btn {
+    transition: background-color var(--amk-transition),
+                border-color    var(--amk-transition),
+                box-shadow      var(--amk-transition),
+                transform       0.1s ease;
+    font-weight: 500;
+}
+.btn:active:not(:disabled) {
+    transform: scale(0.97);
+}
+
+/* ------ Primaire → navy de marque -------------------------------- */
+.btn-primary {
+    background-color: var(--amk-navy);
+    border-color: var(--amk-navy);
+}
+.btn-primary:hover,
+.btn-primary:focus {
+    background-color: var(--amk-navy-mid);
+    border-color: var(--amk-navy-mid);
+}
+
+/* ------ Outline primaire → navy (remplace le bleu Bootstrap) ----- */
+.btn-outline-primary {
+    --bs-btn-color:              var(--amk-navy);
+    --bs-btn-border-color:       var(--amk-navy);
+    --bs-btn-hover-bg:           var(--amk-navy);
+    --bs-btn-hover-border-color: var(--amk-navy);
+    --bs-btn-hover-color:        #fff;
+    --bs-btn-active-bg:          var(--amk-navy-mid);
+    --bs-btn-active-border-color:var(--amk-navy-mid);
+    --bs-btn-focus-shadow-rgb:   7, 20, 63;
+}
+
+/* ------ Succès → vert de marque ---------------------------------- */
+.btn-success {
+    background-color: var(--amk-green);
+    border-color: var(--amk-green);
+}
+.btn-success:hover,
+.btn-success:focus {
+    background-color: var(--amk-green-dk);
+    border-color: var(--amk-green-dk);
+}
+.btn-outline-success {
+    --bs-btn-color:              var(--amk-green);
+    --bs-btn-border-color:       var(--amk-green);
+    --bs-btn-hover-bg:           var(--amk-green);
+    --bs-btn-hover-border-color: var(--amk-green);
+    --bs-btn-hover-color:        #fff;
+    --bs-btn-active-bg:          var(--amk-green-dk);
+    --bs-btn-focus-shadow-rgb:   29, 111, 66;
+}
+
+/* === CARTES ======================================================= */
+.card {
+    border-color: var(--amk-border);
+    box-shadow: var(--amk-shadow-sm);
+    border-radius: var(--amk-radius);
+    transition: box-shadow 0.2s ease;
+}
+.card-header.bg-dark {
+    background-color: var(--amk-navy) !important;
+    border-bottom-color: var(--amk-navy-mid);
+}
+
+/* === FORMULAIRES ================================================== */
+.form-control,
+.form-select {
+    border-color: var(--amk-border);
+    transition: border-color var(--amk-transition), box-shadow var(--amk-transition);
+}
+/* Anneau de focus aux couleurs de marque (remplace le bleu Bootstrap) */
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--amk-navy-mid);
+    box-shadow: 0 0 0 0.2rem rgba(7, 20, 63, 0.12);
+    outline: none;
+}
+.form-label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    margin-bottom: 0.35rem;
+}
+/* Surcharge la couleur bleue du check Bootstrap */
+.form-check-input:checked {
+    background-color: var(--amk-navy);
+    border-color: var(--amk-navy);
+}
+.form-check-input:focus {
+    border-color: var(--amk-navy-mid);
+    box-shadow: 0 0 0 0.2rem rgba(7, 20, 63, 0.12);
+}
+
+/* === TABLEAUX ===================================================== */
+/* En-têtes en petites capitales pour une lecture claire */
+.table thead th {
+    font-size: 0.72rem;
+    letter-spacing: 0.065em;
+    text-transform: uppercase;
+    font-weight: 600;
+    padding-top: 0.8rem;
+    padding-bottom: 0.8rem;
+}
+.table tbody tr {
+    transition: background-color 0.1s;
+}
+
+/* === DATATABLES — thème de marque ================================= */
+/* Surcharge les styles DataTables natifs pour aligner avec notre palette */
+table.dataTable thead th,
+table.dataTable thead td {
+    font-size: 0.72rem;
+    letter-spacing: 0.065em;
+    text-transform: uppercase;
+    font-weight: 600;
+    border-bottom: 2px solid var(--amk-border) !important;
+    background-color: var(--amk-navy) !important;
+    color: #fff;
+}
+table.dataTable.display tbody tr:hover,
+table.dataTable.hover tbody tr:hover {
+    background-color: rgba(7, 20, 63, 0.04) !important;
+}
+.dataTables_wrapper .dataTables_paginate .paginate_button.current,
+.dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
+    background: var(--amk-navy) !important;
+    color: #fff !important;
+    border-color: var(--amk-navy) !important;
+    border-radius: 4px;
+}
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+    background: rgba(7, 20, 63, 0.08) !important;
+    color: var(--amk-navy) !important;
+    border-color: transparent !important;
+    border-radius: 4px;
+}
+.dataTables_wrapper .dataTables_filter input {
+    border: 1px solid var(--amk-border);
+    border-radius: 0.375rem;
+    padding: 0.3rem 0.6rem;
+    font-family: var(--amk-font);
+    font-size: 0.875rem;
+    transition: border-color var(--amk-transition), box-shadow var(--amk-transition);
+}
+.dataTables_wrapper .dataTables_filter input:focus {
+    border-color: var(--amk-navy-mid);
+    box-shadow: 0 0 0 0.2rem rgba(7, 20, 63, 0.12);
+    outline: none;
+}
+.dataTables_wrapper .dataTables_length select {
+    border: 1px solid var(--amk-border);
+    border-radius: 0.375rem;
+    padding: 0.2rem 1.5rem 0.2rem 0.5rem;
+    font-family: var(--amk-font);
+    font-size: 0.875rem;
+}
+.dataTables_wrapper .dataTables_info {
+    font-size: 0.85rem;
+    color: var(--amk-muted);
+}
+
+/* === TOM SELECT — harmonisation avec notre palette =============== */
+.ts-wrapper.single .ts-control {
+    border-color: var(--amk-border);
+    border-radius: 0.375rem;
+    font-family: var(--amk-font);
+    font-size: 0.95rem;
+    transition: border-color var(--amk-transition), box-shadow var(--amk-transition);
+}
+.ts-wrapper.single.focus .ts-control {
+    border-color: var(--amk-navy-mid);
+    box-shadow: 0 0 0 0.2rem rgba(7, 20, 63, 0.12);
+}
+.ts-dropdown {
+    border-color: var(--amk-border);
+    box-shadow: var(--amk-shadow-md);
+    border-radius: var(--amk-radius);
+    font-family: var(--amk-font);
+}
+.ts-dropdown .active {
+    background-color: var(--amk-navy) !important;
+}
+
+/* === MENUS DÉROULANTS ============================================= */
+.dropdown-menu {
+    border-color: var(--amk-border);
+    box-shadow: var(--amk-shadow-md);
+    border-radius: var(--amk-radius);
+    font-size: 0.9rem;
+    padding: 0.35rem;
+}
+.dropdown-item {
+    border-radius: calc(var(--amk-radius) - 2px);
+    padding: 0.45rem 0.85rem;
+    transition: background-color 0.12s, color 0.12s;
+}
+.dropdown-item:hover,
+.dropdown-item:focus {
+    background-color: rgba(7, 20, 63, 0.07);
+    color: var(--amk-navy);
+}
+.dropdown-item.text-danger:hover {
+    background-color: rgba(220, 53, 69, 0.07);
+}
+.dropdown-header {
+    font-size: 0.68rem;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--amk-muted);
+    padding: 0.55rem 0.85rem 0.3rem;
+}
+
+/* === NAV-PILLS (filtres, onglets) ================================= */
+.nav-pills .nav-link {
+    transition: background-color 0.15s, color 0.15s;
+    font-size: 0.9rem;
+}
+.nav-pills .nav-link.active {
+    background-color: var(--amk-navy);
+    color: #fff;
+}
+.nav-pills .nav-link:not(.active) {
+    color: var(--amk-muted);
+}
+.nav-pills .nav-link:not(.active):hover {
+    background-color: rgba(7, 20, 63, 0.07);
+    color: var(--amk-navy);
+}
+
+/* === PAGINATION =================================================== */
+.page-link {
+    color: var(--amk-navy);
+    transition: background-color 0.15s, color 0.15s;
+}
+.page-link:hover {
+    background-color: rgba(7, 20, 63, 0.07);
+    color: var(--amk-navy);
+    border-color: var(--amk-border);
+}
+.page-item.active .page-link {
+    background-color: var(--amk-navy);
+    border-color: var(--amk-navy);
+}
+
+/* === BADGES ======================================================= */
+.badge.bg-primary { background-color: var(--amk-navy)  !important; }
+.badge.bg-success { background-color: var(--amk-green) !important; }
+
+/* === ALERTES ====================================================== */
+.alert {
+    border-radius: var(--amk-radius);
+    font-size: 0.9rem;
+}
+
+/* === ICÔNES D'ACTION (tableaux, formulaires) ====================== */
+.icon-view     { color: var(--amk-green); }
+.icon-edit     { color: var(--amk-navy);  }
+.icon-delete   { color: #dc3545; }
+.icon-disabled { color: #adb5bd; pointer-events: none; }
+
+/* === BORDURES AUX COULEURS DE MARQUE ============================== */
+.border-amk-navy  { border-color: var(--amk-navy)  !important; }
+.border-amk-green { border-color: var(--amk-green) !important; }
+
+/* === BANDEAU RGPD ================================================= */
 .rgpd-container {
     position: fixed;
     bottom: 20px;
     left: 50%;
     transform: translateX(-50%);
-    width: 100%;
+    width: calc(100% - 2rem);
     max-width: 800px;
-    background: white;
-    color: #333;
-    padding: 15px 25px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-    border-radius: 12px;
+    background: var(--amk-card-bg);
+    color: var(--amk-text);
+    padding: 14px 22px;
+    box-shadow: var(--amk-shadow-md);
+    border-radius: var(--amk-radius);
+    border: 1px solid var(--amk-border);
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 1rem;
     z-index: 9999;
-    font-family: sans-serif;
-    border: 1px solid gray;
+    font-size: 0.9rem;
 }
-
+@media (max-width: 576px) {
+    .rgpd-container {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+    }
+}
 .rgpd-buttons {
     display: flex;
-    gap: 15px;
+    gap: 12px;
     align-items: center;
+    flex-shrink: 0;
 }
-
 .btn-link {
-    color: #333;
-    font-size: 14px;
+    color: var(--amk-muted);
+    font-size: 0.875rem;
     text-decoration: underline;
 }
+.hidden { display: none !important; }
 
-/* Cacher le bandeau s'il a déjà été fermé */
-.hidden {
-    display: none;
+/* === UTILITAIRES ================================================== */
+.left { text-align: left; }
+.section-divider {
+    border: none;
+    border-top: 2px solid var(--amk-navy);
+    width: 40px;
+    margin: 1.5rem 0;
+    opacity: 1;
 }
+/* Message de feedback inline (formulaires AJAX) */
+.form-feedback {
+    font-size: 0.875rem;
+    font-weight: 500;
+    min-height: 1.2em;
+}
+.form-feedback.success { color: var(--amk-green); }
+.form-feedback.error   { color: #dc3545; }

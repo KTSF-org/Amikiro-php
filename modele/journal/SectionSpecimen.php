@@ -4,10 +4,19 @@ namespace modele\journal;
 use app\util\Error;
 use modele\DAO\journalDAO\SectionSpecimenDAO;
 
+/**
+ * Modèle métier : liaison entre une fiche individu et la chauve-souris observée (table SpecimenSection).
+ *
+ * SectionSpecimen est la table de jonction entre Section et Bat.
+ * Elle indique que la fiche $idSection concerne l'individu $idBat.
+ *
+ * Une Section ne peut être liée qu'à une seule SectionSpecimen (relation 1-1).
+ * Si une Section a une SectionSpecimen, elle n'a pas de ColonySection, et vice-versa.
+ */
 class SectionSpecimen
 {
-    private int $id=0;
-    protected $param = []; //La liste des paramètres (ou attributs)
+    private int $id = 0;
+    protected $param = []; // Liste des noms d'attributs pour SectionSpecimenDAO::getAllData()
 
     public function __construct(
         private int $idSection = -1,

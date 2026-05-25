@@ -68,8 +68,15 @@ class Live
         }
 
         $config->incrementViewers();
-        $_SESSION['in_live']        = true;
-        $_SESSION['live_started_at'] = time();
+        $_SESSION['in_live'] = true;
+
+        // Ne pas écraser live_started_at s'il existe déjà.
+        // beforeunload (déclenché au refresh) détruit in_live via liveLeave,
+        // mais live_started_at doit survivre pour que le décompte continue
+        // depuis le début réel de la session, pas depuis le dernier refresh.
+        if (!isset($_SESSION['live_started_at'])) {
+            $_SESSION['live_started_at'] = time();
+        }
 
         $url1['viewerCount'] = $viewerCount + 1;
     }

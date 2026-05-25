@@ -55,7 +55,7 @@ class Login
             $nettoyage = strtolower(str_replace(' ', '', $saisie_captcha));
             $saisieMd5 = md5($nettoyage);
             // Vérification des champs vides
-            if (empty($userMail) || empty($userPassword || empty($saisie_captcha))) {
+            if (empty($userMail) || empty($userPassword) || empty($saisie_captcha)) {
                 $erreur = "Veuillez remplir tous les champs.";
             } elseif (!isset($_SESSION["captchaCode"]) || $saisieMd5 !== $_SESSION["captchaCode"]) {
                 $erreur = "Captcha incorrect";
