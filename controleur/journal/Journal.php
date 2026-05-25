@@ -40,8 +40,9 @@ class Journal
         $userDAO          = new UserDAO();
         $users            = $userDAO->findAll();
         $idUserSession    = SessionLogin::getUserId();
+        $userRole         = SessionLogin::getRole();
         $sectionColonyDAO = new SectionColonyDAO();
-        $isAdmin          = SessionLogin::getRole() == ROLE_ADMIN;
+        $isAdmin          = $userRole == ROLE_ADMIN;
         // Filtre "mes fiches" : activé par ?mesFiches=true dans l'URL
         $mesFiches = req::get("mesFiches") == "true";
 
@@ -81,7 +82,14 @@ class Journal
             $ficheId = req::get("id");
             $fiche   = $sectionDAO->find($ficheId);
 
-            if ($fiche && $fiche->getIdUser() === $idUserSession || $isAdmin) {
+            // Seuls les naturalistes (et admins) peuvent supprimer des fiches,
+            // et uniquement celles qu'ils ont eux-mêmes créées (sauf admin).
+            $canDelete = $fiche && (
+                ($fiche->getIdUser() === $idUserSession && $userRole >= ROLE_NATURALISTE)
+                || $isAdmin
+            );
+
+            if ($canDelete) {
                 $fiche->deleteSection();
                 header("Location: " . url::getBaseUrl() . "journal");
                 exit();
@@ -102,6 +110,7 @@ class Journal
                 'urlDelete' => $urlDelete,
                 'urlSectionRead'=> $urlSectionRead,
                 'isAdmin' => $isAdmin,
+                'userRole' => $userRole,
                 'mesFiches' => $mesFiches,
             ]
         );

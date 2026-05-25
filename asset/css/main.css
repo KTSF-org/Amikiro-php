@@ -3,7 +3,8 @@
    Police, variables globales et règles communes à toutes les pages.
    ============================================================ */
 
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
+/* Police Outfit — auto-hébergée (woff2, variable font 300–700) */
+@import url('../lib/fonts/outfit/outfit.css');
 
 /* === VARIABLES GLOBALES =========================================== */
 :root {

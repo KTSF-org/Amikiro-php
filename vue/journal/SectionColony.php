@@ -11,8 +11,8 @@
  */
 use app\util\Helper;
 ?>
-<link href="https://cdn.jsdelivr.net/npm/tom-select/dist/css/tom-select.css" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/tom-select/dist/js/tom-select.complete.min.js"></script>
+<link href="<?= ASSET ?>/lib/tom-select/css/tom-select.css" rel="stylesheet">
+<script src="<?= ASSET ?>/lib/tom-select/js/tom-select.complete.min.js"></script>
 <script src="asset/js/formulaire.js" defer></script>
 
 <div class="container py-4">

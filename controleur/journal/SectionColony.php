@@ -32,9 +32,7 @@ use app\util\SessionLogin as UserSession;
 class SectionColony {
 
     public function __construct() {
-        // Guard doit idéalement être la première instruction — ici placé après
-        // la construction des URLs (inoffensif, mais à corriger si refactorisé).
-        Guard::requireRole(ROLE_ADHERENT);
+        Guard::requireRole(ROLE_NATURALISTE);
 
         $urlCreate = url::getBaseUrl() . "sectionColony?page=create";
         $urlModif  = url::getBaseUrl() . "sectionColony?page=modification";

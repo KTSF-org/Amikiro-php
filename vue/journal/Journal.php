@@ -41,7 +41,11 @@
                                 <i class="bi bi-eye-fill icon-view fs-5"></i>
                             </a>
 
-                            <?php if ($fiche->getIdUser() == $idUserSession || $isAdmin): ?>
+                            <?php
+                            // Modifier/Supprimer : réservé aux naturalistes qui sont auteurs, et aux admins.
+                            $canWrite = ($fiche->getIdUser() == $idUserSession && $userRole >= ROLE_NATURALISTE) || $isAdmin;
+                            ?>
+                            <?php if ($canWrite): ?>
                                 <!-- Modifier -->
                                 <a href="<?= ($typeAsso[$fiche->getId()] === 'Chauve souris') ? $urlEditionBat : $urlEditionColonie ?>&id=<?= $fiche->getId() ?>"
                                    class="btn btn-sm btn-link p-1" title="Modifier">
@@ -54,11 +58,11 @@
                                     <i class="bi bi-trash3 icon-delete fs-5"></i>
                                 </a>
                             <?php else: ?>
-                                <!-- Actions désactivées pour les non-auteurs -->
-                                <span class="btn btn-sm btn-link p-1 icon-disabled" title="Non autorisé">
+                                <!-- Actions désactivées — lecture seule pour les adhérents -->
+                                <span class="btn btn-sm btn-link p-1 icon-disabled" title="Lecture seule">
                                     <i class="bi bi-pencil-square fs-5"></i>
                                 </span>
-                                <span class="btn btn-sm btn-link p-1 icon-disabled" title="Non autorisé">
+                                <span class="btn btn-sm btn-link p-1 icon-disabled" title="Lecture seule">
                                     <i class="bi bi-trash3 fs-5"></i>
                                 </span>
                             <?php endif; ?>
@@ -69,6 +73,7 @@
         </table>
     </div>
 
+    <?php if ($userRole >= ROLE_NATURALISTE): ?>
     <div class="mt-3">
         <a href="sectionColony" class="btn btn-primary me-2">
             <i class="bi bi-plus-lg me-1"></i>Nouvelle fiche colonie
@@ -77,5 +82,6 @@
             <i class="bi bi-plus-lg me-1"></i>Nouvelle fiche individu
         </a>
     </div>
+    <?php endif; ?>
 
 </div>

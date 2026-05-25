@@ -40,7 +40,7 @@ class SectionBat
 
     public function __construct()
     {
-        Guard::requireRole(ROLE_ADHERENT);
+        Guard::requireRole(ROLE_NATURALISTE);
 
         // Nécessaire pour que les dates affichées correspondent au fuseau local
         date_default_timezone_set("Europe/Paris");

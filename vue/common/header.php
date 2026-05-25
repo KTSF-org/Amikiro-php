@@ -14,23 +14,28 @@ $userRole = \app\util\SessionLogin::getRole();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="<?= ASSET ?>/img/favicon.ico" type="image/x-icon">
     <title><?= $title ?></title>
-    <!-- Préchargement de la police Outfit (Google Fonts) -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"> -->
-    <link href="asset/lib/bootstrap/css/bootstrap.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <!-- Bootstrap CSS (local) -->
+    <link href="<?= ASSET ?>/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!-- DataTables CSS (local) -->
+    <link rel="stylesheet" href="<?= ASSET ?>/lib/datatables/jquery.dataTables.min.css">
+    <!-- Bootstrap Icons (local — police et CSS auto-hébergés) -->
+    <link rel="stylesheet" href="<?= ASSET ?>/lib/bootstrap-icons/bootstrap-icons.min.css">
     <link rel="stylesheet" href="<?= ASSET ?>/css/popup.css">
     <link rel="stylesheet" href="<?= ASSET ?>/css/main.css">
     <?= $customCSS ?>
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <!-- Variable JS globale pour les fichiers .js purs (pas de PHP) -->
+    <script>const ASSET_BASE = '<?= ASSET ?>';</script>
+    <!-- jQuery (local) -->
+    <script src="<?= ASSET ?>/lib/jquery/jquery.min.js"></script>
     <script src="<?= ASSET ?>/js/popup.js" defer></script>
     <script src="<?= ASSET ?>/js/main.js" defer></script>
-    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" defer></script>
-    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <!-- HLS.js (local) -->
+    <script src="<?= ASSET ?>/lib/hlsjs/hls.min.js"></script>
+    <!-- Bootstrap JS (local) -->
+    <script src="<?= ASSET ?>/lib/bootstrap/js/bootstrap.bundle.min.js" defer></script>
+    <!-- DataTables JS (local) -->
+    <script src="<?= ASSET ?>/lib/datatables/jquery.dataTables.min.js"></script>
     <script src="<?= ASSET ?>/js/<?= $_SESSION['CUSTOM_JS'] ?>" defer></script>
     <?= $customJS ?>
 </head>

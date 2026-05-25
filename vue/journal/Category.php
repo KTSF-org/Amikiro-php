@@ -63,7 +63,7 @@ $(document).ready(function () {
 
     const table = $('#categoryTable').DataTable({
         language: {
-            url: 'https://cdn.datatables.net/plug-ins/1.13.7/i18n/fr-FR.json'
+            url: '<?= ASSET ?>/lib/datatables/i18n/fr-FR.json'
         },
         pageLength: 10,
         responsive: true,
