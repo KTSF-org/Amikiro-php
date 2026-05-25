@@ -11,11 +11,14 @@ use modele\DAO\journalDAO\BatDAO;
 use modele\journal\Section;
 use app\util\Request as req;
 use app\util\BaseURL as url;
+use app\util\Guard;
 
 class SectionRead
 {
 	public function __construct()
 	{
+		Guard::requireRole(ROLE_ADHERENT);
+
 		$urlRetour = url::getBaseUrl() . '/journal';
 		$idFiche = req::get("id");
 		$sectionDAO = new SectionDAO();
@@ -32,17 +35,22 @@ class SectionRead
 		$nameBat = "";
 
 		$ficheColony = $sectionColonyDAO->findColonySectionByIdSection($idFiche);
-		$ficheBat = $sectionSpecimenDAO->findSpecimenSectionByIdSection($idFiche);
-		if($ficheColony != null){
-			$categoryDAO = new CategoryDAO();
-			$idCategory = $ficheColony->getIdCategory();
-			$category = $categoryDAO->findById($idCategory);
-			$nameCategory = $category->getName();
-		}else{
-			$batDAO = new BatDAO();
-			$idBat = $ficheBat->getIdBat();
-			$bat = $batDAO->getBatById($idBat);
-			$nameBat = $bat->getName();
+		$ficheBat    = $sectionSpecimenDAO->findSpecimenSectionByIdSection($idFiche);
+
+		if ($ficheColony !== null) {
+			$categoryDAO   = new CategoryDAO();
+			$idCategory    = $ficheColony->getIdCategory();
+			$category      = $categoryDAO->findById($idCategory);
+			$nameCategory  = $category->getName();
+		} elseif ($ficheBat !== null) {
+			$batDAO   = new BatDAO();
+			$idBat    = $ficheBat->getIdBat();
+			$bat      = $batDAO->getBatById($idBat);
+			$nameBat  = $bat->getName();
+		} else {
+			// Fiche sans type associé — données corrompues, on redirige proprement
+			header('Location: ' . url::getBaseUrl() . 'journal');
+			exit;
 		}
 
 

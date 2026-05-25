@@ -17,17 +17,34 @@ use app\util\SessionLogin;
 use modele\journal\Bat;
 use modele\DAO\journalDAO\SpeciesDAO;
 
+/**
+ * Contrôleur : ajout ou modification d'un individu chauve-souris (Bat).
+ *
+ * Un Bat est un animal identifié (nom, espèce, date de naissance, sexe, poids).
+ * Il est distinct d'une fiche d'observation (Section) : un même Bat peut
+ * apparaître dans plusieurs fiches SectionBat.
+ *
+ * Ce contrôleur gère deux cas selon le paramètre GET ?bat :
+ *   ?bat=add → création d'un nouveau Bat après soumission du formulaire.
+ *   ?bat=mod&id=X → modification du Bat identifié par X.
+ *
+ * Accès restreint à ROLE_NATURALISTE : seuls les naturalistes peuvent
+ * créer ou modifier des individus dans la base.
+ */
 class SectionBatAddition
 {
 
 	public function __construct()
 	{
+		Guard::requireRole(ROLE_NATURALISTE);
+
 		$bat = null;
 
+		// Charge les espèces pour le menu déroulant du formulaire
 		$speciesDAO = new SpeciesDAO();
 		$allSpecies = $speciesDAO->getAllSpecies();
 
-		// Si le formulaire est remplis
+		// Soumission du formulaire : les trois champs obligatoires sont présents
 		if (
 			req::has("batName") &&
 			req::has("batWeight") &&
@@ -43,8 +60,7 @@ class SectionBatAddition
 				req::post("batNotes")
 			);
 
-			// Si c'est un ajout, ajoute la Bat dans la BDD,
-			// sinon, met à jour la Bat dans la BDD
+			// ?bat=add → insertion, tout autre valeur (ex: "mod") → mise à jour
 			if (req::get("bat") == "add") {
 				$bat->addBat();
 			} else {

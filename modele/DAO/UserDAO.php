@@ -54,21 +54,6 @@ class UserDAO extends Database
 		return $data;
 	}
 
-	//Equivalent pour comprendre :
-	// private function getAllData($metier): array {
-	// return [
-	// 'nom' => $metier->getNom(),
-	// 'prenom' => $metier->getPrenom(),
-	// 'email' => $metier->getEmail(),
-	// 'ne_le' => $metier->getDateNaissance(),
-	// 'ville' => $metier->getVille(),
-	// 'enfants' => $metier->getEnfants(),
-	// 'tel' => $metier->getTel(),
-	// 'avatar' => $metier->getAvatar(),
-	// ];
-	// }
-
-
 	/**
 	 *	CRUD : create
 	 *	@param object:metier Instance de l'objet métier
@@ -88,21 +73,26 @@ class UserDAO extends Database
 	 *	@param integer Numéro de la clé primaire
 	 *	@return mixed object|string|bool
 	 */
+	/**
+	 * Charge un utilisateur par son ID et retourne un objet User complet.
+	 * memberNum est forcé en string car MySQL peut retourner null pour les invités.
+	 * La clé primaire est retirée du tableau avant le spread car User ne l'attend pas
+	 * dans son constructeur — elle est réinjectée via setId().
+	 */
 	public function getUsersById(int $id): mixed
 	{
 		$row = false;
 		if ($id > 0)
-			$row = $this->getOne($id); //on récupère la ligne/tuple concernée
-		//gestion de l'index en cas d'erreur :
+			$row = $this->getOne($id);
 		if (!$row) {
 			Error::setException("l'indentifiant fourni (<b>$id</b>) est invalide !");
 		}
-		$rowData = (array) $row; //conversion objet --> array
-		unset($rowData[$this->primaryKey], $row); //retire la clé primaire du tableau et $row qui ne sert plus
+		$rowData = (array) $row;
+		unset($rowData[$this->primaryKey], $row);
 		$rowData['memberNum'] = (string) ($rowData['memberNum'] ?? '');
-		$metier = new User(...$rowData); //crée l'objet User(->User.php) avec toutes les clés du tableau $rowData
-		$metier->setId($id); //ajoute $id dans l'objet métier (User)
-		return $metier; //retourne l'objet crée
+		$metier = new User(...$rowData);
+		$metier->setId($id);
+		return $metier;
 	}
 
 	/**
@@ -250,6 +240,13 @@ class UserDAO extends Database
 		);
 	}
 
+    /**
+     * Génère le prochain numéro adhérent au format AMI-AAAA-NNNN.
+     * Cherche le numéro le plus élevé de l'année en cours et incrémente son suffixe.
+     * Le tri est numérique (CAST ... AS UNSIGNED) pour éviter un tri lexicographique
+     * qui classerait "0010" avant "0009".
+     * Retourne "AMI-AAAA-0001" si aucun numéro n'existe encore pour l'année.
+     */
     public function generateNextMemberNum(): string {
         $year = (int)date('Y');
         $row  = $this->sendSQL(
@@ -264,7 +261,7 @@ class UserDAO extends Database
             return "AMI-{$year}-0001";
         }
 
-        $parts = explode('-', $row->memberNum); // ['AMI', '2026', '0042']
+        $parts = explode('-', $row->memberNum); // ex: ['AMI', '2026', '0042']
         $next  = (int)end($parts) + 1;
 
         return "AMI-{$year}-" . str_pad($next, 4, '0', STR_PAD_LEFT);

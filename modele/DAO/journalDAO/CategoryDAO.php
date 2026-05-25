@@ -7,6 +7,17 @@ use modele\journal\Category;
 use app\util\Error;
 use PDO;
 
+/**
+ * DAO : catégories d'observation colonie (table Category).
+ *
+ * Deux méthodes de lecture coexistent :
+ *   getAllCategories() → alias de getAllcategories(), retourne des objets Category.
+ *   findAll()          → utilise une requête SQL directe triée par id DESC.
+ *   findById()         → charge un objet Category par son id.
+ *
+ * Nota : getAllcategories() (minuscule c) est l'ancienne méthode ;
+ * préférer findAll() pour les nouveaux usages.
+ */
 class CategoryDAO extends Database {
 
     public function __construct() {
@@ -85,18 +96,11 @@ class CategoryDAO extends Database {
         }
     }
 
-	// public function getCategoryBySection(int $idSection): int {
-	// 	try{
-	// 		$stmt = $this->getPdo()->prepare(
-	// 			"SELECT idCategory From `Category` WHERE id"
-	// 		)
-	// 	}
-	// }
-
+	// Ancienne méthode — préférer findAll() pour les nouveaux appels
 	public function getAllcategories(): array {
 		$allCategories = array();
 		$data = (array)$this->getAll();
-		foreach ($data as $elem){
+		foreach ($data as $elem) {
 			$rowData = (array)$elem;
 			$id = $rowData[$this->primaryKey];
 			unset($rowData[$this->primaryKey], $elem);

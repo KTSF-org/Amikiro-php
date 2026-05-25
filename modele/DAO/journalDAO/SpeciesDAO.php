@@ -9,14 +9,21 @@ use modele\journal\Species;
 use PDO;
 use UnexpectedValueException;
 
+/**
+ * DAO : espèces de chauves-souris (table Species).
+ *
+ * Fournit le CRUD complet pour les objets Species.
+ * Utilisé principalement par SectionBatAddition pour alimenter
+ * le menu déroulant de sélection d'espèce lors de la création d'un Bat.
+ *
+ * getAllSpecies() → retourne tous les enregistrements sous forme d'objets Species.
+ */
 class SpeciesDAO extends Database
 {
 
     public function __construct()
     {
-        $tableName = "Species";
-        $primaryKey = "id";
-        parent::__construct($tableName, $primaryKey);
+        parent::__construct('Species', 'id');
     }
 
         private function getAllData($bat): array

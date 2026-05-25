@@ -23,15 +23,23 @@
         </p>
 
         <div class="mt-4">
-            <a href="<?= $actual_link ?>live" class="btn btn-dark px-4">Accéder au live</a>
+            <a href="<?= $actual_link ?>live" class="btn btn-dark px-4">
+                <i class="bi bi-camera-video-fill me-2"></i>Accéder au live
+            </a>
         </div>
 
-        <hr class="accueil-sep my-4">
+        <hr class="accueil-sep">
 
-        <div class="row justify-content-center text-start">
-            <div class="col-md-7">
-
-                <section class="accueil-bloc mb-4">
+        <!--
+            Deux feature cards côte à côte (md+) → empilées sur mobile.
+            Remplacent les anciens blocs de texte brut.
+        -->
+        <div class="row g-4 justify-content-center text-start">
+            <div class="col-md-5">
+                <div class="accueil-feature">
+                    <div class="accueil-feature-icon">
+                        <i class="bi bi-shield-check"></i>
+                    </div>
                     <h2>Missions de conservation</h2>
                     <p>
                         L'association valorise ses connaissances liées aux chiroptères et leurs milieux naturels dans
@@ -40,20 +48,21 @@
                         l'association, du prestataire ou à l'extérieur. Amikiro met à profit ses compétences sur
                         l'ensemble de la région Bretagne.
                     </p>
-                </section>
-
-                <section class="accueil-bloc">
+                </div>
+            </div>
+            <div class="col-md-5">
+                <div class="accueil-feature">
+                    <div class="accueil-feature-icon">
+                        <i class="bi bi-diagram-3"></i>
+                    </div>
                     <h2>Écosystème Numérique</h2>
                     <p>
                         L'association met en œuvre le développement, la gestion, l'animation et la valorisation
                         d'actions de sensibilisation avec ses partenaires sur le patrimoine naturel et culturel :
                         tourisme et biodiversité. Le but recherché est de maintenir un tissu économique et social
-                        durable par la découverte du patrimoine tout en assurant la protection de la biodiversité. Au
-                        travers de son programme de valorisation du patrimoine, l'association inaugure un projet
-                        innovant visant au maintien d'actions socio-économiques grâce à la mise en réseau des acteurs.
+                        durable par la découverte du patrimoine tout en assurant la protection de la biodiversité.
                     </p>
-                </section>
-
+                </div>
             </div>
         </div>
 

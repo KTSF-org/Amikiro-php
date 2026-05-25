@@ -5,6 +5,19 @@ namespace modele\DAO\base;
 use PDO;
 use PDOException;
 
+/**
+ * Utilitaire de connexion PDO.
+ *
+ * Crée et retourne une instance PDO à partir de la configuration définie dans app/DB.php
+ * (chargée sous la constante DB_CONFIG dans app/Setup.php).
+ *
+ * Appelé une seule fois via Database::getPdo() (singleton).
+ * Si la connexion échoue, affiche un message d'erreur lisible et retourne null.
+ *
+ * Options activées quand DB_DEBUG = true :
+ *   - ERRMODE_EXCEPTION : toute erreur SQL lève une PDOException (au lieu de retourner false)
+ *   - ATTR_EMULATE_PREPARES = false : force les vraies requêtes préparées (détecte les erreurs de type)
+ */
 class Connect {
 
 	public static function run() {
