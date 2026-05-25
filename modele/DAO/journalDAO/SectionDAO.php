@@ -7,6 +7,17 @@ use modele\journal\Section;
 use app\util\Error;
 use PDO;
 
+/**
+ * DAO : fiches d'observation (table Section).
+ *
+ * Fournit le CRUD pour les objets Section, ainsi que deux méthodes de lecture :
+ *   findAll()         → toutes les fiches, sans filtre.
+ *   findAllByAuth()   → uniquement les fiches créées par un utilisateur donné.
+ *
+ * Section est le tronc commun des fiches colonie et individu.
+ * Les tables de liaison (ColonySection, SpecimenSection) sont gérées
+ * par leurs DAOs respectifs (SectionColonyDAO, SectionSpecimenDAO).
+ */
 class SectionDAO extends Database {
 
     public function __construct() {
@@ -73,10 +84,15 @@ class SectionDAO extends Database {
         return $allSection;
     }
 
+	/**
+	 * Retourne uniquement les fiches créées par l'utilisateur $idUser.
+	 * Charge toutes les fiches en mémoire puis filtre — acceptable pour
+	 * un volume réduit ; à remplacer par une requête SQL filtrée si le journal grandit.
+	 */
 	public function findAllByAuth($idUser): array {
-        $allSection = $this->findAll();
+        $allSection  = $this->findAll();
 		$userSection = [];
-		foreach($allSection as $sec) {
+		foreach ($allSection as $sec) {
 			if ($sec->getIdUser() == $idUser) {
 				array_push($userSection, $sec);
 			}

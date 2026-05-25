@@ -5,11 +5,20 @@ use modele\DAO\journalDAO\SectionColonyDAO;
 
 
 
+/**
+ * Modèle métier : liaison entre une fiche colonie et sa catégorie (table ColonySection).
+ *
+ * SectionColony est la table de jonction entre Section et Category.
+ * Elle indique que la fiche $idSection est une observation de type $idCategory.
+ *
+ * Une Section ne peut être liée qu'à une seule ColonySection (relation 1-1).
+ * Si une Section a une ColonySection, elle n'a pas de SectionSpecimen, et vice-versa.
+ */
 class SectionColony
 {
 
-    private int $id=0;
-    protected $param = []; //La liste des paramètres (ou attributs)
+    private int $id = 0;
+    protected $param = []; // Liste des noms d'attributs pour SectionColonyDAO::getAllData()
 
    
     public function __construct(

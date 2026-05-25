@@ -1,40 +1,48 @@
 <?php
 /**
- * VUE : Login
- * Formulaire d'authentification.
+ * VUE : Login Admin
+ * Formulaire d'authentification réservé à l'administrateur.
  * $erreur : message d'erreur transmis par le contrôleur (null si aucune tentative).
  * Le wrapper HTML (DOCTYPE, head, body) est fourni par MainTemplate — ne pas le redéclarer.
  */
 ?>
-<div class="d-flex justify-content-center align-items-center py-5">
-    <div style="width: 100%; max-width: 400px;">
-        <div class="border border-dark rounded p-4 bg-white shadow-sm">
-            <h4 class="text-center mb-4">Connexion Admin</h4>
+<div class="login-page">
+    <div class="login-card-wrapper">
+        <div class="card">
 
-            <!-- Erreur de connexion transmise par le contrôleur -->
+            <div class="login-brand">
+                <img src="<?= ASSET ?>/img/app.png" alt="Logo <?= htmlspecialchars(MAIN_TITLE) ?>">
+                <h5><?= htmlspecialchars(MAIN_TITLE) ?></h5>
+                <p>Espace administrateur</p>
+            </div>
 
-            <form method="POST" action="<?= $actual_link . URL_ADMIN ?>">
+            <div class="card-body px-4 pb-4">
+                <hr class="login-divider">
 
-                <div class="mb-3">
-                    <label for="email" class="form-label">Email</label>
-                    <input type="text" name="mail" id="mail" class="form-control" placeholder="azerty@gmail.com">
-                </div>
+                <form method="POST" action="<?= $actual_link . URL_ADMIN ?>">
 
-                <div class="mb-3">
-                    <label for="pwd" class="form-label">Mot de passe</label>
-                    <input type="password" name="password" id="password" class="form-control"
-                        placeholder="Votre mot de passe">
-                </div>
+                    <div class="mb-3">
+                        <label for="mail" class="form-label">Email</label>
+                        <input type="email" name="mail" id="mail" class="form-control"
+                               placeholder="admin@email.com" autocomplete="email">
+                    </div>
 
-                <?php if (!empty($erreur)): ?>
-                    <div class="alert alert-danger"><?= htmlspecialchars($erreur) ?></div>
-                <?php endif; ?>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Mot de passe</label>
+                        <input type="password" name="password" id="password" class="form-control"
+                               placeholder="••••••••" autocomplete="current-password">
+                    </div>
 
-                <div class="d-grid">
-                    <button type="submit" class="btn btn-primary">Connexion</button>
-                </div>
+                    <?php if (!empty($erreur)): ?>
+                        <div class="alert alert-danger py-2 small"><?= htmlspecialchars($erreur) ?></div>
+                    <?php endif; ?>
 
-            </form>
+                    <div class="d-grid mt-4">
+                        <button type="submit" class="btn btn-primary">Connexion</button>
+                    </div>
+
+                </form>
+            </div>
         </div>
     </div>
 </div>

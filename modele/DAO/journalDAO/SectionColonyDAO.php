@@ -6,13 +6,22 @@ use app\util\Error;
 use modele\journal\SectionColony;
 use PDO;
 
+/**
+ * DAO : liaisons entre fiches colonie et catégories (table ColonySection).
+ *
+ * Chaque ligne associe une Section (fiche d'observation) à une Category.
+ * Une Section ne peut avoir qu'une seule entrée dans ColonySection.
+ *
+ * Méthode clé :
+ *   findColonySectionByIdSection($idSection) → retourne l'objet SectionColony lié,
+ *   ou null si la fiche n'est pas de type colonie. Utilisée pour distinguer
+ *   les fiches colonie des fiches individu (SectionSpecimenDAO).
+ */
 class SectionColonyDAO extends Database
 {
     public function __construct()
     {
-        $tableName = "ColonySection";
-        $primaryKey = "id";
-        parent::__construct($tableName, $primaryKey);
+        parent::__construct('ColonySection', 'id');
     }
 
     private function getAllData($sectionColony): array
@@ -85,16 +94,21 @@ class SectionColonyDAO extends Database
         return $this->deleteOne($sectionColony->getId());
     }
 
+    /**
+     * Retourne le SectionColony associé à une fiche, ou null si inexistant.
+     * Utilisée dans Journal et SectionRead pour identifier le type de fiche.
+     * On supprime la clé 'id' avant le spread car SectionColony ne l'attend pas
+     * dans son constructeur (elle est gérée séparément via setId()).
+     */
     public function findColonySectionByIdSection($idSection): mixed
     {
         $stmt = $this->getPdo()->prepare("SELECT * FROM `" . $this->tableName . "` WHERE idSection = :idSection");
         $stmt->execute([':idSection' => "$idSection"]);
         $section = $stmt->fetch(PDO::FETCH_ASSOC);
-        if ($section!=null){
+        if ($section != null) {
             unset($section['id']);
             return new SectionColony(...$section);
         }
-        
         return null;
     }
 }

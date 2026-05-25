@@ -6,42 +6,51 @@
  * Le wrapper HTML (DOCTYPE, head, body) est fourni par MainTemplate — ne pas le redéclarer.
  */
 ?>
-<div class="d-flex justify-content-center align-items-center py-5">
-    <div style="width: 100%; max-width: 400px;">
-        <div class="border border-dark rounded p-4 bg-white shadow-sm">
-            <h4 class="text-center mb-4">Connexion</h4>
+<div class="login-page">
+    <div class="login-card-wrapper">
+        <div class="card">
 
-            <!-- Erreur de connexion transmise par le contrôleur -->
+            <div class="login-brand">
+                <img src="<?= ASSET ?>/img/app.png" alt="Logo <?= htmlspecialchars(MAIN_TITLE) ?>">
+                <h5><?= htmlspecialchars(MAIN_TITLE) ?></h5>
+                <p>Maison des Chauves-Souris</p>
+            </div>
 
-            <form method="POST" action="<?= $actual_link ?>login">
+            <div class="card-body px-4 pb-4">
+                <hr class="login-divider">
 
-                <div class="mb-3">
-                    <label for="email" class="form-label">Email</label>
-                    <input type="text" name="mail" id="mail" class="form-control" placeholder="azerty@gmail.com">
-                </div>
+                <form method="POST" action="<?= $actual_link ?>login">
 
-                <div class="mb-3">
-                    <label for="pwd" class="form-label">Mot de passe</label>
-                    <input type="password" name="password" id="password" class="form-control"
-                        placeholder="Votre mot de passe">
-                </div>
-
-                <div class="mt-5 mb-3">
-                    <div class="text-center mb-3">
-                        <img src="<?= $actual_link ?>captcha" id="captcha_img" alt="Captcha">
+                    <div class="mb-3">
+                        <label for="mail" class="form-label">Email</label>
+                        <input type="email" name="mail" id="mail" class="form-control"
+                               placeholder="votre@email.com" autocomplete="email">
                     </div>
-                    <input type="text" name="captcha_code" class="form-control" placeholder="Code">
-                </div>
 
-                <?php if (!empty($erreur)): ?>
-                    <div class="alert alert-danger"><?= htmlspecialchars($erreur) ?></div>
-                <?php endif; ?>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Mot de passe</label>
+                        <input type="password" name="password" id="password" class="form-control"
+                               placeholder="••••••••" autocomplete="current-password">
+                    </div>
 
-                <div class="d-grid">
-                    <button type="submit" class="btn btn-primary">Connexion</button>
-                </div>
+                    <div class="mb-3">
+                        <div class="login-captcha">
+                            <img src="<?= $actual_link ?>captcha" id="captcha_img" alt="Code de vérification">
+                        </div>
+                        <input type="text" name="captcha_code" class="form-control"
+                               placeholder="Recopiez le code ci-dessus" autocomplete="off">
+                    </div>
 
-            </form>
+                    <?php if (!empty($erreur)): ?>
+                        <div class="alert alert-danger py-2 small"><?= htmlspecialchars($erreur) ?></div>
+                    <?php endif; ?>
+
+                    <div class="d-grid mt-4">
+                        <button type="submit" class="btn btn-primary">Connexion</button>
+                    </div>
+
+                </form>
+            </div>
         </div>
     </div>
 </div>

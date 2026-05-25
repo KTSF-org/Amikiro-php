@@ -8,14 +8,23 @@ use modele\journal\Section;
 use app\util\Error;
 use PDO;
 
+/**
+ * DAO : liaisons entre fiches individu et chauves-souris (table SpecimenSection).
+ *
+ * Chaque ligne associe une Section (fiche d'observation) à un Bat (individu).
+ * Une Section ne peut avoir qu'une seule entrée dans SpecimenSection.
+ *
+ * Méthode clé :
+ *   findSpecimenSectionByIdSection($idSection) → retourne le SectionSpecimen lié,
+ *   ou null si la fiche n'est pas de type individu. Symétrique à
+ *   SectionColonyDAO::findColonySectionByIdSection().
+ */
 class SectionSpecimenDAO extends Database
 {
 
     public function __construct()
     {
-        $tableName = "SpecimenSection";
-        $primaryKey = "id";
-        parent::__construct($tableName, $primaryKey);
+        parent::__construct('SpecimenSection', 'id');
     }
 
 
@@ -91,16 +100,21 @@ class SectionSpecimenDAO extends Database
         return $this->deleteOne($sectionSpecimen->getId());
     }
 
+    /**
+     * Retourne le SectionSpecimen associé à une fiche, ou null si inexistant.
+     * Utilisée dans Journal et SectionRead pour identifier le type de fiche.
+     * On supprime la clé 'id' avant le spread car SectionSpecimen ne l'attend pas
+     * dans son constructeur (elle est gérée séparément via setId()).
+     */
     public function findSpecimenSectionByIdSection($idSection): mixed
     {
         $stmt = $this->getPdo()->prepare("SELECT * FROM `" . $this->tableName . "` WHERE idSection = :idSection");
         $stmt->execute([':idSection' => "$idSection"]);
         $section = $stmt->fetch(PDO::FETCH_ASSOC);
-        if ($section != null){
+        if ($section != null) {
             unset($section['id']);
             return new SectionSpecimen(...$section);
         }
-
         return null;
     }
 }

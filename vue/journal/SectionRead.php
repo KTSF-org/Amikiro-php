@@ -38,7 +38,7 @@
                 <div class="card-body p-4">
                     <div class="mb-4">
                         <label class="form-label text-uppercase fw-bold text-muted small mb-3">Observations & Contenu</label>
-                        <div class="bg-light p-4 rounded-3 border-start border-4 border-primary">
+                        <div class="bg-light p-4 rounded-3 border-start border-4 border-amk-green">
                             <p class="mb-0 text-dark" style="white-space: pre-wrap; line-height: 1.6;">
                                 <?= nl2br(htmlspecialchars($sectionContent)) ?>
                             </p>

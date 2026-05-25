@@ -43,16 +43,8 @@ class SubscriptionDAO extends Database {
     }
 
     /**
-     * Crée une nouvelle période d'accès pour un utilisateur.
-     * N'invalide pas les périodes existantes.
-     *
-     * @param int    $userId    Identifiant de l'utilisateur.
-     * @param string $startDate Date de début (YYYY-MM-DD).
-     * @param string $endDate   Date de fin (YYYY-MM-DD).
-     */
-    /**
      * Supprime toutes les périodes d'accès d'un utilisateur.
-     * À appeler avant la suppression du compte.
+     * À appeler avant la suppression du compte (contrainte FK).
      */
     public function deleteByUser(int $userId): void {
         $this->getPdo()->prepare(
@@ -83,6 +75,14 @@ class SubscriptionDAO extends Database {
         return $result;
     }
 
+    /**
+     * Crée une nouvelle période d'accès pour un utilisateur.
+     * N'invalide pas les périodes existantes (l'historique est conservé).
+     *
+     * @param int    $userId    Identifiant de l'utilisateur.
+     * @param string $startDate Date de début (YYYY-MM-DD).
+     * @param string $endDate   Date de fin (YYYY-MM-DD).
+     */
     public function createForUser(int $userId, string $startDate, string $endDate): bool {
         return $this->createOne([
             'idUser'    => $userId,

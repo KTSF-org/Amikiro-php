@@ -7,13 +7,24 @@ use modele\DAO\journalDAO\BatDAO;
 use modele\journal\Species;
 use mysqli_sql_exception;
 
+/**
+ * Modèle métier : individu chauve-souris (table Bat).
+ *
+ * Représente un animal identifié au sein du gîte, avec ses caractéristiques
+ * biologiques (espèce, sexe, poids, date de naissance).
+ * Un Bat peut être associé à plusieurs fiches d'observation via SectionSpecimen.
+ *
+ * Les noms des propriétés du constructeur doivent correspondre exactement
+ * aux noms de colonnes de la table SQL Bat (utilisés dynamiquement par BatDAO).
+ */
 class Bat
 {
 
-    private int $id=0;
-    protected $param = []; //La liste des paramètres (ou attributs)
+    private int $id = 0;
+    // $param stocke la liste des noms d'attributs — utilisée par BatDAO::getAllData()
+    // pour construire les requêtes INSERT/UPDATE dynamiquement.
+    protected $param = [];
 
-    // Constructeur : Bat
     public function __construct(
         private string $name = "",
         private int $idSpecies = -1,
@@ -33,11 +44,15 @@ class Bat
         }
     }
 
-    // STOCKER LA LISTE DES ATTRIBUTS
+    /**
+     * Construit la liste des noms de propriétés à persister en base (hors $id et $param).
+     * Appelé une seule fois dans le constructeur et stocké dans $this->param.
+     * Utilisé par BatDAO::getAllData() pour mapper getters → colonnes SQL.
+     */
     private function getKey(array $arr): array
     {
         foreach ($arr as $key => $value) {
-            if ($key === "IdBat" or $key === "param")
+            if ($key === "id" or $key === "param")
                 continue;
             $param[] = $key;
         }

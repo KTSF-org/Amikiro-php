@@ -5,27 +5,31 @@ use app\util\Error;
 use modele\DAO\UserDAO;
 
 /**
- * MODELE : Objet métier : Direct Object (DO) : User
- * Encapsulation, manipulation et récupération des données issues du DAO :
- * -> modele/DAO/UserDAO.php (hérités de : modele/DAO/base/Database.php)
- * Accesseurs / mutateurs de la table : "clients".
- * Logique métier à implémenter, par exemple :
- * Calculer l'âge à partir de la date de naissance dans une méthode getAge() ...
+ * Modèle métier : compte utilisateur (table User).
+ *
+ * Encapsule toutes les données d'un utilisateur et délègue les opérations
+ * de persistance à UserDAO (modele/DAO/UserDAO.php).
+ *
+ * Règles importantes :
+ *   - $id (clé primaire) n'est PAS dans le constructeur : il est auto-incrémenté
+ *     par MySQL et injecté via setId() après l'INSERT.
+ *   - Les noms des propriétés du constructeur doivent correspondre exactement
+ *     aux noms de colonnes de la table SQL User.
+ *   - $memberNum est nullable (chaîne vide pour les invités) et exclu de la
+ *     validation Error::checkModelArgs() pour cette raison.
+ *   - setPassword() hache automatiquement le mot de passe via bcrypt (cost 12).
+ *     Ne jamais stocker ni transmettre le mot de passe en clair après cet appel.
+ *   - verifIdentifiant() est la méthode d'authentification principale : elle
+ *     retourne l'objet User complet en cas de succès, false sinon.
  */
-
 class User
 {
 
-	private int $id = 0; //La clé primaire est identifiée par $id
+	private int $id = 0; // Clé primaire — jamais dans le constructeur (auto-incrémentée)
+	protected $param = []; // Liste des noms d'attributs pour UserDAO::getAllData()
 
-	protected $param = []; //La liste des paramètres (ou attributs)
-
-	// Les autres paramètres sont ci-dessous, dans le constructeur...
-
-	// Constructeur : User
-	// Les noms des propriétés/attributs/colonnes de la table (en BDD),
-	// doivent être identiques dans la déclaration du constructeur (ci-dessous).
-	// Ne doit pas être ajouté : la clé primaire, car auto-incrémentée !
+	// Les noms des propriétés ci-dessous doivent correspondre aux noms de colonnes SQL.
+	// Ne pas inclure la clé primaire ($id) — elle est gérée séparément.
 	public function __construct(
 		private int $codeRole = -1,
 		private string $mail = '',
@@ -95,14 +99,17 @@ class User
 	}
 
 
-	// Vérification de l'email
+	/** Retourne true si l'email est au format valide (ne vérifie pas son existence). */
 	public function isValidEmail(): bool
 	{
 		return filter_var($this->mail, FILTER_VALIDATE_EMAIL);
 	}
 
-
-	// Fonction pour vérifier les identifiants
+	/**
+	 * Authentifie un utilisateur par email + mot de passe.
+	 * Retourne l'objet stdClass de la ligne BDD si succès, false sinon.
+	 * Appelé dans controleur/common/Login.php et controleur/admin/AdminControleur.php.
+	 */
 	public static function verifIdentifiant(string $mail, string $password): mixed
 	{
 		$userDAO = new UserDAO();
@@ -118,30 +125,6 @@ class User
 		}
 
 		return $user; //Email connu / Mot de passe connu
-	}
-
-	/**
-	 * Génère le prochain numéro séquentiel
-	 */
-	public function generateNextNumber()
-	{
-		$userDAO = new UserDAO();
-		$lastNumber = $userDAO->getLastAdherentNumber();
-
-
-		if (!$lastNumber) {
-			return "AMI-0001";
-		}
-
-		// On extrait le nombre après le tiret
-		// AMI-0042 -> 0042
-		$parts = explode('-', $lastNumber);
-		$numericPart = (int) end($parts);
-
-		$nextNumericPart = $numericPart + 1;
-
-		// On reformate avec le préfixe et les 4 chiffres (ex: 0043)
-		return 'AMI-' . str_pad($nextNumericPart, 4, '0', STR_PAD_LEFT);
 	}
 
 
@@ -253,6 +236,10 @@ class User
 	}
 
 
+	/**
+	 * Hache le mot de passe via bcrypt (cost 12) avant de le stocker.
+	 * Ne jamais appeler getPassword() pour comparer en clair — utiliser password_verify().
+	 */
 	public function setPassword($password)
 	{
 		$option = ['cost' => 12];
