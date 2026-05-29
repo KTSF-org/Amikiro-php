@@ -29,39 +29,49 @@ use app\util\SessionLogin as UserSession;
  * via MainAjax::addSectionCol() et MainAjax::updateSectionCol().
  * Ce contrôleur ne gère que la partie GET (affichage initial et pré-chargement).
  */
-class SectionColony {
+class SectionColony
+{
 
-    public function __construct() {
+    public function __construct()
+    {
         Guard::requireRole(ROLE_NATURALISTE);
 
         $urlCreate = url::getBaseUrl() . "sectionColony?page=create";
-        $urlModif  = url::getBaseUrl() . "sectionColony?page=modification";
+        $urlModif = url::getBaseUrl() . "sectionColony?page=modification";
         $urlDelete = url::getBaseUrl() . "sectionColony?delete=true";
-        $section   = null;
+        $section = null;
 
         Vue::setTitle('Section Colonies');
 
         $cat = new CategoryDAO();
+        $catId = 0;
 
         $allCategories = $cat->getAllCategories();
-        // Construction d'une chaîne HTML <option> pour le <select> de la vue.
-        // Alternative : passer $allCategories directement et boucler dans la vue.
-        $catList = "";
-        foreach ($allCategories as $category) {
-            $catList .= "<option value=" . $category->getId() . ">" . $category->getName() . "</option>";
-        }
+
 
         $sectionCol = new SectionColonyDAO();
         // $modif = true si on est en mode édition (?page=modification)
-        $modif     = Request::get('page') == 'modification';
+        $modif = Request::get('page') == 'modification';
         $sectionDAO = new SectionDAO();
-        $sectionId  = (int)Request::get('id');
+        $sectionId = (int) Request::get('id');
 
         if ($modif) {
             // Charge la fiche existante pour pré-remplir le formulaire d'édition
             $section = $sectionDAO->find($sectionId);
+            $colonySection = $sectionCol->findColonySectionByIdSection($sectionId);
+            $catId = $colonySection->getIdCategory();
         }
-        $sectionId = (int)Request::get('id');
+        $sectionId = (int) Request::get('id');
+
+        // Construction d'une chaîne HTML <option> pour le <select> de la vue.
+        // Alternative : passer $allCategories directement et boucler dans la vue.
+        $catList = "";
+        foreach ($allCategories as $category) {
+            if ($category->getId() == $catId)
+                $catList .= "<option selected value='" . $category->getId() . "'>" . $category->getName() . "</option>";
+            else
+                $catList .= "<option value='" . $category->getId() . "'>" . $category->getName() . "</option>";
+        }
 
         // Recherche la liaison ColonySection pour l'id courant
         // (null si la fiche n'est pas encore liée à une catégorie, ex: nouvelle fiche)
@@ -83,7 +93,7 @@ class SectionColony {
                 "urlModif" => $urlModif,
                 "urlDelete" => $urlDelete,
                 "section" => $section,
-                "modif"=>$modif,
+                "modif" => $modif,
                 "catSection" => $catSection,
                 "catSec" => $catSec,
                 "sectionId" => $sectionId
