@@ -159,6 +159,7 @@
         <div class="credit-avatar" style="background-color: #bb0808;">FE</div>
         <p class="credit-name">Florian Édouard</p>
         <p class="credit-role">Développeur</p>
+		<p>florian.edouard91@gmail.com</p>
       </div>
 
       <!-- Membre 2 -->
@@ -166,6 +167,7 @@
         <div class="credit-avatar" style="background-color: #3c5060;">SM</div>
         <p class="credit-name">Simon Mahéo</p>
         <p class="credit-role">Développeur</p>
+		<p>simon.maheo@free.fr</p>
       </div>
 
       <!-- Membre 3 -->
@@ -173,6 +175,7 @@
         <div class="credit-avatar" style="background-color: #ce2b37;">TO</div>
         <p class="credit-name">Tanihiarii Opuu</p>
         <p class="credit-role">Développeur</p>
+		<p>tanihiariidev@gmail.com</p>
       </div>
 
       <!-- Membre 4 -->
@@ -180,6 +183,7 @@
         <div class="credit-avatar" style="background-color: #000000;">KP</div>
         <p class="credit-name">Kévin Pinel</p>
         <p class="credit-role">Développeur</p>
+		<p>pinelkevin0@gmail.com</p>
       </div>
 
     </div>
