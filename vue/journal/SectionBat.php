@@ -71,7 +71,7 @@ use app\util\Helper;
                             ?></textarea>
                         </div>
 
-                        <button type="submit" class="btn btn-primary">
+                        <button type="submit" class="btn" style="background-color: #3C5060; color: white">
                             <?= $edit ? 'Modifier' : 'Enregistrer' ?> la fiche
                         </button>
 

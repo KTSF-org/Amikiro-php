@@ -2,6 +2,7 @@ $(document).ready(function () {
 
   // TABLEAU BAT
   $('#listBat').DataTable({
+    dom: '<"m-1"lf>rt<"m-1"ip>',
     order: [[2, 'asc']],
     searching: true,
     paging: true,
@@ -18,6 +19,7 @@ $(document).ready(function () {
 
   // TABLEAU SECTION
   $('#listSection').DataTable({
+    dom: '<"m-1"lf>rt<"m-1"ip>',
     order: [[3, 'desc']],
     searching: true,
     paging: true,

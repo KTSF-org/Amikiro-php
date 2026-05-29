@@ -11,6 +11,7 @@ use app\util\Helper;
  */
 ?>
 <script src="asset/js/formulaire.js" defer></script>
+<link rel="stylesheet" href="<?= ASSET ?>/css/section.css">
 
 <div class="container py-4">
 
@@ -104,7 +105,7 @@ use app\util\Helper;
                             ?></textarea>
                         </div>
 
-                        <button type="submit" class="btn btn-primary px-4">
+                        <button type="submit" class="btn px-4" style="background-color: #3C5060; color: white">
                             <?= $modif ? 'Modifier' : 'Enregistrer' ?> la chauve-souris
                         </button>
 
