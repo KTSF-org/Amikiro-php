@@ -28,6 +28,7 @@
     &copy;<?= date('Y') . ' ' . APP_NAME ?>
     | <a href="confidentialite" target="_blank">Politique de confidentialité</a>
     | <a href="mentionslegales" target="_blank">Mentions légales</a>
+    | <a href="credits" target="_blank">Crédits</a>
   </div>
 </footer>
 

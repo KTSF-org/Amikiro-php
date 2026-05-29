@@ -41,7 +41,7 @@ use app\util\Helper;
 
                         <div class="mb-3">
                             <label for="batName" class="form-label">
-                                Nom <span class="text-danger">*</span>
+                                Nom
                             </label>
                             <input type="text" class="form-control mandatory" id="batName"
                                    placeholder="Nom de la chauve-souris" name="batName"
@@ -50,7 +50,7 @@ use app\util\Helper;
 
                         <div class="mb-3">
                             <label for="floatingSelect" class="form-label">
-                                Espèce <span class="text-danger">*</span>
+                                Espèce
                             </label>
                             <select class="form-select mandatory" id="floatingSelect" name="batSpecies">
                                 <?php foreach ($allSpecies as $species):

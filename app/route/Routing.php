@@ -24,15 +24,13 @@ class Routing {
 		$route->add('', 'controleur\common\Login'); //page par défaut
 		$route->add('/login', 'controleur\common\Login');
 		$route->add('/accueil', 'controleur\common\Accueil');
-		$route->add('/about', 'controleur\common\About');
+		//$route->add('/about', 'controleur\common\About');
 		//charge une image en interne (hors asset) :
-		$route->add('/img', 'controleur\util\Image');
+		//$route->add('/img', 'controleur\util\Image');
 		//charge la classe MainAjax($message), 'Hello AJAX' un message de sortie par défaut :
 		$route->add('/ajax', 'controleur\MainAjax', 'Hello AJAX');
 		//méthode / fonction personalisée :
-		$route->add('/phpinfo', function () { phpinfo(); });
-		//login automatique en dev — à retirer avant mise en production :
-		$route->add('/dev/login', 'controleur\DevLogin');
+		//$route->add('/phpinfo', function () { phpinfo(); });
 		//ajout d'un controleur JavaScript (génération dynamique d'un script JS), voir app/Setup.php :
 		$route->add('asset/js/' . $_SESSION['CUSTOM_JS'], 'controleur\util\CustomJS');
 
@@ -41,8 +39,6 @@ class Routing {
 		// Journal et ses sous-pages (édition des données métier)
 		$route->add('/journal', 'controleur\journal\Journal');
 		$route->add('/sectionBatAddition', 'controleur\journal\SectionBatAddition');
-
-		// $route->add('/journal/categorie', 'controleur\journal\Categorie');
 
 		// Déconnexion — détruit la session et redirige vers /login
 		$route->add('/logout', 'controleur\common\Logout');
@@ -66,6 +62,7 @@ class Routing {
 
 		$route->add('/confidentialite', 'controleur\legale\Confidentialite');
 		$route->add('/mentionslegales', 'controleur\legale\MentionsLegales');
+		$route->add('/credits', 'controleur\legale\Credits');
 
 		$route->add('/captcha', 'controleur\util\Captcha');
 

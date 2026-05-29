@@ -50,7 +50,7 @@ use app\util\Helper;
 
                         <div class="mb-3">
                             <label for="sectionTitle" class="form-label">
-                                Titre <span class="text-danger">*</span>
+                                Titre
                             </label>
                             <input type="text" class="form-control mandatory" id="sectionTitle"
                                    placeholder="Titre de la fiche" name="sectionTitle"
