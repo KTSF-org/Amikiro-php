@@ -65,6 +65,7 @@ $(document).ready(function () {
         language: {
             url: '<?= ASSET ?>/lib/datatables/i18n/fr-FR.json'
         },
+        dom: '<"m-1"lf>rt<"m-1"ip>',
         pageLength: 10,
         responsive: true,
         columnDefs: [

@@ -23,7 +23,7 @@
         </p>
 
         <div class="mt-4">
-            <a href="<?= $actual_link ?>live" class="btn btn-dark px-4">
+            <a href="<?= $actual_link ?>live" class="btn px-4" style="background-color: #B03139; color: white">
                 <i class="bi bi-camera-video-fill me-2"></i>Accéder au live
             </a>
         </div>

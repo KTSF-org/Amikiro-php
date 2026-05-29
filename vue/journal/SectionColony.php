@@ -90,7 +90,7 @@ use app\util\Helper;
                             <!-- Message de retour AJAX -->
                             <p id="formMessage" class="form-feedback mb-3"></p>
 
-                            <button type="submit" class="btn btn-primary px-4"><?= $modif ? "Modifier" : "Enregistrer"?></button>
+                            <button type="submit" class="btn px-4" style="background-color: #3C5060; color: white"><?= $modif ? "Modifier" : "Enregistrer"?></button>
 
                         </form>
                 </div>

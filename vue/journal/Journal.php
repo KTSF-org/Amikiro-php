@@ -75,10 +75,10 @@
 
     <?php if ($userRole >= ROLE_NATURALISTE): ?>
     <div class="mt-3">
-        <a href="sectionColony" class="btn btn-primary me-2">
+        <a href="sectionColony" class="btn me-2" style="background-color: #3C5060; color: white">
             <i class="bi bi-plus-lg me-1"></i>Nouvelle fiche colonie
         </a>
-        <a href="sectionBat" class="btn btn-primary">
+        <a href="sectionBat" class="btn" style="background-color: #3C5060; color: white">
             <i class="bi bi-plus-lg me-1"></i>Nouvelle fiche individu
         </a>
     </div>
