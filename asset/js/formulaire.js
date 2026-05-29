@@ -10,6 +10,22 @@ function verifierChamps() {
             input.classList.remove('border', 'border-danger');
         }
     });
+
+    // Vérification des radio buttons : au moins un doit être sélectionné
+    const radioButtons = document.querySelectorAll('input[type="radio"][name="batSelected"]');
+    if (radioButtons.length > 0) {
+        const unRadioSelectionne = Array.from(radioButtons).some(radio => radio.checked);
+
+        const tableau = document.getElementById('listBat');
+
+        if (!unRadioSelectionne) {
+            if (tableau) tableau.classList.add('border', 'border-danger');
+            estValide = false;
+        } else {
+            if (tableau) tableau.classList.remove('border', 'border-danger');
+        }
+    }
+
     return estValide;
 }
 

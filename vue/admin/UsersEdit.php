@@ -72,7 +72,7 @@
 
                         <div class="row g-3 mb-3">
                             <div class="col-6">
-                                <label for="codeRole" class="form-label">Rôle</label>
+                                <label for="codeRole" class="form-label">Type de compte</label>
                                 <?php if ($isSelf): ?>
                                     <!-- Un admin ne peut pas modifier son propre rôle : champ verrouillé,
                                          la valeur POST codeRole est ignorée côté serveur ($isSelf). -->
