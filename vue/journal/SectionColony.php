@@ -36,69 +36,63 @@ use app\util\Helper;
 
                     <?php if ($modif): ?>
                         <form id="formulaire" class="colonyFormModif" method="POST"
-                              action="<?= $actual_link ?>sectionColony">
-                    <?php else: ?>
-                        <form id="formulaire" class="colonyForm" method="POST"
-                              action="<?= $actual_link ?>sectionColony">
-                    <?php endif; ?>
-
-                        <div class="mb-3">
-                            <label for="title" class="form-label">
-                                Titre <span class="text-danger">*</span>
-                            </label>
-                            <?php if ($modif): ?>
-                                <input type="text" class="form-control mandatory" id="title"
-                                       name="colonyTitle" value="<?= htmlspecialchars($section->getTitle()) ?>">
-                            <?php else: ?>
-                                <input type="text" class="form-control mandatory" id="title"
-                                       placeholder="Titre de la rubrique" name="colonyTitle">
+                            action="<?= $actual_link ?>sectionColony">
+                        <?php else: ?>
+                            <form id="formulaire" class="colonyForm" method="POST"
+                                action="<?= $actual_link ?>sectionColony">
                             <?php endif; ?>
-                        </div>
 
-                        <div class="mb-3">
-                            <label for="date" class="form-label">Date</label>
-                            <?php if ($modif): ?>
-                                <input type="datetime-local" class="form-control" id="date" name="colonyDate"
-                                       value="<?= Helper::dateToDatetimelocal($section->getEventDate()) ?>">
-                            <?php else: ?>
-                                <input type="datetime-local" class="form-control" id="date" name="colonyDate">
-                            <?php endif; ?>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="category" class="form-label">
-                                Catégorie <span class="text-danger">*</span>
-                            </label>
-                            <!-- Tom Select initialise ce <select> — la classe form-select s'applique avant init -->
-                            <select class="form-select mandatory" id="category" name="colonyCategory">
+                            <div class="mb-3">
+                                <label for="title" class="form-label">
+                                    Titre <span class="text-danger">*</span>
+                                </label>
                                 <?php if ($modif): ?>
-                                    <option selected value="<?= $catSec->getId() ?>">
-                                        <?= htmlspecialchars($catSec->getName()) ?>
-                                    </option>
+                                    <input type="text" class="form-control mandatory" id="title" name="colonyTitle"
+                                        value="<?= htmlspecialchars($section->getTitle()) ?>">
                                 <?php else: ?>
+                                    <input type="text" class="form-control mandatory" id="title"
+                                        placeholder="Titre de la rubrique" name="colonyTitle">
+                                <?php endif; ?>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="date" class="form-label">Date</label>
+                                <?php if ($modif): ?>
+                                    <input type="datetime-local" class="form-control" id="date" name="colonyDate"
+                                        value="<?= Helper::dateToDatetimelocal($section->getEventDate()) ?>">
+                                <?php else: ?>
+                                    <input type="datetime-local" class="form-control" id="date" name="colonyDate">
+                                <?php endif; ?>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="category" class="form-label">
+                                    Catégorie <span class="text-danger">*</span>
+                                </label>
+                                <!-- Tom Select initialise ce <select> — la classe form-select s'applique avant init -->
+                                <select class="form-select mandatory" id="category" name="colonyCategory">
                                     <option value="">— Choisissez une catégorie —</option>
                                     <?= $categories ?>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="observation" class="form-label">Observations</label>
+                                <?php if ($modif): ?>
+                                    <textarea class="form-control mandatory" id="observation" rows="4"
+                                        name="colonyNotes"><?= htmlspecialchars($section->getContent()) ?></textarea>
+                                <?php else: ?>
+                                    <textarea class="form-control mandatory" id="observation" rows="4"
+                                        name="colonyNotes"></textarea>
                                 <?php endif; ?>
-                            </select>
-                        </div>
+                            </div>
 
-                        <div class="mb-3">
-                            <label for="observation" class="form-label">Observations</label>
-                            <?php if ($modif): ?>
-                                <textarea class="form-control mandatory" id="observation"
-                                          rows="4" name="colonyNotes"><?= htmlspecialchars($section->getContent()) ?></textarea>
-                            <?php else: ?>
-                                <textarea class="form-control mandatory" id="observation"
-                                          rows="4" name="colonyNotes"></textarea>
-                            <?php endif; ?>
-                        </div>
+                            <!-- Message de retour AJAX -->
+                            <p id="formMessage" class="form-feedback mb-3"></p>
 
-                        <!-- Message de retour AJAX -->
-                        <p id="formMessage" class="form-feedback mb-3"></p>
+                            <button type="submit" class="btn btn-primary px-4"><?= $modif ? "Modifier" : "Enregistrer"?></button>
 
-                        <button type="submit" class="btn btn-primary px-4">Enregistrer</button>
-
-                    </form>
+                        </form>
                 </div>
             </div>
 
@@ -107,66 +101,66 @@ use app\util\Helper;
 </div>
 
 <script>
-$(document).ready(function () {
+    $(document).ready(function () {
 
-    // Tom Select sur la liste de catégories
-    new TomSelect('#category', {
-        create: true,
-        sortField: { field: 'text' }
+        // Tom Select sur la liste de catégories
+        new TomSelect('#category', {
+            create: true,
+            sortField: { field: 'text' }
+        });
+
+        // Formulaire de MODIFICATION (AJAX)
+        $('.colonyFormModif').on('submit', function (e) {
+            e.preventDefault();
+            const $msg = $('#formMessage').removeClass('success error');
+
+            const url = '<?= $actual_link ?>ajax?updateSectionColony';
+            const data = {
+                title: $('#title').val(),
+                date: $('#date').val(),
+                category: $('#category').val(),
+                notes: $('#observation').val(),
+                sectionId: <?= (int) $sectionId ?>,
+            };
+
+            const request = new AjaxRequest(url, 'POST', data);
+            request.send(
+                (response) => {
+                    if (response === 'Success') {
+                        $msg.addClass('success').text('Rubrique modifiée avec succès.');
+                    } else {
+                        $msg.addClass('error').text('Erreur : veuillez renseigner tous les champs.');
+                    }
+                },
+                () => { }
+            );
+        });
+
+        // Formulaire de CRÉATION (AJAX)
+        $('.colonyForm').on('submit', function (e) {
+            e.preventDefault();
+            const $msg = $('#formMessage').removeClass('success error');
+
+            const url = '<?= $actual_link ?>ajax?addSectionColony';
+            const data = {
+                title: $('#title').val(),
+                date: $('#date').val(),
+                category: $('#category').val(),
+                notes: $('#observation').val(),
+            };
+
+            const request = new AjaxRequest(url, 'POST', data);
+            request.send(
+                (response) => {
+                    if (response === 'Success') {
+                        $msg.addClass('success').text('Rubrique créée avec succès.');
+                    } else {
+                        $msg.addClass('error').text('Erreur : veuillez renseigner tous les champs.');
+                    }
+                },
+                () => { }
+            );
+        });
+
     });
-
-    // Formulaire de MODIFICATION (AJAX)
-    $('.colonyFormModif').on('submit', function (e) {
-        e.preventDefault();
-        const $msg = $('#formMessage').removeClass('success error');
-
-        const url  = '<?= $actual_link ?>ajax?updateSectionColony';
-        const data = {
-            title:     $('#title').val(),
-            date:      $('#date').val(),
-            category:  $('#category').val(),
-            notes:     $('#observation').val(),
-            sectionId: <?= (int)$sectionId ?>,
-        };
-
-        const request = new AjaxRequest(url, 'POST', data);
-        request.send(
-            (response) => {
-                if (response === 'Success') {
-                    $msg.addClass('success').text('Rubrique modifiée avec succès.');
-                } else {
-                    $msg.addClass('error').text('Erreur : veuillez renseigner tous les champs.');
-                }
-            },
-            () => {}
-        );
-    });
-
-    // Formulaire de CRÉATION (AJAX)
-    $('.colonyForm').on('submit', function (e) {
-        e.preventDefault();
-        const $msg = $('#formMessage').removeClass('success error');
-
-        const url  = '<?= $actual_link ?>ajax?addSectionColony';
-        const data = {
-            title:    $('#title').val(),
-            date:     $('#date').val(),
-            category: $('#category').val(),
-            notes:    $('#observation').val(),
-        };
-
-        const request = new AjaxRequest(url, 'POST', data);
-        request.send(
-            (response) => {
-                if (response === 'Success') {
-                    $msg.addClass('success').text('Rubrique créée avec succès.');
-                } else {
-                    $msg.addClass('error').text('Erreur : veuillez renseigner tous les champs.');
-                }
-            },
-            () => {}
-        );
-    });
-
-});
 </script>
