@@ -11,6 +11,19 @@
                 <a href="<?= $actual_link ?>accueil" class="btn btn-outline-secondary btn-sm px-3">← Retour</a>
             </div>
 
+            <!-- Sous-navigation admin -->
+            <div class="d-flex gap-2 mb-4">
+                <a href="<?= $actual_link ?>parametres/utilisateurs" class="btn btn-outline-secondary btn-sm">
+                    <i class="bi bi-people me-1"></i>Utilisateurs
+                </a>
+                <span class="btn btn-dark btn-sm disabled" aria-current="page">
+                    <i class="bi bi-camera-video me-1"></i>Webcam
+                </span>
+                <a href="<?= $actual_link ?>parametres/mail" class="btn btn-outline-secondary btn-sm">
+                    <i class="bi bi-envelope me-1"></i>Mail
+                </a>
+            </div>
+
             <?php if ($success): ?>
                 <div class="alert alert-success">Configuration sauvegardée.</div>
             <?php elseif ($error): ?>

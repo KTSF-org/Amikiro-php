@@ -99,6 +99,7 @@ $userRole = \app\util\SessionLogin::getRole();
                                 <li><h6 class="dropdown-header">Administration</h6></li>
                                 <li><a class="dropdown-item" href="<?= $actual_link ?>parametres/utilisateurs">Gestion des utilisateurs</a></li>
                                 <li><a class="dropdown-item" href="<?= $actual_link ?>parametres/webcam">Configuration Webcam</a></li>
+                                <li><a class="dropdown-item" href="<?= $actual_link ?>parametres/mail">Configuration mail</a></li>
                             <?php endif; ?>
                             <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item text-danger" href="<?= $actual_link ?>logout">Déconnexion</a></li>
