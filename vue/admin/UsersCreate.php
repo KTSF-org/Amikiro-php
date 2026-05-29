@@ -43,15 +43,15 @@
                 <!-- Rôle — ROLE_ADMIN absent intentionnellement : non assignable via l'interface -->
                 <div class="card mb-3">
                     <div class="card-header bg-dark text-white py-2">
-                        <span class="fw-semibold small">Rôle</span>
+                        <span class="fw-semibold small">Type de compte</span>
                     </div>
                     <div class="card-body">
                         <select class="form-select" id="codeRole" name="codeRole"
                             data-role-invite="<?= ROLE_INVITE ?>"
                             data-role-adherent="<?= ROLE_ADHERENT ?>"
                             data-role-naturaliste="<?= ROLE_NATURALISTE ?>">
-                            <option value="<?= ROLE_INVITE ?>">Invité</option>
-                            <option value="<?= ROLE_ADHERENT ?>" selected>Adhérent</option>
+                            <option value="<?= ROLE_INVITE ?>" selected>Invité</option>
+                            <option value="<?= ROLE_ADHERENT ?>">Adhérent</option>
                             <option value="<?= ROLE_NATURALISTE ?>">Naturaliste</option>
                         </select>
                         <div class="form-text text-muted small mt-2">
