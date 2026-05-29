@@ -4,13 +4,15 @@ namespace app\util;
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
+use modele\DAO\ConfigDAO;
 
 /**
  * Utilitaire d'envoi d'emails via SMTP (PHPMailer).
  *
- * La configuration SMTP (hôte, port, identifiants) est centralisée
- * dans les constantes MAIL_* de app/param.php.
- * Si MAIL_USER est vide, l'authentification SMTP est désactivée (usage local/Docker).
+ * La configuration SMTP (hôte, port, identifiants) est lue depuis la table Config (id=1)
+ * via ConfigDAO. Les colonnes mailHost, mailPort, mailUser, mailPass, mailFrom, mailFromName
+ * sont ajoutées par migration_mail_config.sql.
+ * Si mailUser est vide, l'authentification SMTP est désactivée (usage local/Docker).
  */
 class Mailer
 {
@@ -27,20 +29,41 @@ class Mailer
      */
     public static function sendWelcome(string $to, string $firstName, string $password, string $memberNum): bool
     {
+        $cfg  = (new ConfigDAO())->getConfig();
+        $host = $cfg->mailHost     ?? '';
+        $port = (int)($cfg->mailPort    ?? 587);
+        $user = $cfg->mailUser     ?? '';
+        $pass = $cfg->mailPass     ?? '';
+        $from = $cfg->mailFrom     ?? '';
+        $name = $cfg->mailFromName ?? APP_NAME;
+
+        if (empty($host) || empty($from)) {
+            error_log('Mailer::sendWelcome — configuration SMTP incomplète (mailHost ou mailFrom manquant).');
+            return false;
+        }
+
         $mail = new PHPMailer(true);
         try {
             $mail->isSMTP();
-            $mail->Host = MAIL_HOST;
-            $mail->SMTPAuth = true;
-            $mail->Username = MAIL_USER;
-            $mail->Password = MAIL_PASS;
+            $mail->Host = $host;
+            $mail->Port = $port;
 
-            // Si port 587 -> STARTTLS | Si port 465 -> SMTPS
-            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-            $mail->Port = MAIL_PORT;
+            // Port 465 → SMTPS (SSL direct) | tout autre port → STARTTLS
+            $mail->SMTPSecure = ($port === 465)
+                ? PHPMailer::ENCRYPTION_SMTPS
+                : PHPMailer::ENCRYPTION_STARTTLS;
+
+            // Auth désactivée si pas de credentials (Mailpit local, Postfix sans auth)
+            if (!empty($user)) {
+                $mail->SMTPAuth = true;
+                $mail->Username = $user;
+                $mail->Password = $pass;
+            } else {
+                $mail->SMTPAuth = false;
+            }
 
             $mail->CharSet = 'UTF-8';
-            $mail->setFrom(MAIL_FROM, MAIL_FROM_NAME);
+            $mail->setFrom($from, $name);
             $mail->addAddress($to, $firstName);
             $mail->isHTML(true);
             $mail->Subject = 'Bienvenue...';
