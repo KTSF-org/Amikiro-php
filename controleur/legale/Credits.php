@@ -9,6 +9,6 @@ class Credits {
 	public function __construct() {
 		Guard::requireLogin();
 		Vue::setTitle("Crédits");
-		Vue::render('legale/Credits');
+		Vue::render('legale/Credits', []);
 	}
 }

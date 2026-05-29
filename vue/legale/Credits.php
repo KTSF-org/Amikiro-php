@@ -156,31 +156,30 @@
 
       <!-- Membre 1 — Lead -->
       <div class="credit-card">
-        <div class="credit-avatar" style="background-color: #bb0808;">AL</div>
-        <p class="credit-name">Alice Lambert</p>
-        <p class="credit-role">Chef de projet &amp; Product Owner</p>
-        <span class="credit-badge">Lead</span>
+        <div class="credit-avatar" style="background-color: #bb0808;">FE</div>
+        <p class="credit-name">Florian Édouard</p>
+        <p class="credit-role">Développeur</p>
       </div>
 
       <!-- Membre 2 -->
       <div class="credit-card">
-        <div class="credit-avatar" style="background-color: #3c5060;">TM</div>
-        <p class="credit-name">Thomas Martin</p>
-        <p class="credit-role">Développeur Front-end</p>
+        <div class="credit-avatar" style="background-color: #3c5060;">SM</div>
+        <p class="credit-name">Simon Mahéo</p>
+        <p class="credit-role">Développeur</p>
       </div>
 
       <!-- Membre 3 -->
       <div class="credit-card">
-        <div class="credit-avatar" style="background-color: #ce2b37;">SB</div>
-        <p class="credit-name">Sophie Blanc</p>
-        <p class="credit-role">Développeuse Back-end</p>
+        <div class="credit-avatar" style="background-color: #ce2b37;">TO</div>
+        <p class="credit-name">Tanihiarii Opuu</p>
+        <p class="credit-role">Développeur</p>
       </div>
 
       <!-- Membre 4 -->
       <div class="credit-card">
-        <div class="credit-avatar" style="background-color: #000000;">LR</div>
-        <p class="credit-name">Laura Renard</p>
-        <p class="credit-role">UX / UI Designer</p>
+        <div class="credit-avatar" style="background-color: #000000;">KP</div>
+        <p class="credit-name">Kévin Pinel</p>
+        <p class="credit-role">Développeur</p>
       </div>
 
     </div>
