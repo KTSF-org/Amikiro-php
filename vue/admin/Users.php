@@ -71,6 +71,19 @@ function subscriptionCell(int $userId, int $role, array $activeByUser): string
         </div>
     </div>
 
+    <!-- Sous-navigation admin -->
+    <div class="d-flex gap-2 mb-4">
+        <span class="btn btn-dark btn-sm disabled" aria-current="page">
+            <i class="bi bi-people me-1"></i>Utilisateurs
+        </span>
+        <a href="<?= $actual_link ?>parametres/webcam" class="btn btn-outline-secondary btn-sm">
+            <i class="bi bi-camera-video me-1"></i>Webcam
+        </a>
+        <a href="<?= $actual_link ?>parametres/mail" class="btn btn-outline-secondary btn-sm">
+            <i class="bi bi-envelope me-1"></i>Mail
+        </a>
+    </div>
+
     <?php if ($purgedCount !== null): ?>
     <div class="alert alert-success alert-dismissible fade show py-2" role="alert">
         <?= $purgedCount ?> compte<?= $purgedCount > 1 ? 's' : '' ?> invité<?= $purgedCount > 1 ? 's' : '' ?> supprimé<?= $purgedCount > 1 ? 's' : '' ?>.
