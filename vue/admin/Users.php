@@ -164,7 +164,7 @@ function subscriptionCell(int $userId, int $role, array $activeByUser): string
                 <thead class="table-dark">
                     <tr>
                         <th>Identité</th>
-                        <th>Rôle</th>
+                        <th>Type de compte</th>
                         <th>N° adhérent</th>
                         <th class="text-center">Temps d'accès</th>
                         <th class="text-center">Connexions</th>
