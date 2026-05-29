@@ -44,7 +44,7 @@ use app\util\Helper;
 
                             <div class="mb-3">
                                 <label for="title" class="form-label">
-                                    Titre <span class="text-danger">*</span>
+                                    Titre
                                 </label>
                                 <?php if ($modif): ?>
                                     <input type="text" class="form-control mandatory" id="title" name="colonyTitle"
@@ -67,7 +67,7 @@ use app\util\Helper;
 
                             <div class="mb-3">
                                 <label for="category" class="form-label">
-                                    Catégorie <span class="text-danger">*</span>
+                                    Catégorie
                                 </label>
                                 <!-- Tom Select initialise ce <select> — la classe form-select s'applique avant init -->
                                 <select class="form-select mandatory" id="category" name="colonyCategory">
