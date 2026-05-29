@@ -18,7 +18,6 @@
 9. [Évolutions envisageables](#9-évolutions-envisageables)
 10. [Installation locale](#10-installation-locale)
 11. [Structure des répertoires](#11-structure-des-répertoires)
-12. [Compétences BTS SIO mobilisées](#12-compétences-bts-sio-mobilisées)
 
 ---
 
@@ -506,25 +505,3 @@ Amikiro-php/
 ├── index.php                   # Point d'entrée unique
 └── .htaccess                   # Réécriture d'URL Apache
 ```
-
----
-
-## 12. Compétences BTS SIO mobilisées
-
-### Option SLAM — Référentiel 2022
-
-| Compétence | Activité réalisée sur ce projet |
-|---|---|
-| **B2.1** — Analyser un besoin | Recueil des besoins KTSF, définition des rôles et parcours utilisateurs, modélisation MCD |
-| **B2.2** — Concevoir une solution | Architecture MVC, définition des routes, conception de la base de données |
-| **B2.3** — Développer les composants | PHP 8.1 : contrôleurs, DAOs, vues, AJAX, gestion de session, streaming HLS |
-| **B2.4** — Réaliser les tests | Tests fonctionnels manuels, corrections de bugs documentées (DataTables, footer, modales) |
-| **B2.5** — Déployer une solution | Configuration Apache/.htaccess, gestion des environnements, auto-hébergement des assets |
-| **B2.6** — Exploiter les données | Conception et interrogation MariaDB, requêtes préparées PDO, agrégations |
-| **B1.3** — Sécuriser les usages | Rôles hiérarchiques, régénération de session, sanitisation XSS, requêtes préparées, CAPTCHA |
-| **B1.6** — Développement professionnel | Veille technique (Bootstrap 5, HLS.js), documentation CLAUDE.md + DEVELOPER_GUIDE.md, Git |
-| **B3.1** — Protéger les données | Hachage BCrypt, protection injection SQL, accès admin par URL secrète, HTTPS en production |
-
----
-
-*Documentation rédigée pour l'épreuve E6 — BTS SIO SLAM — Session 2026*
