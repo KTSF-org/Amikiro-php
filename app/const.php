@@ -25,7 +25,7 @@ define('FILE_DIR', APP_DIR . 'file' . SLASH);
 define('ASSET_DIR', ROOT . ASSET . SLASH);
 
 //Config du SGBDR :
-define('DB_CONFIG', include('DB.php'));
+define('DB_CONFIG', include(__DIR__ . DIRECTORY_SEPARATOR . 'DB.php'));
 
 // URL POUR L'ADMIN
 define('URL_ADMIN', 'df6hj98d24vp');

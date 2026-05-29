@@ -88,7 +88,8 @@ class SectionBat
         // Soumission du formulaire : présence de sectionTitle + sectionObservation détecte un POST valide
         if (
             req::has("sectionTitle") &&
-            req::has("sectionObservation")
+            req::has("sectionObservation") &&
+            req::post("batSelected") != null
         ) {
             $now = new DateTime();
             // modifDate = date/heure serveur au moment de l'enregistrement (mise à jour à chaque édit)
