@@ -1,0 +1,10 @@
+/* Couleur de fond du bouton sélectionné */
+.btn-check:checked + .btn-outline-primary {
+    background-color: #3C5060;
+    color: #fff; /* couleur du texte */
+}
+
+.dataTables_wrapper .dataTables_length,
+.dataTables_wrapper .dataTables_filter {
+    margin-bottom: 1rem !important;
+}

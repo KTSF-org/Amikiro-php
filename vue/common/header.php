@@ -66,7 +66,7 @@ $userRole = \app\util\SessionLogin::getRole();
                 <ul class="navbar-nav ms-auto align-items-lg-center py-2 py-lg-0">
 
                     <li class="nav-item my-1 my-lg-0 me-lg-1">
-                        <a class="btn btn-danger" href="<?= $actual_link ?>live">Live</a>
+                        <a class="btn" href="<?= $actual_link ?>live" style="background-color: #B03139; color: white">Live</a>
                     </li>
 
                     <?php if ($userRole >= ROLE_ADHERENT): ?>
